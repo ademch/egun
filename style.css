@@ -1,0 +1,32 @@
+
+      .div_exp1
+      {
+          border: solid 1px silver;
+          background-color: #f2f2f2;
+          position: absolute;
+          z-index: 100;
+          height: 100px;
+          width: 100px;
+      }
+      .div_exp2
+      {
+          border: solid 1px silver;
+          top: 30px;
+          left: 30px;
+          background-color: #c2c2c2;
+          position: absolute;
+          z-index: 101;
+          height: 100px;
+          width: 100px;
+      }
+      .div_exp3
+      {
+          border: solid 1px silver;
+          top: 60px;
+          left: 60px;
+          background-color: #565656;
+          position: absolute;
+          z-index: 102;
+          height: 100px;
+          width: 100px;
+      }

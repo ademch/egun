@@ -1,0 +1,222 @@
+// function aFieldLinearFade(aElField, fPosX,fPosY)
+// {
+// 	vPtToFocusX = fPosX - CathodeParams.SFFocusX;
+// 	vPtToFocusY = fPosY - CathodeParams.SFFocusY;
+
+// 	fAngleToAxis = Math.atan2(vPtToFocusX, vPtToFocusY);	// swapped x with y to measure angle along Y axis
+
+// 	// check if the point is within center plasma cone
+// 	if (Math.abs(fAngleToAxis) <= CathodeParams.SFBeamHalfAngle)
+// 	{
+// 		// dist from pt provided to focus point
+// 		fDistToF = Math.sqrt(sqr(vPtToFocusX) + sqr(vPtToFocusY));
+
+// 		// check if the point is within cath dark space
+// 		if ((CathodeParams.CathFocusR - fDistToF) < 0.0) return false;
+// 		if ((CathodeParams.CathFocusR - fDistToF) > PlasmaParams.CathDarkSpace) return false;
+
+// 		fDistNorm = (CathodeParams.CathFocusR - fDistToF)/PlasmaParams.CathDarkSpace;	// normalize
+// 	}
+// 	else
+// 	// check if the point is within right plasma cone
+// 	if (fAngleToAxis > CathodeParams.SFBeamHalfAngle)
+// 	{
+// 		fPtRightEdgeX = CathodeParams.SFFocusX + CathodeParams.CathFocusR*Math.sin(CathodeParams.SFBeamHalfAngle);
+// 		fPtRightEdgeY = CathodeParams.SFFocusY + CathodeParams.CathFocusR*Math.cos(CathodeParams.SFBeamHalfAngle);
+		
+// 		vPtToFocusX = fPosX - fPtRightEdgeX;
+// 		vPtToFocusY = fPosY - fPtRightEdgeY;
+
+// 		// dist from pt provided to focus point
+// 		fDistToF = Math.sqrt(sqr(vPtToFocusX) + sqr(vPtToFocusY));
+
+// 		// check if the point is within cath dark space
+// 		if (fDistToF >= PlasmaParams.CathDarkSpace) return false;
+
+// 		fDistNorm = fDistToF/PlasmaParams.CathDarkSpace;	// normalize
+// 	}
+// 	else
+// 	// check if the point is within left plasma cone
+// 	//if (fAngleToAxis < -CathodeParams.SFBeamHalfAngle)
+// 	{
+// 		fPtRightEdgeX = CathodeParams.SFFocusX - CathodeParams.CathFocusR*Math.sin(CathodeParams.SFBeamHalfAngle);
+// 		fPtRightEdgeY = CathodeParams.SFFocusY + CathodeParams.CathFocusR*Math.cos(CathodeParams.SFBeamHalfAngle);
+			
+// 		vPtToFocusX = fPosX - fPtRightEdgeX;
+// 		vPtToFocusY = fPosY - fPtRightEdgeY;
+	
+// 		// dist from pt provided to focus point
+// 		fDistToF = Math.sqrt(sqr(vPtToFocusX) + sqr(vPtToFocusY));
+	
+// 		// check if the point is within cath dark space
+// 		if (fDistToF >= PlasmaParams.CathDarkSpace) return false;
+	
+// 		fDistNorm = fDistToF/PlasmaParams.CathDarkSpace;	// normalize
+// 	}
+
+// 	fScale = 2.0 - 2.0*fDistNorm;	// 2  corresponds to cathode, 0 corresponds to the start of plasma
+
+// 	// Scale the field
+// 	aElField[0] = aElField[0]*fScale;
+// 	aElField[1] = aElField[1]*fScale;
+
+// 	return true;
+// }
+
+// function aFieldLinearFade(aElField, fPosX,fPosY)
+// {
+// 	vPtToFocusX = CathodeParams.SFFocusX - fPosX;
+// 	vPtToFocusY = CathodeParams.SFFocusY - fPosY;
+// 	// dist from pt provided to focus point
+// 	fDistToF = Math.sqrt(sqr(vPtToFocusX) + sqr(vPtToFocusY));
+
+
+// 	// check if the point is within cath dark space
+// 	if ((CathodeParams.CathFocusR - fDistToF) < 0.0) return false;
+// 	if ((CathodeParams.CathFocusR - fDistToF) > PlasmaParams.CathDarkSpace) return false;
+
+// 	fDistNorm = (CathodeParams.CathFocusR - fDistToF)/PlasmaParams.CathDarkSpace;	// normalize
+// 	fScale = 2.0 - 2.0*fDistNorm;	// 2  corresponds to cathode, 0 corresponds to the start of plasma
+
+// 	// Now scale the field vector in a direction to the center
+// 	// Do this in a square coordinate system to preserve orthogonal component
+// 	// 1. normalize direction vector
+// 	vPtToFocusX /= fDistToF;
+// 	vPtToFocusY /= fDistToF;
+// 	// 2. Calc the length of projection of the field vector onto direction vector
+// 	fProjLen = aElField[0]*vPtToFocusX + aElField[1]*vPtToFocusY; 
+
+// 	// 3. Scale the vector
+// 	aElField[0] = aElField[0]*fScale;// + (fScale-1.0)*aElField[0];//vPtToFocusX*fProjLen;
+// 	aElField[1] = aElField[1]*fScale;// + (fScale-1.0)*aElField[1];//vPtToFocusY*fProjLen;
+
+// 	return true;
+// }
+
+
+
+// Take into account Perveans effect
+//BeamF = BeamPerveansF(fPosX, [fOldSpeedX, fOldSpeedY], IScaler);
+//aElField[0] += BeamF;
+//console.log(BeamF);
+
+
+function BeamPerveansF(fPosX, aVelXY, iScaler)
+{
+	return 0;		
+	
+	if (iScaler < 1e-10) return 0;
+	
+	Vfull = Math.sqrt(aVelXY[0]*aVelXY[0] + aVelXY[1]*aVelXY[1]);
+
+	if (Vfull < 1e-10) return 0;
+
+	r = (7.5-fPosX)/100.0;	// m
+
+	const E0 = 8.854187817e-12;
+	return (0.3*iScaler)/( 2.0*Math.PI*E0*Vfull*r );
+}
+
+
+var fOldElField;
+
+var fOldPotential = 0;
+var fPotential = 0;
+var fOldPosX = x;
+var fOldPosY = y;
+
+
+		// on the start the old field is the same
+		if (i==0) fOldElField = aElField.slice();
+
+		//integrate potential with trapezoidal rule: P=(f0+f1)/(2dx) along X and separately along Y
+		// cm->m results in /100
+		fPotential += Math.sqrt( sqr((fPosX-fOldPosX)*(aElField[0]+fOldElFieldX)/2.0) +
+								 sqr((fPosY-fOldPosY)*(aElField[1]+fOldElFieldY)/2.0) )/100.0;
+
+		if (Math.floor(fPotential/1000.0) - Math.floor(fOldPotential/1000.0) > 0.0)
+		{
+			var pt_x = 93 + fPosX*100.0;
+			var pt_y = canvas.height - fPosY*100.0 - 93;
+			ctx.fillStyle = "Red";
+			ctx.fillRect(pt_x, pt_y, 4,2);
+
+			//console.log(fPotential);
+		}
+
+		fOldPotential = fPotential;
+
+		fOldElFieldX = aElField[0];
+		fOldElFieldY = aElField[1];
+
+		fOldPosX = fPosX;
+		fOldPosY = fPosY;
+
+
+// const rl = readline.createInterface({ input: cspr.stdout });
+//     rl.on('line', line => {
+//         console.log(line);
+//     });
+
+
+
+function CatmullRom(aptCP0, aptCP1, aptCP2, aptCP3, t)
+{
+    var ptNew = VectorMult(((-t*(t-1)*(t-1))/2),aptCP0);
+        ptNew = VectorAdd(ptNew,VectorMult(((3*t*t*t-5*t*t+2)/2),aptCP1));
+        ptNew = VectorAdd(ptNew,VectorMult(((-3*t*t*t+4*t*t+t)/2),aptCP2));
+        ptNew = VectorAdd(ptNew,VectorMult(((t*t*(t-1))/2),aptCP3));
+
+    return ptNew;
+}
+
+function IntegratePosOutOfThreeVelocities(aVel_1, aVel_0, aVel_Next, fPosX, fPosY, fPosZ, dt)
+{
+    dt = dt/10.0;
+    
+    for (var i=0;i<10;i++) {
+        var VelImm = CatmullRom(aVel_1, aVel_0, aVel_Next, aVel_Next, i/10.0);
+
+        // convert m/s -> cm/s
+        VelImm = VectorMult(100.0, VelImm);
+        
+        fPosX += dt*VelImm[0];
+		fPosY += dt*VelImm[1];
+		fPosZ += dt*VelImm[2];
+    }
+    return [fPosX, fPosY, fPosZ];
+}
+
+
+        var aPosNew  = IntegratePosOutOfTwoVelocities([fOldVelX, fOldVelY, fOldVelZ],
+                                                        aVelXYZ,
+                                                        fPosX,fPosY,fPosZ,
+                                                        dt);
+
+        fPosX = aPosNew[0];
+        fPosY = aPosNew[1];
+        fPosZ = aPosNew[2];
+
+
+            // k1 = ForceFunc(vPos, vVelPrev);
+    
+    // vNew = VectorAdd(vVelPrev, VectorMult(dt/2.0, k1));
+    // vPosN = VectorAdd(vPos,  VectorMult( (dt/2.0)*100.0*0.5, VectorAdd(vVelPrev, vNew)) );
+    // k2 = ForceFunc(vPosN, vNew);
+
+    // vNew = VectorAdd(vVelPrev, VectorMult(dt/2.0, k2));
+    // vPosN = VectorAdd(vPos,  VectorMult( (dt/2.0)*100.0*0.5, VectorAdd(vVelPrev, vNew)) );
+    // k3 = ForceFunc(vPosN, vNew);
+
+    // vNew = VectorAdd(vVelPrev, VectorMult(dt, k3));
+    // vPosN = VectorAdd(vPos,  VectorMult( dt*100.0*0.5, VectorAdd(vVelPrev, vNew)) );
+    // k4 = ForceFunc(vPosN, vNew);
+
+    // kTotal = [...k1];
+    // kTotal = VectorAdd(kTotal, VectorMult(2.0, k2));
+    // kTotal = VectorAdd(kTotal, VectorMult(2.0, k3));
+    // kTotal = VectorAdd(kTotal, k4);
+
+    // v = VectorAdd(vVelPrev, VectorMult(dt/6.0, kTotal) );
+
+	// return v;

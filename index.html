@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="615" height="2414" style="border:2px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<label style="z-index:101; position:absolute; top:10px; left:650px;">  <p style="font-size:20px">Cathode parameters</p></label>
+<label style="z-index:101; position:absolute; top:60px; left:650px;">  <input type=number id = "CathR" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Cath R</label>
+<label style="z-index:101; position:absolute; top:85px; left:650px;">  <input type=number id = "CathSkirtR" style="width: 7ch" value="3" oninput="DrawGun()"> mm &nbsp; Cath skirt R</label>
+<label style="z-index:101; position:absolute; top:110px; left:650px;"> <input type=number id = "CathSkirtH" style="width: 7ch" value="3" step = "0.5" oninput="DrawGun()"> mm &nbsp; Cath skirt H</label>
+<label style="z-index:101; position:absolute; top:135px; left:650px;"> <input type=number id = "CathSkirtA" style="width: 7ch" value="60" step = "5" oninput="DrawGun()"> mm &nbsp; Cath skirt angle</label>
+<label style="z-index:101; position:absolute; top:160px; left:650px;"> <input type=number id = "CathFocusR" style="width: 7ch" value="42" oninput="DrawGun()"> mm &nbsp; Cath focus R</label>
+
+<label style="z-index:101; position:absolute; top:180px; left:650px;"> <p style="font-size:20px">Anode parameters</p></label>
+<label style="z-index:101; position:absolute; top:230px; left:650px;"> <input type=number id = "AnodeCathGap" style="width: 7ch" value="4" oninput="DrawGun()"> mm &nbsp; Anode/cath gap </label>
+<label style="z-index:101; position:absolute; top:255px; left:650px;"> <input type=number id = "AnodeInnerR" style="width: 7ch" value="22" oninput="DrawGun()"> mm &nbsp; Anode inner R</label>
+<label style="z-index:101; position:absolute; top:280px; left:650px;"> <input type=number id = "AnodeRadialGap" style="width: 7ch" step = "0.5" value="5" oninput="DrawGun()"> mm &nbsp; Radial gap</label>
+<label style="z-index:101; position:absolute; top:305px; left:650px;"> <input type=number id = "AnodeSaddleH" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Anode saddle h</label>
+<label style="z-index:101; position:absolute; top:330px; left:650px;"> <input type=number id = "AnodeCurvH" style="width: 7ch" value="34" oninput="DrawGun()"> mm &nbsp; Anode curve h</label>
+<label style="z-index:101; position:absolute; top:355px; left:650px;"> <input type=number id = "AnodeNozzleR" style="width: 7ch" value="12" oninput="DrawGun()"> mm &nbsp; Anode nozzle R</label>
+<label style="z-index:101; position:absolute; top:380px; left:650px;"> <input type=number id = "AnodeNozzleH" style="width: 7ch" value="6" oninput="DrawGun()"> mm &nbsp; Anode nozzle h</label>
+<label style="z-index:101; position:absolute; top:405px; left:650px;"> <input type=number id = "AnodeNozzleThroatR" style="width: 7ch" value="6" oninput="DrawGun()"> mm &nbsp; Anode throat R</label>
+<label style="z-index:101; position:absolute; top:430px; left:650px;"> <input type=number id = "AnodeNozzleThroatH" style="width: 7ch" value="2" oninput="DrawGun()"> mm &nbsp; Anode throat h</label>
+<label style="z-index:101; position:absolute; top:455px; left:650px;"> <input type=number id = "AnodeNozzleDiffusorR" style="width: 7ch" value="13" oninput="DrawGun()"> mm &nbsp; Anode nozzle diffusor R</label>
+<label style="z-index:101; position:absolute; top:480px; left:650px;"> <input type=number id = "AnodeNozzleDiffusorH" style="width: 7ch" value="9" oninput="DrawGun()"> mm &nbsp; Anode nozzle diffusor h</label>
+
+<label style="z-index:101; position:absolute; top:10px; left:950px;"> <p style="font-size:20px">Superfish parameters</p></label>
+<label style="z-index:101; position:absolute; top:60px; left:950px;"> <input type=number id = "SFFocusX" style="width: 7ch; color: #b9b8b8" readonly> mm &nbsp; Focus x </label>
+<label style="z-index:101; position:absolute; top:90px; left:950px;"> <input type=number id = "SFFocusY" style="width: 7ch; color: #b9b8b8" readonly> mm &nbsp; Focus y </label>
+<label style="z-index:101; position:absolute; top:120px; left:950px;"> <input type=number id = "SFBeamHalfAngle" style="width: 7ch; color: #b9b8b8" readonly> rad &nbsp; Beam half angle </label>
+<label style="z-index:101; position:absolute; top:150px; left:950px;"> <input type=number id = "SFIntGran" style="width: 7ch" value="100"> itms &nbsp; Field interp gran (15cm/x)</label>
+
+<label style="z-index:101; position:absolute; top:180px; left:950px;"> <p style="font-size:20px">Plasma params</p></label>
+<label style="z-index:101; position:absolute; top:230px; left:950px;"> <input type=number id = "CathDarkSpace" style="width: 7ch" value="16" oninput="DrawGun()"> mm &nbsp; Cathode dark space </label>
+<label style="z-index:101; position:absolute; top:260px; left:950px;"> <input type=number id = "AccelerationVoltage" style="width: 7ch" value="10000" step = "10000" oninput="DrawGun()"> V &nbsp; Acceleration voltage </label>
+<label style="z-index:101; position:absolute; top:290px; left:950px;"> <input type=number id = "SpaceCharge" style="width: 7ch" value="0.55e-9" step="1e-10" oninput="DrawGun()"> Coul/cm^3 &nbsp; Space charge </label>
+<div style="z-index:101; position:absolute; top:320px; left:950px;">
+    <input type="checkbox" id="SweepCDS">
+    <label>Sweep 6-26</label>
+</div>
+
+<div style="z-index:101; position:absolute; top:550px; left:1160px;">
+        <input type="checkbox" id="UsePrecalcFields" name="UsePrecalcFields" value="UsePrecalcFields">
+        <label for="UsePrecalcFields">Use precalc fields</label>
+</div>
+
+<div style="z-index:101; position:absolute; top:620px; left:1080px;">
+        <input type="checkbox" id="PlotFields" name="PlotFields" value="PlotFields">
+        <label for="PlotFields">Plot fields</label>
+</div>
+
+<div style="z-index:101; position:absolute; top:550px; left:660px;">
+        <input type="checkbox" id="CalcESField" name="CalcESField" value="CalcESField">
+        <label for="CalcESField">Electrostatic</label>
+</div>
+<div style="z-index:101; position:absolute; top:620px; left:660px;">
+        <input type="checkbox" id="CalcMSField" name="CalcMSField" value="CalcMSField">
+        <label for="CalcMSField">Magnetostatic</label>
+</div>
+
+<table style="z-index:101; position:absolute; top:580px; left:670px;">
+    <tr>
+        <td><img id="loadingImg" src='/Media/loading.gif' height="20" width ="20" style="display: none"></td>
+        <td><form id="postEStaticData"> <input id="CalcButton" type="submit" value="Calculate"> </form></td>
+        <td> <span id="SrvrOnline">Server online </span> </td>
+        <td>→</td>
+        <td> <div id="SrvrAM">AutoMesh</div></td>
+        <td>→</td>
+        <td> <div id="SrvrPoisson">Poisson</div></td>
+        <td>→</td>
+        <td> <div id="SrvrSF7">SF7</div></td>
+        <td>→</td>
+        <td> <div id="SrvrWSFPlot">WSFPlot</div></td>
+        <td>→</td>
+        <td> <div id="SrvrEFRead">Field read</div> </td>
+        <td>→</td>
+        <td> <div id="SrvrElectron">E trace</div></td>
+    </tr>
+</table>
+
+<div class="bevelBox"style="z-index:100; position:absolute; top:545px; left:650px; width:660px; height:100px; border: 1px solid #808080;"></div>
+
+<label style="z-index:101; position:absolute; top:680px; left:650px;">  <p style="font-size:20px">Focusing lens #1</p></label>
+<label style="z-index:101; position:absolute; top:730px; left:650px;">  <input type=number id = "Lens1DistToGun" style="width: 7ch" value="30" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
+<label style="z-index:101; position:absolute; top:755px; left:650px;">  <input type=number id = "Lens1InnerR" style="width: 7ch" value="50" oninput="DrawGun()"> mm &nbsp; Coil inner R</label>
+<label style="z-index:101; position:absolute; top:780px; left:650px;"> <input type=number id = "Lens1Thickness" style="width: 7ch" value="10" oninput="DrawGun()"> mm &nbsp; Coil thickness</label>
+<label style="z-index:101; position:absolute; top:805px; left:650px;"> <input type=number id = "Lens1Height" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
+<label style="z-index:101; position:absolute; top:830px; left:650px;"> <input type=number id = "Lens1TotCurrent" style="width: 7ch" value="2500" step = "100" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
+<label style="z-index:101; position:absolute; top:855px; left:650px;"> <input type=number id = "Lens1CoreThickness" style="width: 7ch" value="0" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
+
+
+<label style="z-index:101; position:absolute; top:680px; left:950px;">  <p style="font-size:20px">Focusing lens #2</p></label>
+<label style="z-index:101; position:absolute; top:730px; left:950px;">  <input type=number id = "Lens2DistToGun" style="width: 7ch" value="85" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
+<label style="z-index:101; position:absolute; top:755px; left:950px;">  <input type=number id = "Lens2InnerR" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil inner R</label>
+<label style="z-index:101; position:absolute; top:780px; left:950px;"> <input type=number id = "Lens2Thickness" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Coil thickness</label>
+<label style="z-index:101; position:absolute; top:805px; left:950px;"> <input type=number id = "Lens2Height" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
+<label style="z-index:101; position:absolute; top:830px; left:950px;"> <input type=number id = "Lens2TotCurrent" style="width: 7ch" value="0" step = "100" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
+<label style="z-index:101; position:absolute; top:855px; left:950px;"> <input type=number id = "Lens2CoreThickness" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
+
+<br>
+
+<textarea id = "ElectrostaticTextArea" rows = "30" cols = "85">Your text here</textarea>
+<textarea id = "MagnetostaticTextArea" rows = "30" cols = "85">Your text here</textarea>
+
+<img src="/Media/Stubs/131.png" id="ElectronImage" alt="Girl in a jacket" width="646" height="2382" style="mix-blend-mode: multiply; position:absolute; top:-28px; left:-28px;">
+
+<script>
+
+    var _beep = new window.Audio("/Media/01 Rom Test.mp3")
+    function playBeep() { _beep.play()};
+    
+    var timer = false;
+    var CSD = 6;
+
+    var $ = function( id ) { return document.getElementById( id ); };
+    var $F = function( id ) { return parseFloat(document.getElementById( id ).value); };
+
+    var bOnce;
+    var bCommIgnore = false;
+
+    function ClearServerCaptions()
+    {
+        $('SrvrAM').style.color = "Black";
+        $('SrvrPoisson').style.color = "Black";
+        $('SrvrSF7').style.color = "Black";
+        $('SrvrWSFPlot').style.color = "Black";
+        $('SrvrEFRead').style.color = "Black";
+        $('SrvrElectron').style.color = "Black";
+    }
+
+    $('postEStaticData').addEventListener('submit', postEStaticData);
+
+    function postEStaticData(event) {
+           event.preventDefault();
+
+           bOnce = true;
+           bCommIgnore = true;
+
+           ClearServerCaptions();
+
+           $("CalcButton").disabled = true;
+
+           let SFFocusX   = $F('SFFocusX');
+           let SFFocusY   = $F('SFFocusY');
+           let CathSkirtR = $F('CathSkirtR');
+           let CathSkirtH = $F('CathSkirtH');
+           let CathSkirtA = $F('CathSkirtA');          
+           let CathFocusR  = $F('CathFocusR')/10.0;             // convert to cm
+           let SFBeamHalfAngle = $F('SFBeamHalfAngle');
+           let SFIntGran   = $F('SFIntGran');
+           let AutofishES  = $('ElectrostaticTextArea').value;  // text
+           let AutofishMS  = $('MagnetostaticTextArea').value;  // text
+           let CathDarkSpace = $F('AnodeCathGap')/10.0 + $F('CathDarkSpace')/10.0; // convert to cm
+           let AccelerationVoltage = $F('AccelerationVoltage');       
+           let SpaceCharge = $F('SpaceCharge');       
+           
+           let AnodeCathGap = $F('AnodeCathGap');
+           let AnodeInnerR  = $F('AnodeInnerR');
+           let AnodeRadialGap   = $F('AnodeRadialGap');
+           let AnodeSaddleH   = $F('AnodeSaddleH');
+           let AnodeCurvH   = $F('AnodeCurvH');
+           let AnodeNozzleR = $F('AnodeNozzleR');
+           let AnodeNozzleH = $F('AnodeNozzleH');
+           let AnodeNozzleThroatR   = $F('AnodeNozzleThroatR');
+           let AnodeNozzleThroatH   = $F('AnodeNozzleThroatH');
+           let AnodeNozzleDiffusorR = $F('AnodeNozzleDiffusorR');
+           let AnodeNozzleDiffusorH = $F('AnodeNozzleDiffusorH');
+
+           let Lens1DistToGun     = $F('Lens1DistToGun');
+           let Lens1InnerR        = $F('Lens1InnerR');
+           let Lens1Thickness     = $F('Lens1Thickness');
+           let Lens1Height        = $F('Lens1Height');
+           let Lens1TotCurrent    = $F('Lens1TotCurrent');
+           let Lens1CoreThickness = $F('Lens1CoreThickness');
+
+           let Lens2DistToGun     = $F('Lens2DistToGun');
+           let Lens2InnerR        = $F('Lens2InnerR');
+           let Lens2Thickness     = $F('Lens2Thickness');
+           let Lens2Height        = $F('Lens2Height');
+           let Lens2TotCurrent    = $F('Lens2TotCurrent');
+           let Lens2CoreThickness = $F('Lens2CoreThickness');
+
+           let UsePrecalcFields   = $("UsePrecalcFields").checked;    // bool
+           let PlotFields         = $("PlotFields").checked;          // bool
+           let CalcESField        = $("CalcESField").checked;         // bool
+           let CalcMSField        = $("CalcMSField").checked;         // bool
+
+        //    if ((UsePrecalcFields) && (!window.confirm("Use precalc field?")))
+        //    {
+        //        bOnce = false;
+        //        return;
+        //    }
+
+           // check if user asked to do automatic cathode dark space sweep
+           if (($("SweepCDS").checked) && (timer === false))
+           {
+              timer = setInterval(function()
+              {
+                if (!document.getElementById("CalcButton").disabled)
+                {
+                    console.log('Next iteration');
+                    document.getElementById("CathDarkSpace").value++;
+                    DrawGun();
+
+                    if (document.getElementById("CathDarkSpace").value >= 26)
+                    {
+                        clearInterval(timer);
+                        timer = false;
+                    }
+
+                    document.getElementById("CalcButton").click();   
+                }    
+              }, 2000);
+           }
+
+           fetch('http://127.0.0.1:3000/calculate', {
+               method  : 'POST',
+               headers : new Headers({'content-type': 'application/json'}),
+               body    : JSON.stringify({   "SuperfishParams": {
+                                                "SFIntGran"        : SFIntGran,
+                                                "AutofishES"       : AutofishES,
+                                                "AutofishMS"       : AutofishMS,
+                                                "UsePrecalcFields" : UsePrecalcFields,
+                                                "PlotFields"       : PlotFields,
+                                                "CalcESField"      : CalcESField,
+                                                "CalcMSField"      : CalcMSField},
+                                            "CathodeParams": {
+                                                "CathFocusR"       : CathFocusR,
+                                                "SFBeamHalfAngle"  : SFBeamHalfAngle,   // calculated
+                                                "SFFocusX"         : SFFocusX,          // calculated
+                                                "SFFocusY"         : SFFocusY,          // calculated
+                                                "CathSkirtR"       : CathSkirtR,
+                                                "CathSkirtH"       : CathSkirtH,
+                                                "CathSkirtA"       : CathSkirtA},
+                                            "AnodeParams": {
+                                                "AnodeCathGap"         : AnodeCathGap,
+                                                "AnodeInnerR"          : AnodeInnerR,
+                                                "AnodeRadialGap"       : AnodeRadialGap,
+                                                "AnodeSaddleH"         : AnodeSaddleH,
+                                                "AnodeCurvH"           : AnodeCurvH,
+                                                "AnodeNozzleR"         : AnodeNozzleR,
+                                                "AnodeNozzleH"         : AnodeNozzleH,
+                                                "AnodeNozzleThroatR"   : AnodeNozzleThroatR,
+                                                "AnodeNozzleThroatH"   : AnodeNozzleThroatH,
+                                                "AnodeNozzleDiffusorR" : AnodeNozzleDiffusorR,
+                                                "AnodeNozzleDiffusorH" : AnodeNozzleDiffusorH},
+                                            "PlasmaParams": {
+                                                "CathDarkSpace"        : CathDarkSpace,
+                                                "AccelerationVoltage"  : AccelerationVoltage,
+                                                "SpaceCharge"          : SpaceCharge},
+                                            "Lens1Params": {
+                                                "Lens1DistToGun"       : Lens1DistToGun,
+                                                "Lens1InnerR"          : Lens1InnerR,
+                                                "Lens1Thickness"       : Lens1Thickness,
+                                                "Lens1Height"          : Lens1Height,
+                                                "Lens1TotCurrent"      : Lens1TotCurrent,
+                                                "Lens1CoreThickness"   : Lens1CoreThickness },
+                                            "Lens2Params": {
+                                                "Lens2DistToGun"       : Lens2DistToGun,
+                                                "Lens2InnerR"          : Lens2InnerR,
+                                                "Lens2Thickness"       : Lens2Thickness,
+                                                "Lens2Height"          : Lens2Height,
+                                                "Lens2TotCurrent"      : Lens2TotCurrent,
+                                                "Lens2CoreThickness"   : Lens2CoreThickness }
+                                        }),
+               //mode    : 'cors'
+           })
+           .then((res)  => res.text())
+           .then((data) => {console.log(data); bCommIgnore = false;})
+           .catch((err) => console.log(err))
+       }
+
+</script>
+
+<script type="text/javascript" src="EGun.js"> </script>
+<script type="text/javascript" src="MGun.js"> </script>
+
+<script>
+    function DrawGun()
+    {
+        DrawGunElectrostatic();
+        DrawGunMagnetostatic();
+    }
+
+    DrawGun();
+</script>
+
+<script>
+    var ServerEnum = {
+        OFFLINE  : 0,
+        ONLINE   : 1,
+        STARTING : 2,
+        AUTOMESH : 3,
+        POISSON  : 4,
+        SF7      : 5,
+        WSFPlot  : 6,
+        EFRead   : 7,
+        Electron : 8
+    }
+    
+    var evtSource = new EventSource('http://127.0.0.1:3000/status');
+
+    evtSource.onmessage = function(e) {
+    
+        if (bCommIgnore) return;
+
+        console.log(e.data);
+        var obj = JSON.parse(e.data);
+
+
+        if (obj.state === ServerEnum.ONLINE)
+        {
+            $('SrvrOnline').style.color = "ForestGreen";
+            $('loadingImg').style.display = 'none';
+            $("CalcButton").disabled = false;
+        }
+        if (obj.state === ServerEnum.STARTING)
+            $('loadingImg').style.display = 'block';
+        if (obj.state >= ServerEnum.AUTOMESH)
+            $('SrvrAM').style.color = "ForestGreen";
+        if (obj.state >= ServerEnum.POISSON)
+            $('SrvrPoisson').style.color = "ForestGreen";
+        if (obj.state >= ServerEnum.SF7)
+            $('SrvrSF7').style.color = "ForestGreen";
+        if (obj.state >= ServerEnum.WSFPlot)
+            $('SrvrWSFPlot').style.color = "ForestGreen";
+        if (obj.state >= ServerEnum.EFRead)
+            $('SrvrEFRead').style.color = "ForestGreen";
+        if (obj.state >= ServerEnum.Electron)
+        {
+
+            if (bOnce) // play once
+            {
+                var d = new Date();
+                document.getElementById("ElectronImage").src = "http://127.0.0.1:3000/image" + "?" + d.getTime();
+
+                playBeep();
+                bOnce = false;
+            }
+    
+            $('SrvrElectron').style.color = "ForestGreen";
+            $('loadingImg').style.display = 'none';
+            $("CalcButton").disabled = false;
+        }
+
+    }
+    evtSource.onopen = function(e) {
+        console.log('SSE connection established');
+    }
+    evtSource.onerror = function(e) {
+        console.log('SSE connection lost');
+
+        $('SrvrOnline').style.color = "Black";
+        ClearServerCaptions();
+        $('loadingImg').style.display = 'none';
+        $("CalcButton").disabled = true;
+    }
+
+
+</script>
+
+</body>
+</html>
