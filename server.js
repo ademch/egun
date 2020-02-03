@@ -63,7 +63,10 @@ app.use(bodyParser.text());
 app.use(express.static(__dirname));
 //app.use(express.urlencoded());
 
+ODMroutes = require('./server_serialization.js');
 
+app.use("/ODM", ODMroutes);
+  
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
