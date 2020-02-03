@@ -12,6 +12,10 @@ var srv_state = require('./server_state');
 
 var child_process = require('child_process');
 
+if (process.env.NODE_ENV !== 'production') {
+	require('dotenv').config();
+  }
+
 const SF_PathAutomesh = "C:\\LANL\\AUTOMESH.EXE";
 const SF_PathPoisson = 'C:\\LANL\\POISSON.EXE';
 const SF_WSPlot = 'C:\\LANL\\WSFPLOT.EXE';

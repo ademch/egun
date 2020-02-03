@@ -49,7 +49,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     </tr>
     <tr>
         <td>
-            <button type="button" onclick="onAdd()" style="width: 80px">Add</button>
+            <button type="button" onclick="onAdd()" style="width: 80px">Save to...</button>
         </td>
         <td>
             <button type="button" onclick="onUpdate()" style="width: 80px">Update</button>
@@ -428,6 +428,52 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                 }
     }
 
+    function JSONtoGUI(item)
+    {
+        for (var param in item.CathodeParams)
+            $F(param.Name)
+        return {
+            "CathodeParams": {
+                "CathFocusR"           : $F('CathFocusR'),
+                "SFBeamHalfAngle"      : $F('SFBeamHalfAngle'),   // calculated
+                "SFFocusX"             : $F('SFFocusX'),          // calculated
+                "SFFocusY"             : $F('SFFocusY'),          // calculated
+                "CathSkirtR"           : $F('CathSkirtR'),
+                "CathSkirtH"           : $F('CathSkirtH'),
+                "CathSkirtA"           : $F('CathSkirtA')},
+            "AnodeParams": {
+                "AnodeCathGap"         : $F('AnodeCathGap'),
+                "AnodeInnerR"          : $F('AnodeInnerR'),
+                "AnodeRadialGap"       : $F('AnodeRadialGap'),
+                "AnodeSaddleH"         : $F('AnodeSaddleH'),
+                "AnodeCurvH"           : $F('AnodeCurvH'),
+                "AnodeNozzleR"         : $F('AnodeNozzleR'),
+                "AnodeNozzleH"         : $F('AnodeNozzleH'),
+                "AnodeNozzleThroatR"   : $F('AnodeNozzleThroatR'),
+                "AnodeNozzleThroatH"   : $F('AnodeNozzleThroatH'),
+                "AnodeNozzleDiffusorR" : $F('AnodeNozzleDiffusorR'),
+                "AnodeNozzleDiffusorH" : $F('AnodeNozzleDiffusorH')},
+            "PlasmaParams": {
+                "CathDarkSpace"        : $F('CathDarkSpace'),
+                "AccelerationVoltage"  : $F('AccelerationVoltage'),
+                "SpaceCharge"          : $F('SpaceCharge')},
+            "Lens1Params": {
+                "Lens1DistToGun"       : $F('Lens1DistToGun'),
+                "Lens1InnerR"          : $F('Lens1InnerR'),
+                "Lens1Thickness"       : $F('Lens1Thickness'),
+                "Lens1Height"          : $F('Lens1Height'),
+                "Lens1TotCurrent"      : $F('Lens1TotCurrent'),
+                "Lens1CoreThickness"   : $F('Lens1CoreThickness') },
+            "Lens2Params": {
+                "Lens2DistToGun"       : $F('Lens2DistToGun'),
+                "Lens2InnerR"          : $F('Lens2InnerR'),
+                "Lens2Thickness"       : $F('Lens2Thickness'),
+                "Lens2Height"          : $F('Lens2Height'),
+                "Lens2TotCurrent"      : $F('Lens2TotCurrent'),
+                "Lens2CoreThickness"   : $F('Lens2CoreThickness') }
+                }
+    }
+
     function onAdd() {
         var profileName = prompt("Please, enter the name of the gun profile");
         if ((profileName === null) || (profileName === "")) return;
@@ -441,8 +487,20 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                body    : JSON.stringify( descriptor ),
                //mode    : 'cors'
            })
-           .then((res)  => res.text())
-           .then((data) => {console.log(data); window.alert(data);})
+           .then((res)  => res.json())
+           .then((data) => {
+                console.log(data);
+                
+                // Create an Option object       
+                var opt = document.createElement("option");        
+
+                // Assign text and value to Option object
+                opt.text = profileName;
+                opt.value = data.id;
+
+                $('GunParams').options.add(opt);
+                $('GunParams').value = data.id;
+            })
            .catch((err) => console.log(err));
 
     }
@@ -468,6 +526,33 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
     }
 
+    function populate() {
+        fetch('http://127.0.0.1:3000/ODM/queryall', {
+               method  : 'GET',
+               //mode    : 'cors'
+           })
+           .then((res)  => res.json())
+           .then((data) => {
+                console.log(data);
+
+                data.foreach(value => {
+                    
+                })
+                
+                // // Create an Option object       
+                // var opt = document.createElement("option");        
+
+                // // Assign text and value to Option object
+                // opt.text = profileName;
+                // opt.value = data.id;
+
+                // $('GunParams').options.add(opt);
+                // $('GunParams').value = data.id;
+            })
+           .catch((err) => console.log(err));
+    }
+
+    populate();
 </script>
 
 </body>

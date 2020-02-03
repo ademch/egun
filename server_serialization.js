@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb+srv://admin:"+ process.env.MONGO_PWD + "@caracalcluster-0rexl.mongodb.net/test?retryWrites=true&w=majority",
+mongoose.connect("mongodb+srv://admin:"+ process.env.MONGODB_PWD + "@caracalcluster-0rexl.mongodb.net/test?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true})
 
 mongoose.set('bufferCommands', false);
@@ -71,7 +71,7 @@ router.post("/add", (req, res) => {
             res.status(500).json({message: err});
         }
         else
-            res.status(200).json({message: 'Added'});
+            res.status(200).json({message: 'Added', id: gun.id});
     });
 
 
@@ -87,6 +87,16 @@ router.delete("/delete", (req, res) => {
     res.status(200).json({
         message: 'Added'
     })
+});
+
+router.get("/queryall", (req, res) => {
+    Gun.find()
+    .exec()
+    .then(items => {
+        console.log(items);
+        res.status(200).json(items);
+    });
+    
 });
 
 
