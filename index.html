@@ -511,21 +511,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                     res.json().then((data) => {
                         console.log(data);
 
-                        data.forEach(value => {
-                            // Create an Option object       
-                            var opt = document.createElement("option");        
-
-                            // Assign text and value to Option object
-                            opt.text = value.name;
-                            opt.value = value._id;
-
-                            $('GunParams').options.add(opt);
-                        });
-
-                        if (data.length > 0) {
+                        if (data.length > 0)
                             JSONtoGUI(data[data.length-1]);                     // load data into GUI
-                            $('GunParams').value = data[data.length-1]._id;     // select the last egun
-                        }
                     });
                 }
             })
