@@ -511,8 +511,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                     res.json().then((data) => {
                         console.log(data);
 
-                        if (data.length > 0)
-                            JSONtoGUI(data[data.length-1]);                     // load data into GUI
+                        JSONtoGUI(data);                     // load data into GUI
                     });
                 }
             })

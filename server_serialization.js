@@ -83,10 +83,22 @@ router.patch("/update", (req, res) => {
     })
 });
 
-router.delete("/delete", (req, res) => {
-    res.status(200).json({
-        message: 'Added'
-    })
+router.delete("/delete/:id", (req, res) => {
+    const id = req.params.id;
+    Gun.findByIdAndDelete(id)
+    .exec()
+    .then((err, data) => {
+
+        if (err) {
+            console.log(err);
+            res.status(500).json({error: err});
+        }
+        else {
+            console.log(items);
+            res.status(204);
+        }
+    });
+
 });
 
 router.get("/queryall", (req, res) => {
