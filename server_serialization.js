@@ -8,8 +8,8 @@ mongoose.connect("mongodb+srv://admin:"+ process.env.MONGODB_PWD + "@caracalclus
 mongoose.set('bufferCommands', false);
 
 const egunSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    name : String,
+    _id  : mongoose.Schema.Types.ObjectId,
+    name : { type: String, required: true },
     CathodeParams: {
         CathFocusR           : Number,
         SFBeamHalfAngle      : Number,
@@ -48,7 +48,7 @@ const egunSchema = new mongoose.Schema({
         Lens2Height          : Number,
         Lens2TotCurrent      : Number,
         Lens2CoreThickness   : Number }
-        }
+    }
 );
 
 Gun = mongoose.model('eGun', egunSchema);
@@ -57,7 +57,7 @@ router.post("/add", (req, res) => {
     
     const gun = new Gun({
         _id:           new mongoose.Types.ObjectId(),
-        Name:          req.body.Name,
+        name:          req.body.Name,
         CathodeParams: req.body.CathodeParams,
         AnodeParams:   req.body.AnodeParams,
         PlasmaParams:  req.body.PlasmaParams,
@@ -95,6 +95,21 @@ router.get("/queryall", (req, res) => {
     .then(items => {
         console.log(items);
         res.status(200).json(items);
+    });
+    
+});
+
+router.get("/query/:id", (req, res) => {
+    const id = req.params.id;
+    Gun.findById(id)
+    .exec()
+    .then(items => {
+        console.log(items);
+        res.status(200).json(items);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err});
     });
     
 });
