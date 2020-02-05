@@ -57,7 +57,7 @@ router.post("/add", (req, res) => {
     
     const gun = new Gun({
         _id:           new mongoose.Types.ObjectId(),
-        name:          req.body.Name,
+        name:          req.body.name,
         CathodeParams: req.body.CathodeParams,
         AnodeParams:   req.body.AnodeParams,
         PlasmaParams:  req.body.PlasmaParams,
@@ -74,29 +74,41 @@ router.post("/add", (req, res) => {
             res.status(200).json({message: 'Added', id: gun.id});
     });
 
-
 });
 
-router.patch("/update", (req, res) => {
-    res.status(200).json({
-        message: 'Added'
+
+router.patch("/update/:id", (req, res) => {
+    const id = req.params.id;
+    
+    var updateOps = {};
+
+    for (var ops in req.body) {
+        updateOps[ops] = req.body[ops];
+    }
+    
+    Gun.updateOne( { _id: id }, { $set: updateOps })
+    .exec()
+    .then(data => {
+        console.log(data);
+        res.status(200).json({message: 'Updated', id: id});
     })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err});
+    });
 });
 
 router.delete("/delete/:id", (req, res) => {
     const id = req.params.id;
     Gun.findByIdAndDelete(id)
     .exec()
-    .then((err, data) => {
-
-        if (err) {
-            console.log(err);
-            res.status(500).json({error: err});
-        }
-        else {
-            console.log(items);
-            res.status(204);
-        }
+    .then(items => {
+        console.log(items);
+        res.status(200).json({message: 'Removed', id: id});
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err});
     });
 
 });
@@ -107,6 +119,10 @@ router.get("/queryall", (req, res) => {
     .then(items => {
         console.log(items);
         res.status(200).json(items);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err});
     });
     
 });

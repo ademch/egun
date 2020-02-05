@@ -58,9 +58,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             <button type="button" onclick="onRESTDelete()"  style="width: 80px">Delete</button>
         </td>
     </tr>
-</table>>
-
-
+</table>
 
 
 <div style="z-index:101; position:absolute; top:550px; left:1160px;">
@@ -484,18 +482,24 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
         var descriptor = PrepareJSONdescriptor();
 
-        descriptor.name = selector.options[e.selectedIndex].text;
-        descriptor._id  = selector.options[e.selectedIndex].value;
+        var id_local  = selector.options[selector.selectedIndex].value;
 
-        fetch('http://127.0.0.1:3000/ODM/update', {
+        fetch('http://127.0.0.1:3000/ODM/update/' + id_local, {
                method  : 'PATCH',
                headers : new Headers({'content-type': 'application/json'}),
                body    : JSON.stringify( descriptor ),
                //mode    : 'cors'
            })
-           .then((res)  => res.text())
-           .then((data) => {console.log(data); window.alert(data);})
-           .catch((err) => console.log(err));
+           .then((res)  => {
+                if (!res.ok) {
+                    res.json().then(data => { console.log(data); return;});
+                }
+                else {
+                    res.json().then(data => { 
+                        console.log(data); });
+                }
+            })
+            .catch((err) => console.log(err));
     }
 
     function onRESTSelect(value) {
@@ -516,6 +520,37 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                 }
             })
            .catch((err) => console.log(err));
+    }
+
+    function onRESTDelete() {
+
+        var selector = $('GunParams');
+        if (selector.selectedIndex < 0) return; // check for empty dropdown list
+
+        if (!window.confirm("Gun profile will be deleted")) return;
+
+        var id_local  = selector.options[selector.selectedIndex].value;
+
+        fetch('http://127.0.0.1:3000/ODM/delete/' + id_local, {
+            method  : 'DELETE',
+            //mode    : 'cors'
+            })
+            .then((res)  => {
+                if (!res.ok) {
+                    res.json().then(data => { console.log(data); return; });
+                }
+                else {
+                    res.json().then(data => { 
+                        console.log(data); 
+                        selector.remove(selector.selectedIndex);
+
+                        if (selector.selectedIndex >= 0) {
+                            onRESTSelect(selector.options[selector.selectedIndex].value);
+                        }
+                    });
+                }
+            })
+            .catch((err) => console.log(err));
     }
 
     function populate() {
