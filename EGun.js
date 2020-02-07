@@ -358,8 +358,8 @@ ctx.beginPath();
 
 	// main surface
 	for (var i = 0; i <= 40; i++) {
-		var xp = fFocusX + (iRFocus-5)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
-		var yp = fFocusY - (iRFocus-5)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+		var xp = fFocusX + (iRFocus-1)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+		var yp = fFocusY - (iRFocus-1)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
 
 		ctx._lineTo(xp, yp);
 	}
@@ -411,7 +411,7 @@ ctx.stroke();
 /* #endregion */
 
 /* #region GUI cathode focus */
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "black";
     ctx.beginPath();
 		ctx.lineWidth = 0.5;
 		ctx._moveTo( fFocusX + iR3, iOy + iH3, false);
@@ -426,7 +426,11 @@ ctx.stroke();
 
 	ctx.font = "16px Georgia";
 	ctx.fillText("th= " + rad2deg(2.0*fStartAngle).toPrecision(3) + String.fromCharCode(176),
-				(fFocusX - 6)*fScaleGUI, (fFocusY - 6)*fScaleGUI);
+                (fFocusX - 6)*fScaleGUI, (fFocusY - 6)*fScaleGUI);
+                
+    ctx.font = "16px Georgia";
+    ctx.fillText("SphSegH= " + gSphSegH.toPrecision(2) + " mm",
+                (iOx-20)*fScaleGUI, (iOy + 5)*fScaleGUI);
 /* #endregion */
 
 
