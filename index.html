@@ -168,6 +168,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
            let CathSkirtH = $F('CathSkirtH');
            let CathSkirtA = $F('CathSkirtA');          
            let CathFocusR  = $F('CathFocusR')/10.0;             // convert to cm
+           let CathR       = $F('CathR');
            let SFBeamHalfAngle = $F('SFBeamHalfAngle');
            let SFIntGran   = $F('SFIntGran');
            let AutofishES  = $('ElectrostaticTextArea').value;  // text
@@ -247,6 +248,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                                 "CalcESField"      : CalcESField,
                                                 "CalcMSField"      : CalcMSField},
                                             "CathodeParams": {
+                                                "CathR"            : CathR,
                                                 "CathFocusR"       : CathFocusR,
                                                 "SFBeamHalfAngle"  : SFBeamHalfAngle,   // calculated
                                                 "SFFocusX"         : SFFocusX,          // calculated
@@ -397,6 +399,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     {
         return {
             "CathodeParams": {
+                "CathR"                : $F('CathR'),
                 "CathFocusR"           : $F('CathFocusR'),
                 "SFBeamHalfAngle"      : $F('SFBeamHalfAngle'),   // calculated
                 "SFFocusX"             : $F('SFFocusX'),          // calculated
@@ -449,6 +452,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             $(param).value = item.Lens1Params[param];
         for (var param in item.Lens2Params)
             $(param).value = item.Lens2Params[param];
+
+        DrawGun();
     }
 
     function onRESTAdd() {

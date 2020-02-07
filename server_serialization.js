@@ -11,6 +11,7 @@ const egunSchema = new mongoose.Schema({
     _id  : mongoose.Schema.Types.ObjectId,
     name : { type: String, required: true },
     CathodeParams: {
+        CathR                : Number,
         CathFocusR           : Number,
         SFBeamHalfAngle      : Number,
         SFFocusX             : Number, 
