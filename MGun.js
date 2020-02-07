@@ -58,8 +58,8 @@ var ctx = c.getContext("2d");
 	el.value += "mode=-1,         ! FIXGAM is the default value of the reluctivity for materials with MAT = 2 and higher\n";
 	el.value += "nbsup=0,         ! Dirichlet boundary condition at upper edge\n";
 	el.value += "nbslo=0,         ! Dirichlet boundary condition at lower edge\n";
-	el.value += "nbsrt=1,         ! Dirichlet boundary condition at right edge\n";
-	el.value += "nbslf=1 &        ! Dirichlet boundary condition at left edge\n";
+	el.value += "nbsrt=0,         ! Dirichlet boundary condition at right edge\n";
+	el.value += "nbslf=0 &        ! Dirichlet boundary condition at left edge\n";
 	el.value += "\n\n";
 /* #endregion */
 
