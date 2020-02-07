@@ -410,6 +410,27 @@ ctx.stroke();
 
 /* #endregion */
 
+
+/* #region DrawPaschenValuesOnTheImage */
+
+	ctx.fillStyle = "Black";
+
+	var iYcoord = iOy + 30*fScaleGUI;
+
+	ctx.font = '16px "Comic Sans"';
+	ctx.fillText('Ar(40), N2/Air(28)', 12*fScaleGUI, iYcoord);
+	iYcoord += 20;
+
+	ctx.font = '16px "Comic Sans"';
+	ctx.fillText('Ne(20)', 32*fScaleGUI, iYcoord);
+	iYcoord += 20;
+
+	ctx.font = '16px "Comic Sans"';
+	ctx.fillText('H2(2)', 52*fScaleGUI, iYcoord);
+	iYcoord += 20;
+	
+/* #endregion */
+
 /* #region GUI cathode focus */
     ctx.fillStyle = "black";
     ctx.beginPath();

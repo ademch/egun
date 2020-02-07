@@ -624,7 +624,7 @@ function DrawElectronMap()
 
 		EmitElectrons();
 
-        DrawParamsOnTheImage();
+		DrawParamsOnTheImage();
         
         ResultImagePath = pathES + 'ESMS_' + filenameES_IN + '_' +  filenameMS_IN + '.png'; // save to global var
         var dataBuffer = canvas.toBuffer();
@@ -698,6 +698,7 @@ function DrawParamsOnTheImage()
 	}
 
 }
+
 
 // ES_problem if true, MS problem otherwise
 function StartAutomesh(ES_problem, path_to_file)
