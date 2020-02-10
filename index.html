@@ -119,6 +119,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:830px; left:950px;"> <input type=number id = "Lens2TotCurrent" style="width: 7ch" value="0" step = "100" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
 <label style="z-index:101; position:absolute; top:855px; left:950px;"> <input type=number id = "Lens2CoreThickness" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
 
+<a href="#" id="btn-download" onclick="downloadImage()">Download image</a>
+
 <br>
 
 <textarea id = "ElectrostaticTextArea" rows = "30" cols = "85">Your text here</textarea>
@@ -127,6 +129,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img src="/Media/Stubs/131.png" id="ElectronImage" alt="Girl in a jacket" width="646" height="2382" style="mix-blend-mode: multiply; position:absolute; top:-28px; left:-28px;">
 
 <script>
+
+    function downloadImage(){
+        document.getElementById("btn-download").download = "image.png";
+        document.getElementById("btn-download").href = document.getElementById("myCanvas").toDataURL("image/png").replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+    }
 
     var _beep = new window.Audio("/Media/01 Rom Test.mp3")
     function playBeep() { _beep.play()};
