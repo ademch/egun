@@ -165,6 +165,7 @@ var fFocusY = iOy + iH3 + iRFocus - gSphSegH;
 	el.value += AccelerationVoltage.toFixed(1);
 	el.value += " &\n";
 
+    ctx.strokeStyle = "black";
 	ctx.beginPath();
 	ctx._moveTo(iOx,iOy);              
 	ctx._lineTo(iOx + iR3 + iR0, iOy); 
@@ -415,19 +416,119 @@ ctx.stroke();
 
 	ctx.fillStyle = "Black";
 
-	var iYcoord = iOy + 30*fScaleGUI;
+	var iYcoord = iOy + 12*fScaleGUI;
 
-	ctx.font = '16px "Comic Sans"';
-	ctx.fillText('Ar(40), N2/Air(28)', 12*fScaleGUI, iYcoord);
-	iYcoord += 20;
+	ctx.font = '12px "Comic Sans"';
+	ctx.fillText('Ar(40)', 17*fScaleGUI, iYcoord);
+    iYcoord += 16;
+    
+	ctx.font = '12px "Comic Sans"';
+	ctx.fillText('N\u2082(28)', 17*fScaleGUI, iYcoord);
+    iYcoord += 16;
 
-	ctx.font = '16px "Comic Sans"';
-	ctx.fillText('Ne(20)', 32*fScaleGUI, iYcoord);
-	iYcoord += 20;
+    ctx.font = '12px "Comic Sans"';
+    ctx.fillText('Air', 17*fScaleGUI, iYcoord);
 
-	ctx.font = '16px "Comic Sans"';
-	ctx.fillText('H2(2)', 52*fScaleGUI, iYcoord);
-	iYcoord += 20;
+    ctx.font = '12px "Comic Sans"';
+	ctx.fillText('Ne(20)', 28*fScaleGUI, iYcoord);
+
+	ctx.font = '12px "Comic Sans"';
+	ctx.fillText('H\u2082(2)', 39*fScaleGUI, iYcoord);
+
+    ctx.font = '12px "Comic Sans"';
+    ctx.fillText('5Pa', 18*fScaleGUI, 70*fScaleGUI);
+    ctx.fillText('5Pa', 29*fScaleGUI, 110*fScaleGUI);
+    ctx.fillText('5Pa', 40*fScaleGUI, 140*fScaleGUI);
+
+    ctx.fillText('10Pa', 18*fScaleGUI, 35*fScaleGUI);
+    ctx.fillText('10Pa', 29*fScaleGUI, 43*fScaleGUI);
+    ctx.fillText('10Pa', 40*fScaleGUI, 55*fScaleGUI);
+    
+    const Pressure1Pa  = 0.0375;
+    const Pressure10Pa = 0.075;
+
+    const PdAr2kv  = 0.15;
+    const PdAr10kv = 0.118;
+    const PdAr30kv = 0.092;
+
+    const PdNe2kv  = 0.3;
+    const PdNe10kv = 0.18;
+    const PdNe30kv = 0.15;
+
+    const PdH2kv  = 0.417;
+    const PdH10kv = 0.313;
+    const PdH30kv = 0.235;
+
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = "blue";
+    ctx.beginPath();
+		ctx._moveTo( iOx-55, iOy + iH3 + 10.0*PdAr2kv/Pressure1Pa, false);
+		ctx._lineTo( iOx-55, iOy + iH3 + 10.0*PdAr2kv/Pressure10Pa, false);
+    ctx.stroke();
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+		ctx._moveTo( iOx-53, iOy + iH3 + 10.0*PdAr10kv/Pressure1Pa, false);
+		ctx._lineTo( iOx-53, iOy + iH3 + 10.0*PdAr10kv/Pressure10Pa, false);
+    ctx.stroke();    
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+        ctx._moveTo( iOx-51, iOy + iH3 + 10.0*PdAr30kv/Pressure1Pa, false);
+        ctx._lineTo( iOx-51, iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa, false);
+    ctx.stroke();
+
+    ctx.strokeStyle = "blue";
+    ctx.beginPath();
+        ctx._moveTo( iOx-44, iOy + iH3 + 10.0*PdNe2kv/Pressure1Pa, false);
+        ctx._lineTo( iOx-44, iOy + iH3 + 10.0*PdNe2kv/Pressure10Pa, false);
+    ctx.stroke();
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+        ctx._moveTo( iOx-42, iOy + iH3 + 10.0*PdNe10kv/Pressure1Pa, false);
+        ctx._lineTo( iOx-42, iOy + iH3 + 10.0*PdNe10kv/Pressure10Pa, false);
+    ctx.stroke();    
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+        ctx._moveTo( iOx-40, iOy + iH3 + 10.0*PdNe30kv/Pressure1Pa, false);
+        ctx._lineTo( iOx-40, iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa, false);
+    ctx.stroke();
+
+    ctx.strokeStyle = "blue";
+    ctx.beginPath();
+        ctx._moveTo( iOx-33, iOy + iH3 + 10.0*PdH2kv/Pressure1Pa, false);
+        ctx._lineTo( iOx-33, iOy + iH3 + 10.0*PdH2kv/Pressure10Pa, false);
+    ctx.stroke();
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+        ctx._moveTo( iOx-31, iOy + iH3 + 10.0*PdH10kv/Pressure1Pa, false);
+        ctx._lineTo( iOx-31, iOy + iH3 + 10.0*PdH10kv/Pressure10Pa, false);
+    ctx.stroke();    
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+        ctx._moveTo( iOx-29, iOy + iH3 + 10.0*PdH30kv/Pressure1Pa, false);
+        ctx._lineTo( iOx-29, iOy + iH3 + 10.0*PdH30kv/Pressure10Pa, false);
+    ctx.stroke();
+    
+// legend
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+        ctx._moveTo( iOx-69, iOy + iH3 + 20, false);
+        ctx._lineTo( iOx-72, iOy + iH3 + 20, false);
+    ctx.stroke();
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+        ctx._moveTo( iOx-69, iOy + iH3 + 25, false);
+        ctx._lineTo( iOx-72, iOy + iH3 + 25, false);
+    ctx.stroke();    
+    ctx.strokeStyle = "blue";
+    ctx.beginPath();
+        ctx._moveTo( iOx-69, iOy + iH3 + 30, false);
+        ctx._lineTo( iOx-72, iOy + iH3 + 30, false);
+    ctx.stroke();
+
+    ctx.fillText('30kv', (iOx-68)*fScaleGUI, (iOy + iH3 + 21)*fScaleGUI);
+    ctx.fillText('10kv', (iOx-68)*fScaleGUI, (iOy + iH3 + 26)*fScaleGUI);
+    ctx.fillText('2kv',  (iOx-68)*fScaleGUI, (iOy + iH3 + 31)*fScaleGUI);
 	
 /* #endregion */
 
