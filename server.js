@@ -616,9 +616,9 @@ function DrawElectronMap()
 		images.forEach( (image, index) => {
             if (! SuperfishParams.PlotFields) return;
             
-            if (index === 0)
+            if ((index === 0) && (SuperfishParams.CalcESField))
                 ctx.drawImage(image, 0,0);//, canvas_w,canvas_h);
-			else
+			else if (SuperfishParams.CalcMSField)
 				ctx.drawImage(image, 0,-304);//, canvas_w,canvas_h);	
 		});
 
