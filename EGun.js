@@ -563,7 +563,7 @@ ctx.stroke();
 
 	ctx.fillText('2.5Pa', 15*fScaleGUI, (iOy + iH3 + 10.0*PdAr2kv/Pressure2_5Pa + 5)*fScaleGUI);
 	ctx.fillText('2.5Pa', 26*fScaleGUI, (iOy + iH3 + 10.0*PdNe2kv/Pressure2_5Pa + 5)*fScaleGUI);
-	ctx.fillText('2.5Pa', 37*fScaleGUI, (iOy + iH3 + 10.0*PdH2kv/Pressure2_5Pa  + 5)*fScaleGUI);
+	//ctx.fillText('2.5Pa', 37*fScaleGUI, (iOy + iH3 + 10.0*PdH2kv/Pressure2_5Pa  + 5)*fScaleGUI);
 
 	ctx.fillText('5Pa', 15*fScaleGUI, (iOy + iH3 + 10.0*PdAr2kv/Pressure5Pa + 5)*fScaleGUI);
 	ctx.fillText('5Pa', 26*fScaleGUI, (iOy + iH3 + 10.0*PdNe2kv/Pressure5Pa + 5)*fScaleGUI);
