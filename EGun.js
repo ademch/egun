@@ -31,6 +31,10 @@ function _lineTo(x,y, sf_output = true) {
 	if (sf_output) PrintSuperFishXY(x*fScaleSuperFish,y*fScaleSuperFish);       // SuperFish
 }
 
+function _fillText(text, x,y) {
+    this.fillText(text, x*fScaleGUI,y*fScaleGUI);
+}
+
 
 function CircleLineIntersect(xr,yr,r, x1,y1,x2,y2)
 {
@@ -58,8 +62,9 @@ function DrawGunElectrostatic()
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 
-	ctx._moveTo = _moveTo; 
-	ctx._lineTo = _lineTo;
+	ctx._moveTo   = _moveTo; 
+    ctx._lineTo   = _lineTo;
+    ctx._fillText = _fillText;
 
 	ctx.clearRect(0, 0, c.width, c.height);
 
@@ -417,6 +422,20 @@ ctx.stroke();
 
 
 /* #region DrawPaschenValuesOnTheImage */
+const FocalPlane  = 135+12+12+250;
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "black";
+    ctx.beginPath();
+		ctx._moveTo( iOx-60, iOy + EGUNHeight + FocalPlane, false);
+		ctx._lineTo( iOx+60, iOy + EGUNHeight + FocalPlane, false);
+    ctx.stroke();
+
+    ctx.fillStyle = "black";
+	ctx.font = '16px "Comic Sans"';
+	ctx._fillText('409mm', (iOx+62), (iOy + EGUNHeight + FocalPlane));
+/* #endregion */
+
+/* #region DrawPaschenValuesOnTheImage */
 
 	const Pressure2_5Pa  = 0.01875;
 	const Pressure5Pa  = 0.0375;
@@ -542,36 +561,36 @@ ctx.stroke();
 	
 	ctx.fillStyle = "black";
 	ctx.font = '14px "Comic Sans"';
-	ctx.fillText('30kv', (iOx-68)*fScaleGUI, (iOy + iH3 + 21)*fScaleGUI);
-    ctx.fillText('10kv', (iOx-68)*fScaleGUI, (iOy + iH3 + 26)*fScaleGUI);
-	ctx.fillText('2kv',  (iOx-68)*fScaleGUI, (iOy + iH3 + 31)*fScaleGUI);
+	ctx._fillText('30kv', (iOx-68), (iOy + iH3 + 21));
+    ctx._fillText('10kv', (iOx-68), (iOy + iH3 + 26));
+	ctx._fillText('2kv',  (iOx-68), (iOy + iH3 + 31));
 	
 	// Column captions
 	ctx.fillStyle = "Black";
 	ctx.font = '16px "Comic Sans"';
 
-	ctx.fillText('Ar(40)', 17*fScaleGUI, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 16)*fScaleGUI);
- 	ctx.fillText('N\u2082(28)', 17*fScaleGUI, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 12)*fScaleGUI);
-	ctx.fillText('Air', 17*fScaleGUI, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 8)*fScaleGUI);
+	ctx._fillText('Ar(40)', 17, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 16));
+ 	ctx._fillText('N\u2082(28)', 17, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 12));
+	ctx._fillText('Air', 17, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 8));
 	 
-	ctx.fillText('Ne(20)', 28*fScaleGUI, (iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa - 8)*fScaleGUI);
-	ctx.fillText('H\u2082(2)', 39*fScaleGUI, (iOy + iH3 + 10.0*PdH30kv/Pressure10Pa - 8)*fScaleGUI);
+	ctx._fillText('Ne(20)', 28, (iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa - 8));
+	ctx._fillText('H\u2082(2)', 39, (iOy + iH3 + 10.0*PdH30kv/Pressure10Pa - 8));
 	
 	// Min/max markings
 	ctx.font = '12px "Comic Sans"';
 	ctx.fillStyle = "black";
 
-	ctx.fillText('2.5Pa', 15*fScaleGUI, (iOy + iH3 + 10.0*PdAr2kv/Pressure2_5Pa + 5)*fScaleGUI);
-	ctx.fillText('2.5Pa', 26*fScaleGUI, (iOy + iH3 + 10.0*PdNe2kv/Pressure2_5Pa + 5)*fScaleGUI);
-	//ctx.fillText('2.5Pa', 37*fScaleGUI, (iOy + iH3 + 10.0*PdH2kv/Pressure2_5Pa  + 5)*fScaleGUI);
+	ctx._fillText('2.5Pa', 15, (iOy + iH3 + 10.0*PdAr2kv/Pressure2_5Pa + 5));
+	ctx._fillText('2.5Pa', 26, (iOy + iH3 + 10.0*PdNe2kv/Pressure2_5Pa + 5));
+	//ctx._fillText('2.5Pa', 37, (iOy + iH3 + 10.0*PdH2kv/Pressure2_5Pa  + 5));
 
-	ctx.fillText('5Pa', 15*fScaleGUI, (iOy + iH3 + 10.0*PdAr2kv/Pressure5Pa + 5)*fScaleGUI);
-	ctx.fillText('5Pa', 26*fScaleGUI, (iOy + iH3 + 10.0*PdNe2kv/Pressure5Pa + 5)*fScaleGUI);
-	ctx.fillText('5Pa', 37*fScaleGUI, (iOy + iH3 + 10.0*PdH2kv/Pressure5Pa  + 5)*fScaleGUI);
+	ctx._fillText('5Pa', 15, (iOy + iH3 + 10.0*PdAr2kv/Pressure5Pa + 5));
+	ctx._fillText('5Pa', 26, (iOy + iH3 + 10.0*PdNe2kv/Pressure5Pa + 5));
+	ctx._fillText('5Pa', 37, (iOy + iH3 + 10.0*PdH2kv/Pressure5Pa  + 5));
 
-	ctx.fillText('10Pa', 18*fScaleGUI, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 3)*fScaleGUI);
-	ctx.fillText('10Pa', 29*fScaleGUI, (iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa - 3)*fScaleGUI);
-	ctx.fillText('10Pa', 40*fScaleGUI, (iOy + iH3 + 10.0*PdH30kv/Pressure10Pa  - 3)*fScaleGUI);
+	ctx._fillText('10Pa', 18, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 3));
+	ctx._fillText('10Pa', 29, (iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa - 3));
+	ctx._fillText('10Pa', 40, (iOy + iH3 + 10.0*PdH30kv/Pressure10Pa  - 3));
 	
 /* #endregion */
 
@@ -591,12 +610,12 @@ ctx.stroke();
 	ctx.stroke();
 
 	ctx.font = "16px Georgia";
-	ctx.fillText("th= " + rad2deg(2.0*fStartAngle).toPrecision(3) + String.fromCharCode(176),
-                (fFocusX - 6)*fScaleGUI, (fFocusY - 6)*fScaleGUI);
+	ctx._fillText("th= " + rad2deg(2.0*fStartAngle).toPrecision(3) + String.fromCharCode(176),
+                 (fFocusX - 6), (fFocusY - 6));
                 
     ctx.font = "16px Georgia";
-    ctx.fillText("SphSegH= " + gSphSegH.toPrecision(2) + " mm",
-                (iOx-20)*fScaleGUI, (iOy + 5)*fScaleGUI);
+    ctx._fillText("SphSegH= " + gSphSegH.toPrecision(2) + " mm",
+                 (iOx-20), (iOy + 5));
 /* #endregion */
 
 
