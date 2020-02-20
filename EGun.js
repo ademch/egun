@@ -35,6 +35,12 @@ function _fillText(text, x,y) {
     this.fillText(text, x*fScaleGUI,y*fScaleGUI);
 }
 
+function PdToP(pd, dist)
+{
+    dist = dist/10; // mm to cm
+    return (133.322*pd/dist).toPrecision(3); 
+}
+
 
 function CircleLineIntersect(xr,yr,r, x1,y1,x2,y2)
 {
@@ -445,153 +451,70 @@ const FocalPlane  = 135+12+12+250;
     const PdAr10kv = 0.118;
     const PdAr30kv = 0.092;
 
-    const PdNe2kv  = 0.3;
-    const PdNe10kv = 0.18;
-    const PdNe30kv = 0.15;
+    const PdNe2kv  = 0.65;
+    const PdNe10kv = 0.31;
+    const PdNe30kv = 0.22;
 
-    const PdH2kv  = 0.417;
-    const PdH10kv = 0.313;
-    const PdH30kv = 0.235;
-
-	// Ar
-	ctx.lineWidth = 6;
-    ctx.strokeStyle = "blue";
-    ctx.beginPath();
-		ctx._moveTo( iOx-55, iOy + iH3 + 10.0*PdAr2kv/Pressure5Pa, false);
-		ctx._lineTo( iOx-55, iOy + iH3 + 10.0*PdAr2kv/Pressure10Pa, false);
-    ctx.stroke();
-    ctx.strokeStyle = "green";
-    ctx.beginPath();
-		ctx._moveTo( iOx-53, iOy + iH3 + 10.0*PdAr10kv/Pressure5Pa, false);
-		ctx._lineTo( iOx-53, iOy + iH3 + 10.0*PdAr10kv/Pressure10Pa, false);
-    ctx.stroke();    
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-        ctx._moveTo( iOx-51, iOy + iH3 + 10.0*PdAr30kv/Pressure5Pa, false);
-        ctx._lineTo( iOx-51, iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa, false);
-	ctx.stroke();
-	
-	ctx.lineWidth = 4;
-    ctx.strokeStyle = "blue";
-    ctx.beginPath();
-		ctx._moveTo( iOx-55, iOy + iH3 + 10.0*PdAr2kv/Pressure2_5Pa, false);
-		ctx._lineTo( iOx-55, iOy + iH3 + 10.0*PdAr2kv/Pressure5Pa +1, false);
-    ctx.stroke();
-    ctx.strokeStyle = "green";
-    ctx.beginPath();
-		ctx._moveTo( iOx-53, iOy + iH3 + 10.0*PdAr10kv/Pressure2_5Pa, false);
-		ctx._lineTo( iOx-53, iOy + iH3 + 10.0*PdAr10kv/Pressure5Pa +1, false);
-    ctx.stroke();    
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-        ctx._moveTo( iOx-51, iOy + iH3 + 10.0*PdAr30kv/Pressure2_5Pa, false);
-        ctx._lineTo( iOx-51, iOy + iH3 + 10.0*PdAr30kv/Pressure5Pa +1, false);
-    ctx.stroke();
-
-	// Ne
-	ctx.strokeStyle = "blue";
-	ctx.lineWidth = 6;
-    ctx.beginPath();
-        ctx._moveTo( iOx-44, iOy + iH3 + 10.0*PdNe2kv/Pressure5Pa, false);
-        ctx._lineTo( iOx-44, iOy + iH3 + 10.0*PdNe2kv/Pressure10Pa, false);
-    ctx.stroke();
-    ctx.strokeStyle = "green";
-    ctx.beginPath();
-        ctx._moveTo( iOx-42, iOy + iH3 + 10.0*PdNe10kv/Pressure5Pa, false);
-        ctx._lineTo( iOx-42, iOy + iH3 + 10.0*PdNe10kv/Pressure10Pa, false);
-    ctx.stroke();    
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-        ctx._moveTo( iOx-40, iOy + iH3 + 10.0*PdNe30kv/Pressure5Pa, false);
-        ctx._lineTo( iOx-40, iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa, false);
-	ctx.stroke();
-	
-	ctx.lineWidth = 4;
-    ctx.strokeStyle = "blue";
-    ctx.beginPath();
-		ctx._moveTo( iOx-44, iOy + iH3 + 10.0*PdNe2kv/Pressure2_5Pa, false);
-		ctx._lineTo( iOx-44, iOy + iH3 + 10.0*PdNe2kv/Pressure5Pa +1, false);
-    ctx.stroke();
-    ctx.strokeStyle = "green";
-    ctx.beginPath();
-		ctx._moveTo( iOx-42, iOy + iH3 + 10.0*PdNe10kv/Pressure2_5Pa, false);
-		ctx._lineTo( iOx-42, iOy + iH3 + 10.0*PdNe10kv/Pressure5Pa +1, false);
-    ctx.stroke();    
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-        ctx._moveTo( iOx-40, iOy + iH3 + 10.0*PdNe30kv/Pressure2_5Pa, false);
-        ctx._lineTo( iOx-40, iOy + iH3 + 10.0*PdNe30kv/Pressure5Pa +1, false);
-    ctx.stroke();
-
-	// H2
-	ctx.strokeStyle = "blue";
-	ctx.lineWidth = 6;
-    ctx.beginPath();
-        ctx._moveTo( iOx-33, iOy + iH3 + 10.0*PdH2kv/Pressure5Pa, false);
-        ctx._lineTo( iOx-33, iOy + iH3 + 10.0*PdH2kv/Pressure10Pa, false);
-    ctx.stroke();
-    ctx.strokeStyle = "green";
-    ctx.beginPath();
-        ctx._moveTo( iOx-31, iOy + iH3 + 10.0*PdH10kv/Pressure5Pa, false);
-        ctx._lineTo( iOx-31, iOy + iH3 + 10.0*PdH10kv/Pressure10Pa, false);
-    ctx.stroke();    
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-        ctx._moveTo( iOx-29, iOy + iH3 + 10.0*PdH30kv/Pressure5Pa, false);
-        ctx._lineTo( iOx-29, iOy + iH3 + 10.0*PdH30kv/Pressure10Pa, false);
-    ctx.stroke();
+    const PdH2kv  = 0.71;  // 0.35 
+    const PdH10kv = 0.51; // 0.27
+    const PdH30kv = 0.45; // 0.22
     
 	// Legend
     ctx.lineWidth = 10;
     ctx.strokeStyle = "red";
     ctx.beginPath();
-        ctx._moveTo( iOx-69, iOy + iH3 + 20, false);
-        ctx._lineTo( iOx-72, iOy + iH3 + 20, false);
+        ctx._moveTo( iOx-69, iOy + iH3 + 4, false);
+        ctx._lineTo( iOx-72, iOy + iH3 + 4, false);
     ctx.stroke();
     ctx.strokeStyle = "green";
     ctx.beginPath();
-        ctx._moveTo( iOx-69, iOy + iH3 + 25, false);
-        ctx._lineTo( iOx-72, iOy + iH3 + 25, false);
+        ctx._moveTo( iOx-69, iOy + iH3 + 9, false);
+        ctx._lineTo( iOx-72, iOy + iH3 + 9, false);
     ctx.stroke();    
     ctx.strokeStyle = "blue";
     ctx.beginPath();
-        ctx._moveTo( iOx-69, iOy + iH3 + 30, false);
-        ctx._lineTo( iOx-72, iOy + iH3 + 30, false);
+        ctx._moveTo( iOx-69, iOy + iH3 + 14, false);
+        ctx._lineTo( iOx-72, iOy + iH3 + 14, false);
 	ctx.stroke();
 	
 	ctx.fillStyle = "black";
 	ctx.font = '14px "Comic Sans"';
-	ctx._fillText('30kv', (iOx-68), (iOy + iH3 + 21));
-    ctx._fillText('10kv', (iOx-68), (iOy + iH3 + 26));
-	ctx._fillText('2kv',  (iOx-68), (iOy + iH3 + 31));
+	ctx._fillText('30kv', (iOx-68), (iOy + iH3 + 5));
+    ctx._fillText('10kv', (iOx-68), (iOy + iH3 + 10));
+	ctx._fillText('2kv',  (iOx-68), (iOy + iH3 + 15));
 	
 	// Column captions
 	ctx.fillStyle = "Black";
-	ctx.font = '16px "Comic Sans"';
+	ctx.font = '14px "Comic Sans"';
 
-	ctx._fillText('Ar(40)', 17, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 16));
- 	ctx._fillText('N\u2082(28)', 17, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 12));
-	ctx._fillText('Air', 17, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 8));
-	 
-	ctx._fillText('Ne(20)', 28, (iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa - 8));
-	ctx._fillText('H\u2082(2)', 39, (iOy + iH3 + 10.0*PdH30kv/Pressure10Pa - 8));
-	
-	// Min/max markings
+	ctx._fillText('Ar(40)', 17, (iOy + 16));
+ 	ctx._fillText('N\u2082(28)', 17, (iOy + 12));
+	ctx._fillText('Air', 17, (iOy + 8));
+
+    ctx._fillText('Ne(20)', 28, (iOy + 16));
+
+	ctx._fillText('H\u2082(2)', 39, (iOy + 16));
+
+	// 30kv
 	ctx.font = '12px "Comic Sans"';
-	ctx.fillStyle = "black";
+	ctx.fillStyle = "red";
+	ctx._fillText(PdToP(PdAr30kv, AnodeCathGap + CathDarkSpace) + 'Pa', 17, (iOy + iH3 + 5));
+	ctx._fillText(PdToP(PdNe30kv, AnodeCathGap + CathDarkSpace) + 'Pa', 28, (iOy + iH3 + 5));
+	ctx._fillText(PdToP(PdH30kv,  AnodeCathGap + CathDarkSpace) + 'Pa', 39, (iOy + iH3 + 5));
 
-	ctx._fillText('2.5Pa', 15, (iOy + iH3 + 10.0*PdAr2kv/Pressure2_5Pa + 5));
-	ctx._fillText('2.5Pa', 26, (iOy + iH3 + 10.0*PdNe2kv/Pressure2_5Pa + 5));
-	//ctx._fillText('2.5Pa', 37, (iOy + iH3 + 10.0*PdH2kv/Pressure2_5Pa  + 5));
-
-	ctx._fillText('5Pa', 15, (iOy + iH3 + 10.0*PdAr2kv/Pressure5Pa + 5));
-	ctx._fillText('5Pa', 26, (iOy + iH3 + 10.0*PdNe2kv/Pressure5Pa + 5));
-	ctx._fillText('5Pa', 37, (iOy + iH3 + 10.0*PdH2kv/Pressure5Pa  + 5));
-
-	ctx._fillText('10Pa', 18, (iOy + iH3 + 10.0*PdAr30kv/Pressure10Pa - 3));
-	ctx._fillText('10Pa', 29, (iOy + iH3 + 10.0*PdNe30kv/Pressure10Pa - 3));
-	ctx._fillText('10Pa', 40, (iOy + iH3 + 10.0*PdH30kv/Pressure10Pa  - 3));
+	// 10kv
+	ctx.font = '12px "Comic Sans"';
+	ctx.fillStyle = "green";
+	ctx._fillText(PdToP(PdAr10kv, AnodeCathGap + CathDarkSpace) + 'Pa', 17, (iOy + iH3 + 10));
+	ctx._fillText(PdToP(PdNe10kv, AnodeCathGap + CathDarkSpace) + 'Pa', 28, (iOy + iH3 + 10));
+	ctx._fillText(PdToP(PdH10kv,  AnodeCathGap + CathDarkSpace) + 'Pa', 39, (iOy + iH3 + 10));
 	
+	// 2kv
+	ctx.font = '12px "Comic Sans"';
+	ctx.fillStyle = "blue";
+	ctx._fillText(PdToP(PdAr2kv, AnodeCathGap + CathDarkSpace) + 'Pa', 17, (iOy + iH3 + 15));
+	ctx._fillText(PdToP(PdNe2kv, AnodeCathGap + CathDarkSpace) + 'Pa', 28, (iOy + iH3 + 15));
+	ctx._fillText(PdToP(PdH2kv,  AnodeCathGap + CathDarkSpace) + 'Pa', 39, (iOy + iH3 + 15));
 /* #endregion */
 
 /* #region GUI cathode focus */
