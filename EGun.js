@@ -7,10 +7,12 @@ var RegionEStatic_H = 150;		// mm
 var iOx = 75;					// mm
 var iOy = 10;					// mm
 
-function rad2deg(radians)
-{
-  var pi = Math.PI;
-  return radians * (180/pi);
+function rad2deg(radians) {
+  return radians * (180.0/Math.PI);
+}
+
+function deg2rad(degrees) {
+  return degrees * (Math.PI/180.0);
 }
 
 function PrintSuperFishXY(x, y)
@@ -44,6 +46,16 @@ function PdToP(pd, dist)
 
 function CircleLineIntersect(xr,yr,r, x1,y1,x2,y2)
 {
+	if (Math.abs(x1-x2) < Number.EPSILON) {
+		rootX1 = x1;
+		rootX2 = x1;
+
+		rootY1 = +Math.sqrt(r*r - (x1-xr)*(x1-xr)) + yr;
+		rootY2 = -Math.sqrt(r*r - (x1-xr)*(x1-xr)) + yr;
+
+		return [rootX2, rootY2];
+	}
+	
 	var a=xr;
 	var b=yr;
 	var A=(y2-y1)/(x2-x1);
@@ -172,16 +184,14 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
 	ctx.beginPath();
 	ctx._moveTo(iOx,iOy);
 	ctx._lineTo(iOx + CathR + CathSkirtR, iOy);
-	ctx._lineTo(iOx + CathR + CathSkirtR, iOy + CathNettoH - CathSkirtR + CathSkirtH);
-
+		
 	// rounding on the right
-	for (var i = 1; i < CathSkirtA + 1; i++) {
-		var xp = iOx + CathR + CathSkirtR*Math.cos(i*(Math.PI/2.0)/9);
-		var yp = iOy + CathNettoH - CathSkirtR + CathSkirtH + CathSkirtR*Math.sin(i*(Math.PI/2.0)/9);	// fixed step not to abuse triangle grid
+	ctx._lineTo(iOx + CathR + CathSkirtR, iOy + CathNettoH + CathSkirtH - 0.5);
+	ctx._lineTo(iOx + CathR + CathSkirtR-0.5, iOy + CathNettoH + CathSkirtH);
 
-		ctx._lineTo(xp, yp);
-	}
+	ctx._lineTo(iOx + CathR + CathSkirtH*Math.tan(deg2rad(90-CathSkirtA*10)), iOy + CathNettoH + CathSkirtH);
 
+	// position ourselves directly on the spherical part
 	ctx._lineTo(iOx + CathR, iOy + CathNettoH); 
 
 	// main surface
@@ -192,15 +202,14 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
 		ctx._lineTo(xp, yp);
 	}
 
-	ctx._lineTo(iOx - CathR, iOy + CathNettoH); 
+	// position ourselves directly on the spherical part
+	ctx._lineTo(iOx - CathR, iOy + CathNettoH);
+
+	ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA*10)), iOy + CathNettoH + CathSkirtH);
 
 	// rounding on the left
-	for (var i = 9-CathSkirtA; i < 9; i++) {
-		var xp = iOx - CathR + CathSkirtR*Math.cos(Math.PI/2.0 + i*(Math.PI/2.0)/9);
-		var yp = iOy + CathNettoH - CathSkirtR  + CathSkirtH + CathSkirtR*Math.sin(Math.PI/2.0 + i*(Math.PI/2.0)/9);
-
-		ctx._lineTo(xp, yp);
-	}
+	ctx._lineTo(iOx - CathR - CathSkirtR+0.5, iOy + CathNettoH + CathSkirtH);
+	ctx._lineTo(iOx - CathR - CathSkirtR, iOy + CathNettoH + CathSkirtH - 0.5);
 
 	ctx._lineTo(iOx - CathR - CathSkirtR, iOy + CathNettoH - CathSkirtR + CathSkirtH);
 	ctx._lineTo(iOx - CathR - CathSkirtR, iOy);
@@ -308,9 +317,9 @@ ctx.beginPath();
 	var fAngleInters = Math.atan2(inters[0],inters[1]);
 
 	// right offset circle
-	for (var i = 1; i < 10; i++) {
-		var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
-		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
+	for (var i = 1; i < 20; i++) {
+		var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
 
         // draw only until circle stays on one half of the plane (handling situation when CDSpace is larger than radius)
         if (xp > 76) ctx._lineTo(xp, yp);
@@ -328,9 +337,9 @@ ctx.beginPath();
         }
     }
 	// left offset circle
-	for (var i = 10-1; i > 0; i--) {
-		var xp = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
-		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
+	for (var i = 20-1; i > 0; i--) {
+		var xp = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
 	
         // draw only until circle stays on one half of the plane (handling situation when CDSpace is larger than radius)
         if (xp < 74) ctx._lineTo(xp, yp);
@@ -355,8 +364,8 @@ el.value += "\n\n&reg mat=1,den=" + SpaceCharge;
 el.value += " &   ! DEN is charge density in Coul/cm^3\n";
 
 ctx.beginPath();
-	ctx._lineTo(iOx + CathR + CathSkirtR*Math.cos(CathSkirtA *(Math.PI/2.0)/9) - 1,
-	            iOy + CathNettoH - CathSkirtR + CathSkirtH + CathSkirtR*Math.sin(CathSkirtA *(Math.PI/2.0)/9) );
+	//ctx._lineTo(iOx + CathR + CathSkirtR*Math.cos(CathSkirtA *(Math.PI/2.0)/9) - 1,
+	//            iOy + CathNettoH - CathSkirtR + CathSkirtH + CathSkirtR*Math.sin(CathSkirtA *(Math.PI/2.0)/9) );
 
 	//ctx._lineTo(iOx + iR3 - 1, iOy + iH3 + 1); 
 
@@ -372,16 +381,17 @@ ctx.beginPath();
 
 
 
-	ctx._lineTo(iOx - CathR + CathSkirtR*Math.cos(Math.PI/2.0 + (9-CathSkirtA)*(Math.PI/2.0)/9) + 1,
-				iOy + CathNettoH - CathSkirtR  + CathSkirtH + CathSkirtR*Math.sin(Math.PI/2.0 + (9-CathSkirtA)*(Math.PI/2.0)/9));
+	//ctx._lineTo(iOx - CathR + CathSkirtR*Math.cos(Math.PI/2.0 + (9-CathSkirtA)*(Math.PI/2.0)/9) + 1,
+	//			iOy + CathNettoH - CathSkirtR  + CathSkirtH + CathSkirtR*Math.sin(Math.PI/2.0 + (9-CathSkirtA)*(Math.PI/2.0)/9));
 
 
 
 	// left offset circle
-	for (var i = 1; i < 10; i++) {
-		var xp = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
-		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
+	for (var i = 1; i < 20; i++) {
+		var xp = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
 
+		// prevent swallow tail formation
 		if (xp < 74) ctx._lineTo(xp, yp -1);
 	}	
 
@@ -397,15 +407,16 @@ ctx.beginPath();
     }
 
 	// right offset circle
-	for (var i = 9; i > 0; i--) {
-		var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
-		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/10) + fStartAngle*i/10));
+	for (var i = 20-1; i > 0; i--) {
+		var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
 
+		// prevent swallow tail formation
 		if (xp > 76) ctx._lineTo(xp, yp-1);
 	}
 
-	ctx._lineTo(iOx + CathR + CathSkirtR*Math.cos(CathSkirtA *(Math.PI/2.0)/9)-1,
-				iOy + CathNettoH - CathSkirtR + CathSkirtH + CathSkirtR*Math.sin(CathSkirtA *(Math.PI/2.0)/9) );
+	ctx._lineTo(fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle),
+				fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle) );
 
 
 	ctx.fillStyle = "Orange";
