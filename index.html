@@ -61,26 +61,33 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 </table>
 
 
-<div style="z-index:101; position:absolute; top:550px; left:1160px;">
+<div style="z-index:101; position:absolute; top:540px; left:1160px;">
         <input type="checkbox" id="UsePrecalcFields" name="UsePrecalcFields" title="Skip fields calculation" value="UsePrecalcFields">
         <label for="UsePrecalcFields">Use precalc fields</label>
 </div>
 
-<div style="z-index:101; position:absolute; top:620px; left:1080px;">
+<div style="z-index:101; position:absolute; top:610px; left:1080px;">
         <input type="checkbox" id="PlotFields" name="PlotFields" title="Render calculated ES/MS field" value="PlotFields">
         <label for="PlotFields">Plot fields</label>
 </div>
 
-<div style="z-index:101; position:absolute; top:550px; left:660px;">
+<div style="z-index:101; position:absolute; top:540px; left:660px;">
         <input type="checkbox" id="CalcESField" name="CalcESField" title="Calculate ES field" value="CalcESField">
         <label for="CalcESField">Electrostatic</label>
 </div>
-<div style="z-index:101; position:absolute; top:620px; left:660px;">
+<div style="z-index:101; position:absolute; top:610px; left:660px;">
         <input type="checkbox" id="CalcMSField" name="CalcMSField" title="Calculate MS field" value="CalcMSField">
         <label for="CalcMSField">Magnetostatic</label>
 </div>
 
-<table style="z-index:101; position:absolute; top:580px; left:670px;">
+<div style="z-index:101; position:absolute; top:595px; left:1245px;">
+    <input type="radio" id="ParticleSelectorElectron" name="ParticleSelector" title="Trace electron flow" checked>
+    <label for="ParticleSelector">Electrons</label><br>
+    <input type="radio" id="ParticleSelectorIon" name="ParticleSelector" title="Trace ion flow">
+    <label for="ParticleSelector">Ions</label>
+</div>
+
+<table style="z-index:101; position:absolute; top:570px; left:670px;">
     <tr>
         <td><img id="loadingImg" src='/Media/loading.gif' height="20" width ="20" style="display: none"></td>
         <td><form id="postEStaticData"> <input id="CalcButton" type="submit" value="Calculate"> </form></td>
@@ -96,11 +103,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
         <td>→</td>
         <td> <div id="SrvrEFRead">Field read</div> </td>
         <td>→</td>
-        <td> <div id="SrvrElectron">E trace</div></td>
+        <td> <div id="SrvrElectron">Trace</div></td>
     </tr>
 </table>
 
-<div class="bevelBox"style="z-index:100; position:absolute; top:545px; left:650px; width:660px; height:100px; border: 1px solid #808080;"></div>
+<div class="bevelBox"style="z-index:100; position:absolute; top:530px; left:650px; width:690px; height:110px; border: 1px solid #808080;"></div>
 
 <label style="z-index:101; position:absolute; top:680px; left:650px;">  <p style="font-size:20px">Focusing lens #1</p></label>
 <label style="z-index:101; position:absolute; top:730px; left:650px;">  <input type=number id = "Lens1DistToGun" style="width: 7ch" value="30" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
