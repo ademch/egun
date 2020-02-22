@@ -9,6 +9,7 @@ var fs = require('fs');
 var readline = require('readline');
 var assert = require('assert');
 var srv_state = require('./server_state');
+var VecMath = require('./VecMath');
 
 var child_process = require('child_process');
 
@@ -20,8 +21,8 @@ const SF_PathAutomesh = "C:\\LANL\\AUTOMESH.EXE";
 const SF_PathPoisson = 'C:\\LANL\\POISSON.EXE';
 const SF_WSPlot = 'C:\\LANL\\WSFPLOT.EXE';
 const SF_SF7 = 'C:\\LANL\\SF7.EXE';
-const SendKeys = 'C:\\LANL\\SendKeys.bat';
-const Tmt = 'C:\\LANL\\tmt.bat';
+const SendKeys = '.\\BashScripts\\SendKeys.bat';
+const Tmt = '.\\BashScripts\\tmt.bat';
 const SF_Title = '"WSFPplot 7.17 --- Poisson Superfish Plotting Program     File 1.T35"';
 const SF_TitleProp = '"Bit Image File Output (PCX/BMP/PNG format)"';
 const SF_ES_SourcePath = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.am';
@@ -197,106 +198,6 @@ function ReadFieldValues(ES_problem, path_to_file, aF_values)
 }
 
 
-function TriangleArea(xa,xb,xc, ya,yb,yc) {
-	return 0.5*Math.abs((xa-xc)*(yb-ya)-(xa-xb)*(yc-ya));
-}
-
-function LinearInterpolate(a,b, t) {
-	return a*(1.0-t) + b*t;
-}
-
-function sqr(v) {
-	return v*v;
-}
-
-function VectorCross(a, b)
-{
-	var x = a[1] * b[2] - a[2] * b[1];
-	var y = a[2] * b[0] - a[0] * b[2];
-	var z = a[0] * b[1] - a[1] * b[0];
-
-	return [x,y,z];
-}
-
-function VectorDot(a, b)
-{
-	var x = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-
-	return x;
-}
-
-function VectorAngle(a, b)
-{
-    var l1 = Math.sqrt(VectorDot(a, a));
-    if (l1 < Number.EPSILON) return 0;
-
-    var l2 = Math.sqrt(VectorDot(b, b));
-    if (l2 < Number.EPSILON) return 0;
-
-    var cosTheta = VectorDot(a, b)/(l1*l2);
-
-    if (cosTheta > 1.0) return 0;   // num instability
-
-    return Math.acos(cosTheta);
-}
-
-function VectorMult(s, v) {
-	var x = s * v[0];
-	var y = s * v[1];
-	var z = s * v[2];
-
-	return [x,y,z];
-}
-
-function VectorAdd(v0, v1) {
-	var x = v0[0] + v1[0];
-	var y = v0[1] + v1[1];
-	var z = v0[2] + v1[2];
-
-	return [x,y,z];
-}
-
-function VectorMix(v0, v1, t) {
-	var x = v0[0]*(1.0-t) + v1[0]*t;
-	var y = v0[1]*(1.0-t) + v1[1]*t;
-	var z = v0[2]*(1.0-t) + v1[2]*t;
-
-	return [x,y,z];
-}
-
-function radToDeg(rad) {
-    return rad*(180.0/Math.PI);
-}
-
-function SLERP(v1, v2, angle, t) {
-    if (angle < Number.EPSILON) return VectorMix(v1, v2, t);
-
-    x = Math.sin((1-t)*angle)/Math.sin(angle)*v1[0] + Math.sin(t*angle)/Math.sin(angle)*v2[0];
-    y = Math.sin((1-t)*angle)/Math.sin(angle)*v1[1] + Math.sin(t*angle)/Math.sin(angle)*v2[1];
-    z = Math.sin((1-t)*angle)/Math.sin(angle)*v1[2] + Math.sin(t*angle)/Math.sin(angle)*v2[2];
-
-    return [x,y,z];
-}
-
-function IntegratePosOutOfTwoVelocities(aVel_0, aVel_Next, fPosX, fPosY, fPosZ, dt)
-{
-    var angle = VectorAngle(aVel_0, aVel_Next);
-
-    dt = dt/10.0;
-    
-    for (var i=0; i<10; i++) {
-        var VelImm = SLERP(aVel_0, aVel_Next, angle, i/10.0);
-
-        // convert m/s -> cm/s
-        VelImm = VectorMult(100.0, VelImm);
-        
-        fPosX += dt*VelImm[0];
-		fPosY += dt*VelImm[1];
-        fPosZ += dt*VelImm[2];
-    }
-    return [fPosX, fPosY, fPosZ];
-}
-
 
 // Fetches interpolated value from aF_values
 function _PeekField(/*in*/ x, y, z,
@@ -358,8 +259,8 @@ function _PeekField(/*in*/ x, y, z,
 if (p00 === undefined)
     console.log("");
 
-	var field = [ LinearInterpolate(LinearInterpolate(p00[0],p10[0], xt), LinearInterpolate(p01[0],p11[0], xt), yt),
-				  LinearInterpolate(LinearInterpolate(p00[1],p01[1], yt), LinearInterpolate(p10[1],p11[1], yt), xt) ];
+	var field = [ VecMath.LinearInterpolate(VecMath.LinearInterpolate(p00[0],p10[0], xt), VecMath.LinearInterpolate(p01[0],p11[0], xt), yt),
+                  VecMath.LinearInterpolate(VecMath.LinearInterpolate(p00[1],p01[1], yt), VecMath.LinearInterpolate(p10[1],p11[1], yt), xt) ];
 
 	// rotate result field from xOy plane around oY axis
 	fSin = Math.sin(alpha);	fCos = Math.cos(alpha);
@@ -418,10 +319,10 @@ function ForceFunc(vPos,     VelPrev)
 	E = PeekElectrField(vPos);  // V/m
     B = PeekMagnField(vPos);    // T
 
-	var VPrevSqr = VectorDot(VelPrev, VelPrev);
+	var VPrevSqr = VecMath.VectorDot(VelPrev, VelPrev);
 	LorentzContraction = Math.pow( 1.0-(VPrevSqr)/Vc_2, 1.5 );
 
-	var VxB = VectorCross(VelPrev, B);
+	var VxB = VecMath.VectorCross(VelPrev, B);
 
     Aspeed = LorentzContraction * Qe/Me*( E[0] + VxB[0] );
     Bspeed = LorentzContraction * Qe/Me*( E[1] + VxB[1] );
@@ -436,11 +337,11 @@ function Vxyz(vPos,     vVelPrev,  dt)
 {
     k1 = ForceFunc(vPos, vVelPrev);
 
-    vNew = VectorAdd(vVelPrev, VectorMult(dt, k1));
-    vPosN = VectorAdd(vPos,  VectorMult(dt*100.0*0.5, VectorAdd(vVelPrev, vNew)) );
+    vNew  = VecMath.VectorAdd(vVelPrev, VecMath.VectorMult(dt, k1));
+    vPosN = VecMath.VectorAdd(vPos,  VecMath.VectorMult(dt*100.0*0.5, VecMath.VectorAdd(vVelPrev, vNew)) );
     k2 = ForceFunc(vPosN, vNew);
 
-    v = VectorAdd(vVelPrev, VectorMult(dt*0.5, VectorAdd(k1, k2)));
+    v = VecMath.VectorAdd(vVelPrev, VecMath.VectorMult(dt*0.5, VecMath.VectorAdd(k1, k2)));
 
     return v;
 }
@@ -534,7 +435,7 @@ const Vc=299.7915942e6;	// m/s
 
 	for (let i=0; i<120000; i++)
 	{
-		if (Math.sqrt(sqr(vPos[0] - 7.5) + sqr(vPos[2])) > 7.5) break;
+		if (Math.sqrt(VecMath.sqr(vPos[0] - 7.5) + VecMath.sqr(vPos[2])) > 7.5) break;
 		if ((vPos[1] < -45) || (vPos[1] >= 15.0)) break;
 
 		// draw electron position
@@ -560,81 +461,82 @@ const Vc=299.7915942e6;	// m/s
         // fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "  V:" + Math.sqrt(fOldVelX*fOldVelX + fOldVelZ*fOldVelZ) + "\n");
 
 		// // m/s -> cm/s results in *100
-        vPos = VectorAdd(vPos,  VectorMult(dt*100.0*0.5, VectorAdd(vOldVel, aVelXYZ)) );
+        vPos = VecMath.VectorAdd(vPos,  VecMath.VectorMult(dt*100.0*0.5, VecMath.VectorAdd(vOldVel, aVelXYZ)) );
 
         vOldVel = [...aVelXYZ]; // deep copy
 	}
 }
 
-// function takes two recent images of ES and MS problems
-// draws them to the result image, adds electron traces and params
-function DrawElectronMap()
+
+function DrawFieldValues(ES_problem, path_to_file, result_ind)
 {
-	console.log("Tracing electrons");
+	return new Promise(function(resolve,reject) {
 
-	// find the last Electrostatic image
-	var pathES = SF_ES_SourcePath.substr(0, SF_ES_SourcePath.lastIndexOf("\\") + 1);
-	assert(fs.existsSync(pathES + '101.png'));
-	var i;
-	for (i = 500; i>100; i--) {
-		if (fs.existsSync(pathES + i +'.png')) break;
-	}
+        // clear canvas once
+        if (ES_problem) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'multiply';
+        }
+        
+        // find the last field image (even if we do not intend to draw them)
+        var path = path_to_file.substr(0, path_to_file.lastIndexOf("\\") + 1);
+        assert(fs.existsSync(path + '101.png'));
+        var ind;
+        for (ind = 500; ind>100; ind--) {
+            if (fs.existsSync(path + ind +'.png')) break;
+        }
 
-	var filenameES_IN = i;
+        result_ind.push(ind);
 
-	// find the last Magnetostatic image
-	var pathMS = SF_MS_SourcePath.substr(0, SF_MS_SourcePath.lastIndexOf("\\") + 1);
-	assert(fs.existsSync(pathMS + '101.png'));
-	var i;
-	for (i = 500; i>100; i--) {
-		if (fs.existsSync(pathMS + i +'.png')) break;
-	}
+        if (!SuperfishParams.PlotFields) {resolve(result_ind); return;}
 
-	var filenameMS_IN = i;
+        console.log("Drawing field isolines");
 
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.globalCompositeOperation = 'multiply';
+        if ((ES_problem)  && (!SuperfishParams.CalcESField)) {resolve(result_ind); return;}
+        if ((!ES_problem) && (!SuperfishParams.CalcMSField)) {resolve(result_ind); return;}
 
-    if (SuperfishParams.PlotFields) {
-        PromiseES = loadImage(pathES + filenameES_IN + '.png');
-        PromiseMS = loadImage(pathMS + filenameMS_IN + '.png');
 
         // PromiseES = Image.load(pathES + filenameES_IN + '.png')
         // .then(value => { ImageGrey = value.grey(); return ImageGrey.save(pathES + filenameES_IN + '_gs.png');})
         // .then( () => { return loadImage(pathES + filenameES_IN + '_gs.png');} );
-
-        // PromiseMS = Image.load(pathMS + filenameMS_IN + '.png')
-        // .then(value => { ImageGrey = value.grey(); return ImageGrey.save(pathMS + filenameMS_IN + '_gs.png');})
-        // .then( () => { return loadImage(pathMS + filenameMS_IN + '_gs.png');} );
-    }
-    else {  // dummy promises
-        PromiseES = new Promise((resolve) => {resolve()});
-        PromiseMS = new Promise((resolve) => {resolve()});
-    }
-
-	Promise.all([PromiseES, PromiseMS]).then( (images) => {
-		images.forEach( (image, index) => {
-            if (! SuperfishParams.PlotFields) return;
+    
+        loadImage(path + ind + '.png')
+        .then( (image) => {
             
-            if ((index === 0) && (SuperfishParams.CalcESField))
+            if (ES_problem)
                 ctx.drawImage(image, 0,0);//, canvas_w,canvas_h);
-			else if (SuperfishParams.CalcMSField)
-				ctx.drawImage(image, 0,-304);//, canvas_w,canvas_h);	
-		});
+            else
+                ctx.drawImage(image, 0,-304);//, canvas_w,canvas_h);
+            
+            resolve(result_ind);
+            }
+        );
 
-		EmitElectrons();
-
-		DrawParamsOnTheImage();
-        
-        ResultImagePath = pathES + 'ESMS_' + filenameES_IN + '_' +  filenameMS_IN + '.png'; // save to global var
-        var dataBuffer = canvas.toBuffer();
-		fs.writeFileSync(ResultImagePath, dataBuffer);
-
-        ServerState = srv_state.ServerEnum.Electron;
-
-        console.log("done");
-        console.log("");
 	});
+}
+
+
+// function takes two recent images of ES and MS problems
+// draws them to the result image, adds electron traces and params
+function DrawElectronMap(aInd)
+{
+	console.log("Tracing electrons");
+
+    EmitElectrons();
+
+    DrawParamsOnTheImage();
+    
+    assert(Array.isArray(aInd));
+    var pathES = SF_ES_SourcePath.substr(0, SF_ES_SourcePath.lastIndexOf("\\") + 1);
+    ResultImagePath = pathES + 'ESMS_' + aInd[0] + '_' +  aInd[1] + '.png'; // save to global var
+
+    var dataBuffer = canvas.toBuffer();
+    fs.writeFileSync(ResultImagePath, dataBuffer);
+
+    ServerState = srv_state.ServerEnum.Electron;
+
+    console.log("done");
+    console.log("");
 }
 
 function DrawParamsOnTheImage()
@@ -904,8 +806,10 @@ function StartSuperFish()
 		.then( () => { return StartWSFPlot(false, SF_MS_t35Path); }, chainError)
 		.then( (wsf_child) => { return StartWSFPlotSendCommands(false, wsf_child); }, chainError)
 		.then( () => {	return ReadFieldValues(true,  SF_ES_SourcePath, aEF_values); }, chainError)
-		.then( () => {	return ReadFieldValues(false, SF_MS_SourcePath, aMF_values); }, chainError)
-		.then( () => {	DrawElectronMap(); }, chainError)
+        .then( () => {	return ReadFieldValues(false, SF_MS_SourcePath, aMF_values); }, chainError)
+		.then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
+        .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
+		.then( (aInd) => {	DrawElectronMap(aInd); }, chainError)
 		.catch( (e) => { console.log(e); ServerState = srv_state.ServerEnum.ONLINE; } );
 	}
 	else
@@ -921,8 +825,10 @@ function StartSuperFish()
 		.then( () => { return StartWSFPlot(false, SF_MS_t35Path); }, chainError)
 		.then( (wsf_child) => { return StartWSFPlotSendCommands(false, wsf_child); }, chainError)
 		.then( () => {	return ReadFieldValues(true,  SF_ES_SourcePath, aEF_values); }, chainError)
-		.then( () => {	return ReadFieldValues(false, SF_MS_SourcePath, aMF_values); }, chainError)
-		.then( () => {	DrawElectronMap(); }, chainError)
+        .then( () => {	return ReadFieldValues(false, SF_MS_SourcePath, aMF_values); }, chainError)
+		.then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
+        .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
+		.then( (aInd) => {	DrawElectronMap(aInd); }, chainError)
 		.catch( (e) => { console.log(e); ServerState = srv_state.ServerEnum.ONLINE; } );
 	}
 	
