@@ -159,6 +159,13 @@ app.post("/calculate", (req, res) => {
 
 app.listen(3000, () => console.log("Running at Port 3000"));
 
+var ParticleEnum = {
+    ELECTRON  : 0,
+    AR_ION    : 1,
+    H2_ION    : 2,
+    NE_ION    : 3,
+}
+
 
 function ReadFieldValues(ES_problem, path_to_file, aF_values)
 {
@@ -306,12 +313,30 @@ function PeekElectrField(/*in*/ vPos)
 
 // Calculates electron velocity taking field strength and the current speed
 //                 cm cm cm  m/s
-function ForceFunc(vPos,     VelPrev)
+function ForceFunc(vPos,     VelPrev,   Particle)
 {
-	Qe    =-1.60217662e-19;	// coul
 	Vc_2  = 89875.517e12;	// m/s
-	Me    = 9.10938356e-31;	// kg
-	Qe_Me = Qe/Me;
+    
+    switch (Particle) {
+        case ParticleEnum.ELECTRON:
+            Qe    =-1.60217662e-19;	// coul
+            Me    = 9.10938356e-31;	// kg
+            break;
+        case ParticleEnum.AR_ION:
+            Qe    = 1.60217662e-19;	// coul
+            Me    = 6.697048E-26;	// kg
+        break;
+        case ParticleEnum.NE_ION:
+            Qe    = 1.60217662e-19;	// coul
+            Me    = 3.348342E-26;	// kg
+        break;
+        case ParticleEnum.H2_ION:
+            Qe    = 1.60217662e-19;	// coul
+            Me    = 3.346155E-27;	// kg
+        break;
+    }
+
+    Qe_Me = Qe/Me;
 
     //Me=3.32e-24;	//H2 molecule
     
@@ -332,14 +357,14 @@ function ForceFunc(vPos,     VelPrev)
 }
 
 // Calculates electron velocity taking field strength and the current speed
-//            cm cm cm  m/s        s
-function Vxyz(vPos,     vVelPrev,  dt)
+//            cm cm cm  m/s        s    // descriptor
+function Vxyz(vPos,     vVelPrev,  dt,  Particle)
 {
-    k1 = ForceFunc(vPos, vVelPrev);
+    k1 = ForceFunc(vPos, vVelPrev, Particle);
 
     vNew  = VecMath.VectorAdd(vVelPrev, VecMath.VectorMult(dt, k1));
     vPosN = VecMath.VectorAdd(vPos,  VecMath.VectorMult(dt*100.0*0.5, VecMath.VectorAdd(vVelPrev, vNew)) );
-    k2 = ForceFunc(vPosN, vNew);
+    k2 = ForceFunc(vPosN, vNew, Particle);
 
     v = VecMath.VectorAdd(vVelPrev, VecMath.VectorMult(dt*0.5, VecMath.VectorAdd(k1, k2)));
 
@@ -368,7 +393,7 @@ const fShort = 0.022;	// cm
         var zp =                          (xpR-7.5)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "DarkTurquoise";
-        TraceElectronTrajectory(xp, yp, zp);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.ELECTRON);
     }
 
     for (var i = 0; i < 30; i++) {
@@ -379,7 +404,7 @@ const fShort = 0.022;	// cm
         var zp =                          (xpR-7.5)*Math.sin(2.0*Math.PI*i/30);
 
          ctx.fillStyle = "PaleGreen";
-        TraceElectronTrajectory(xp, yp, zp);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.ELECTRON);
     }
 
     for (var i = 0; i < 30; i++) {
@@ -390,7 +415,7 @@ const fShort = 0.022;	// cm
         var zp =                          (xpR-7.5)*Math.sin(2.0*Math.PI*i/30);
 
          ctx.fillStyle = "OrangeRed";
-        TraceElectronTrajectory(xp, yp, zp);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.ELECTRON);
     }
 
     // for (var i = 0; i < 30; i++) {
@@ -421,15 +446,56 @@ const fShort = 0.022;	// cm
     // }
 }
 
-// x,y- cm
-function TraceElectronTrajectory(x,y,z)
+
+function EmitIons()
+{
+const fShort = 0.022;	// cm
+
+
+    for (var i = 0; i < 30; i++) {
+		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.3;
+
+        var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0 - 0.3)*Math.cos(2.0*Math.PI*i/30);
+        var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 0.3)*Math.sin(2.0*Math.PI*i/30);
+
+        ctx.fillStyle = "DarkTurquoise";
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
+    }
+
+    
+    for (var i = 0; i < 30; i++) {
+		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.3;
+
+        var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0 - 1.0)*Math.cos(2.0*Math.PI*i/30);
+        var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 1.0)*Math.sin(2.0*Math.PI*i/30);
+
+        ctx.fillStyle = "PaleGreen";
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
+    }
+
+
+    for (var i = 0; i < 30; i++) {
+		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.3;
+
+        var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0 - 1.6)*Math.cos(2.0*Math.PI*i/30);
+        var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 1.6)*Math.sin(2.0*Math.PI*i/30);
+
+        ctx.fillStyle = "OrangeRed";
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
+    }
+
+}
+
+
+
+// x,y,z- cm
+function TraceParticleTrajectory(x,y,z, Particle)
 {
 var aVelXYZ  = [0.0, 0.0, 0.0];
 var vOldVel  = [0.0, 0.0, 0.0];
 
 var vPos = [x,y,z];     // cm
-
-var dt=1e-11;
+var dt = (Particle === ParticleEnum.ELECTRON) ? 1e-11 : 1e-8;
 const Vc=299.7915942e6;	// m/s
 
 
@@ -438,7 +504,13 @@ const Vc=299.7915942e6;	// m/s
 		if (Math.sqrt(VecMath.sqr(vPos[0] - 7.5) + VecMath.sqr(vPos[2])) > 7.5) break;
 		if ((vPos[1] < -45) || (vPos[1] >= 15.0)) break;
 
-		// draw electron position
+        if (Particle !== ParticleEnum.ELECTRON)
+        if (Math.sqrt( VecMath.sqr(vPos[0] - CathodeParams.SFFocusX) + 
+                       VecMath.sqr(vPos[1] - CathodeParams.SFFocusY) +
+                       VecMath.sqr(vPos[2] - 0)
+                       ) > CathodeParams.CathFocusR) break;
+
+        // draw electron position
 		var pt_x = vPos[0]*100.0 + 100;
 		var pt_y = 1600 - vPos[1]*100.0;
         ctx.fillRect(pt_x, pt_y, 5,5);
@@ -447,12 +519,17 @@ const Vc=299.7915942e6;	// m/s
             console.log("")
 
 		// calculate new velocity vector
-        aVelXYZ = Vxyz(vPos, vOldVel, dt);
+        aVelXYZ = Vxyz(vPos, vOldVel, dt, Particle);
+
+        var Beta = VecMath.VectorLength(aVelXYZ)/Vc;
+        var ptG_x = Beta*200000.0 + 1100;
+		var ptG_y = 1600 - vPos[1]*100.0;
+        ctx.fillRect(ptG_x, ptG_y, 5,5);
         
 		// console.log("x: " + fPosX.toPrecision(4) + ", y:" + fPosY.toPrecision(4) + ", z:" + fPosZ.toPrecision(4) + "\n");
 	    // console.log("  Ex: " + aElField[0].toPrecision(8) + ", Ey:" + aElField[1].toPrecision(8) + ", Ez:" + aElField[2].toPrecision(8) + "\n");
         // console.log("  Ckx: " +aVelXYZ[0].toPrecision(4) + ", Cky:" + aVelXYZ[1].toPrecision(4) + ", Ckz:" + aVelXYZ[2].toPrecision(4) + "\n");
-        // console.log("  Ck:" + Math.sqrt(aVelXYZ[0]*aVelXYZ[0] + aVelXYZ[1]*aVelXYZ[1] + aVelXYZ[2]*aVelXYZ[2]).toPrecision(4) + "\n");
+        // console.log("  Beta:" + (VecMath.VectorLength(aVelXYZ)/Vc).toPrecision(4) + "\n");
 
 		// fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "x: " + fPosX.toPrecision(4) + ", y:" + fPosY.toPrecision(4) + ", z:" + fPosZ.toPrecision(4) + "\n");
 	    // fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "  Ex: " + aElField[0].toPrecision(8) + ", Ey:" + aElField[1].toPrecision(8) + ", Ez:" + aElField[2].toPrecision(8) + "\n");
@@ -460,12 +537,13 @@ const Vc=299.7915942e6;	// m/s
         // fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "  Ck:" + Math.sqrt(aVelXYZ[0]*aVelXYZ[0] + aVelXYZ[1]*aVelXYZ[1] + aVelXYZ[2]*aVelXYZ[2]).toPrecision(4) + "\n");
         // fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "  V:" + Math.sqrt(fOldVelX*fOldVelX + fOldVelZ*fOldVelZ) + "\n");
 
-		// // m/s -> cm/s results in *100
+		// m/s -> cm/s results in *100
         vPos = VecMath.VectorAdd(vPos,  VecMath.VectorMult(dt*100.0*0.5, VecMath.VectorAdd(vOldVel, aVelXYZ)) );
 
         vOldVel = [...aVelXYZ]; // deep copy
 	}
 }
+
 
 
 function DrawFieldValues(ES_problem, path_to_file, result_ind)
@@ -522,7 +600,8 @@ function DrawElectronMap(aInd)
 {
 	console.log("Tracing electrons");
 
-    EmitElectrons();
+    //EmitElectrons();
+    EmitIons();
 
     DrawParamsOnTheImage();
     
