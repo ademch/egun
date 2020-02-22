@@ -28,6 +28,13 @@ function VectorDot(a, b)
 	return x;
 }
 
+function VectorLength(a)
+{
+	var x = a[0] * a[0] + a[1] * a[1] + a[2] * a[2];
+
+	return Math.sqrt(x);
+}
+
 function VectorAngle(a, b)
 {
     var l1 = Math.sqrt(VectorDot(a, a));
@@ -106,6 +113,7 @@ module.exports.LinearInterpolate = LinearInterpolate;
 module.exports.sqr               = sqr;
 module.exports.VectorCross       = VectorCross;
 module.exports.VectorDot         = VectorDot;
+module.exports.VectorLength      = VectorLength;
 module.exports.VectorAngle       = VectorAngle;
 module.exports.VectorMult        = VectorMult;
 module.exports.VectorAdd         = VectorAdd;
