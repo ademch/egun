@@ -15,6 +15,11 @@ function deg2rad(degrees) {
   return degrees * (Math.PI/180.0);
 }
 
+function LinearMix(a, b, t) {
+	return a*(1.0-t) + b*t;
+}
+
+
 function PrintSuperFishXY(x, y)
 {
 var el = document.getElementById("ElectrostaticTextArea");
@@ -364,27 +369,26 @@ el.value += "\n\n&reg mat=1,den=" + SpaceCharge;
 el.value += " &   ! DEN is charge density in Coul/cm^3\n";
 
 ctx.beginPath();
-	//ctx._lineTo(iOx + CathR + CathSkirtR*Math.cos(CathSkirtA *(Math.PI/2.0)/9) - 1,
-	//            iOy + CathNettoH - CathSkirtR + CathSkirtH + CathSkirtR*Math.sin(CathSkirtA *(Math.PI/2.0)/9) );
-
-	//ctx._lineTo(iOx + iR3 - 1, iOy + iH3 + 1); 
 
 	// main surface
-	for (var i = 0; i <= 40; i++) {
-		var xp = fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
-		var yp = fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+	// for (var i = 0; i <= 40; i++) {
+	// 	var xp = fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+	// 	var yp = fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
 
-		ctx._lineTo(xp, yp);
-	}
+	// 	ctx._lineTo(xp, yp);
+	// }
 
-	//ctx._lineTo(iOx - iR3 + 1, iOy + iH3 + 1); 
+    // left
+    var xpPlasmaL = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+    var ypPlasmaL = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
 
+    //left
+    var xpCathL = fFocusX + CathFocusR*Math.cos(Math.PI/2.0 + fStartAngle);
+    var ypCathL = fFocusY - CathFocusR*Math.sin(Math.PI/2.0 + fStartAngle);
 
-
-	//ctx._lineTo(iOx - CathR + CathSkirtR*Math.cos(Math.PI/2.0 + (9-CathSkirtA)*(Math.PI/2.0)/9) + 1,
-	//			iOy + CathNettoH - CathSkirtR  + CathSkirtH + CathSkirtR*Math.sin(Math.PI/2.0 + (9-CathSkirtA)*(Math.PI/2.0)/9));
-
-
+    ctx._moveTo(LinearMix(xpCathL, xpPlasmaL, 0.8),
+                LinearMix(ypCathL, ypPlasmaL, 0.8)
+    );
 
 	// left offset circle
 	for (var i = 1; i < 20; i++) {
@@ -415,8 +419,27 @@ ctx.beginPath();
 		if (xp > 76) ctx._lineTo(xp, yp-1);
 	}
 
-	ctx._lineTo(fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle),
-				fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle) );
+
+
+    // right
+    var xpPlasmaR = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+    var ypPlasmaR = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+
+    // right
+    var xpCathR = fFocusX + CathFocusR*Math.cos(Math.PI/2.0 - fStartAngle);
+    var ypCathR = fFocusY - CathFocusR*Math.sin(Math.PI/2.0 - fStartAngle);
+                
+    ctx._lineTo(LinearMix(xpCathR, xpPlasmaR, 0.8),
+                LinearMix(ypCathR, ypPlasmaR, 0.8)
+    );
+
+    ctx._lineTo(iOx,
+                LinearMix(iOy + CathNettoH - gSphSegH, iOy + CathNettoH - gSphSegH + CathFocusR, 0.6)
+    );
+
+    ctx._lineTo(LinearMix(xpCathL, xpPlasmaL, 0.8),
+                LinearMix(ypCathL, ypPlasmaL, 0.8)
+    );
 
 
 	ctx.fillStyle = "Orange";
