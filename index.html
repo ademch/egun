@@ -81,9 +81,9 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 </div>
 
 <div style="z-index:101; position:absolute; top:595px; left:1245px;">
-    <input type="radio" id="ParticleSelectorElectron" name="ParticleSelector" title="Trace electron flow" checked>
+    <input type="radio" id="ParticleElectron" name="ParticleSelector" title="Trace electron flow" checked>
     <label for="ParticleSelector">Electrons</label><br>
-    <input type="radio" id="ParticleSelectorIon" name="ParticleSelector" title="Trace ion flow">
+    <input type="radio" id="ParticleIon" name="ParticleSelector" title="Trace ion flow">
     <label for="ParticleSelector">Ions</label>
 </div>
 
@@ -175,54 +175,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
            ClearServerCaptions();
 
            EnableRESTgui(false);
+         
+           let CathDarkSpace = $F('AnodeCathGap')/10.0 + $F('CathDarkSpace')/10.0; // convert to cm    
 
-           let SFFocusX   = $F('SFFocusX');
-           let SFFocusY   = $F('SFFocusY');
-           let CathSkirtR = $F('CathSkirtR');
-           let CathSkirtH = $F('CathSkirtH');
-           let CathSkirtA = $F('CathSkirtA');          
-           let CathFocusR  = $F('CathFocusR')/10.0;             // convert to cm
-           let CathR       = $F('CathR');
-           let SFBeamHalfAngle = $F('SFBeamHalfAngle');
-           let SFIntGran   = $F('SFIntGran');
-           let AutofishES  = $('ElectrostaticTextArea').value;  // text
-           let AutofishMS  = $('MagnetostaticTextArea').value;  // text
-           let CathDarkSpace = $F('AnodeCathGap')/10.0 + $F('CathDarkSpace')/10.0; // convert to cm
-           let AccelerationVoltage = $F('AccelerationVoltage');       
-           let SpaceCharge = $F('SpaceCharge');       
-           
-           let AnodeCathGap = $F('AnodeCathGap');
-           let AnodeInnerR  = $F('AnodeInnerR');
-           let AnodeRadialGap   = $F('AnodeRadialGap');
-           let AnodeSaddleH   = $F('AnodeSaddleH');
-           let AnodeCurvH   = $F('AnodeCurvH');
-           let AnodeNozzleR = $F('AnodeNozzleR');
-           let AnodeNozzleH = $F('AnodeNozzleH');
-           let AnodeNozzleThroatR   = $F('AnodeNozzleThroatR');
-           let AnodeNozzleThroatH   = $F('AnodeNozzleThroatH');
-           let AnodeNozzleDiffusorR = $F('AnodeNozzleDiffusorR');
-           let AnodeNozzleDiffusorH = $F('AnodeNozzleDiffusorH');
-
-           let Lens1DistToGun     = $F('Lens1DistToGun');
-           let Lens1InnerR        = $F('Lens1InnerR');
-           let Lens1Thickness     = $F('Lens1Thickness');
-           let Lens1Height        = $F('Lens1Height');
-           let Lens1TotCurrent    = $F('Lens1TotCurrent');
-           let Lens1CoreThickness = $F('Lens1CoreThickness');
-
-           let Lens2DistToGun     = $F('Lens2DistToGun');
-           let Lens2InnerR        = $F('Lens2InnerR');
-           let Lens2Thickness     = $F('Lens2Thickness');
-           let Lens2Height        = $F('Lens2Height');
-           let Lens2TotCurrent    = $F('Lens2TotCurrent');
-           let Lens2CoreThickness = $F('Lens2CoreThickness');
-
-           let UsePrecalcFields   = $("UsePrecalcFields").checked;    // bool
-           let PlotFields         = $("PlotFields").checked;          // bool
-           let CalcESField        = $("CalcESField").checked;         // bool
-           let CalcMSField        = $("CalcMSField").checked;         // bool
-
-        //    if ((UsePrecalcFields) && (!window.confirm("Use precalc field?")))
+        //    if (($("UsePrecalcFields").checked) && (!window.confirm("Use precalc field?")))
         //    {
         //        bOnce = false;
         //        return;
@@ -254,52 +210,53 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                method  : 'POST',
                headers : new Headers({'content-type': 'application/json'}),
                body    : JSON.stringify({   "SuperfishParams": {
-                                                "SFIntGran"        : SFIntGran,
-                                                "AutofishES"       : AutofishES,
-                                                "AutofishMS"       : AutofishMS,
-                                                "UsePrecalcFields" : UsePrecalcFields,
-                                                "PlotFields"       : PlotFields,
-                                                "CalcESField"      : CalcESField,
-                                                "CalcMSField"      : CalcMSField},
+                                                "SFIntGran"        : $F('SFIntGran'),
+                                                "AutofishES"       : $('ElectrostaticTextArea').value, // text
+                                                "AutofishMS"       : $('MagnetostaticTextArea').value, // text
+                                                "UsePrecalcFields" : $("UsePrecalcFields").checked,    // bool
+                                                "PlotFields"       : $("PlotFields").checked,          // bool
+                                                "TraceElectron"    : $("ParticleElectron").checked,    // bool
+                                                "CalcESField"      : $("CalcESField").checked,         // bool
+                                                "CalcMSField"      : $("CalcMSField").checked},        // bool
                                             "CathodeParams": {
-                                                "CathR"            : CathR,
-                                                "CathFocusR"       : CathFocusR,
-                                                "SFBeamHalfAngle"  : SFBeamHalfAngle,   // calculated
-                                                "SFFocusX"         : SFFocusX,          // calculated
-                                                "SFFocusY"         : SFFocusY,          // calculated
-                                                "CathSkirtR"       : CathSkirtR,
-                                                "CathSkirtH"       : CathSkirtH,
-                                                "CathSkirtA"       : CathSkirtA},
+                                                "CathR"            : $F('CathR'),
+                                                "CathFocusR"       : $F('CathFocusR')/10.0,     // convert to cm
+                                                "SFBeamHalfAngle"  : $F('SFBeamHalfAngle'),     // calculated
+                                                "SFFocusX"         : $F('SFFocusX'),            // calculated
+                                                "SFFocusY"         : $F('SFFocusY'),            // calculated
+                                                "CathSkirtR"       : $F('CathSkirtR'),
+                                                "CathSkirtH"       : $F('CathSkirtH'),
+                                                "CathSkirtA"       : $F('CathSkirtA')},
                                             "AnodeParams": {
-                                                "AnodeCathGap"         : AnodeCathGap,
-                                                "AnodeInnerR"          : AnodeInnerR,
-                                                "AnodeRadialGap"       : AnodeRadialGap,
-                                                "AnodeSaddleH"         : AnodeSaddleH,
-                                                "AnodeCurvH"           : AnodeCurvH,
-                                                "AnodeNozzleR"         : AnodeNozzleR,
-                                                "AnodeNozzleH"         : AnodeNozzleH,
-                                                "AnodeNozzleThroatR"   : AnodeNozzleThroatR,
-                                                "AnodeNozzleThroatH"   : AnodeNozzleThroatH,
-                                                "AnodeNozzleDiffusorR" : AnodeNozzleDiffusorR,
-                                                "AnodeNozzleDiffusorH" : AnodeNozzleDiffusorH},
+                                                "AnodeCathGap"         : $F('AnodeCathGap'),
+                                                "AnodeInnerR"          : $F('AnodeInnerR'),
+                                                "AnodeRadialGap"       : $F('AnodeRadialGap'),
+                                                "AnodeSaddleH"         : $F('AnodeSaddleH'),
+                                                "AnodeCurvH"           : $F('AnodeCurvH'),
+                                                "AnodeNozzleR"         : $F('AnodeNozzleR'),
+                                                "AnodeNozzleH"         : $F('AnodeNozzleH'),
+                                                "AnodeNozzleThroatR"   : $F('AnodeNozzleThroatR'),
+                                                "AnodeNozzleThroatH"   : $F('AnodeNozzleThroatH'),
+                                                "AnodeNozzleDiffusorR" : $F('AnodeNozzleDiffusorR'),
+                                                "AnodeNozzleDiffusorH" : $F('AnodeNozzleDiffusorH')},
                                             "PlasmaParams": {
                                                 "CathDarkSpace"        : CathDarkSpace,
-                                                "AccelerationVoltage"  : AccelerationVoltage,
-                                                "SpaceCharge"          : SpaceCharge},
+                                                "AccelerationVoltage"  : $F('AccelerationVoltage'),
+                                                "SpaceCharge"          : $F('SpaceCharge')},
                                             "Lens1Params": {
-                                                "Lens1DistToGun"       : Lens1DistToGun,
-                                                "Lens1InnerR"          : Lens1InnerR,
-                                                "Lens1Thickness"       : Lens1Thickness,
-                                                "Lens1Height"          : Lens1Height,
-                                                "Lens1TotCurrent"      : Lens1TotCurrent,
-                                                "Lens1CoreThickness"   : Lens1CoreThickness },
+                                                "Lens1DistToGun"       : $F('Lens1DistToGun'),
+                                                "Lens1InnerR"          : $F('Lens1InnerR'),
+                                                "Lens1Thickness"       : $F('Lens1Thickness'),
+                                                "Lens1Height"          : $F('Lens1Height'),
+                                                "Lens1TotCurrent"      : $F('Lens1TotCurrent'),
+                                                "Lens1CoreThickness"   : $F('Lens1CoreThickness') },
                                             "Lens2Params": {
-                                                "Lens2DistToGun"       : Lens2DistToGun,
-                                                "Lens2InnerR"          : Lens2InnerR,
-                                                "Lens2Thickness"       : Lens2Thickness,
-                                                "Lens2Height"          : Lens2Height,
-                                                "Lens2TotCurrent"      : Lens2TotCurrent,
-                                                "Lens2CoreThickness"   : Lens2CoreThickness }
+                                                "Lens2DistToGun"       : $F('Lens2DistToGun'),
+                                                "Lens2InnerR"          : $F('Lens2InnerR'),
+                                                "Lens2Thickness"       : $F('Lens2Thickness'),
+                                                "Lens2Height"          : $F('Lens2Height'),
+                                                "Lens2TotCurrent"      : $F('Lens2TotCurrent'),
+                                                "Lens2CoreThickness"   : $F('Lens2CoreThickness') }
                                         }),
                //mode    : 'cors'
            })

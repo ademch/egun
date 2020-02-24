@@ -600,8 +600,10 @@ function DrawElectronMap(aInd)
 {
 	console.log("Tracing electrons");
 
-    //EmitElectrons();
-    EmitIons();
+    if (SuperfishParams.TraceElectron)
+        EmitElectrons();
+    else
+        EmitIons();
 
     DrawParamsOnTheImage();
     
