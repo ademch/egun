@@ -157,7 +157,7 @@ app.post("/calculate", (req, res) => {
 });
 
 
-app.listen(3000, () => console.log("Running at Port 3000"));
+app.listen(3000, "0.0.0.0", () => console.log("Running at Port 3000"));
 
 var ParticleEnum = {
     ELECTRON  : 0,
@@ -374,7 +374,7 @@ function Vxyz(vPos,     vVelPrev,  dt,  Particle)
 
 function EmitElectrons()
 {
-const fShort = 0.022;	// cm
+const fShort = 0.2;	// cm
 
 	// for (var i = 0; i < 41; i++) {
 	// 	var xp = CathodeParams.SFFocusX + (CathodeParams.CathFocusR-fShort)*Math.cos(Math.PI/2.0 - CathodeParams.SFBeamHalfAngle + i*CathodeParams.SFBeamHalfAngle/20);
