@@ -95,10 +95,11 @@ var ctx = c.getContext("2d");
 
 /* #region GUI params */
 	var CathR 		 = parseFloat(document.getElementById("CathR").value);
+	var CathFocusR   = parseFloat(document.getElementById("CathFocusR").value);
 	var CathSkirtR   = parseFloat(document.getElementById("CathSkirtR").value);
 	var CathSkirtH   = parseFloat(document.getElementById("CathSkirtH").value);
-	var CathSkirtA   = parseFloat(document.getElementById("CathSkirtA").value)/10.0;
-	var CathFocusR   = parseFloat(document.getElementById("CathFocusR").value);
+	var CathSkirtA   = parseFloat(document.getElementById("CathSkirtA").value);
+	var CathButtA    = parseFloat(document.getElementById("CathButtA").value);
 
 	var AnodeCathGap 	= parseFloat(document.getElementById("AnodeCathGap").value);
 	var AnodeInnerR  	= parseFloat(document.getElementById("AnodeInnerR").value);
@@ -190,11 +191,19 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
 	ctx._moveTo(iOx,iOy);
 	ctx._lineTo(iOx + CathR + CathSkirtR, iOy);
 		
-	// rounding on the right
-	ctx._lineTo(iOx + CathR + CathSkirtR, iOy + CathNettoH + CathSkirtH - 0.5);
-	ctx._lineTo(iOx + CathR + CathSkirtR-0.5, iOy + CathNettoH + CathSkirtH);
+	// chamfering on the right
+	// ctx._lineTo(iOx + CathR + CathSkirtR, iOy + CathNettoH + CathSkirtH - 0.5);
+	// ctx._lineTo(iOx + CathR + CathSkirtR-0.5, iOy + CathNettoH + CathSkirtH);
+	var fButtThickness = CathSkirtR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA));
+	var fChamferLeg = 0.5;
+	// a*sin/sin/sqrt2, law of sines and rule of isosceles triangle
+	var fCoef = fChamferLeg*Math.sin(deg2rad(180-CathButtA))/Math.sin(deg2rad(-45+CathButtA))/Math.sqrt(2);
 
-	ctx._lineTo(iOx + CathR + CathSkirtH*Math.tan(deg2rad(90-CathSkirtA*10)), iOy + CathNettoH + CathSkirtH);
+	ctx._lineTo(iOx + CathR + CathSkirtR, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA))-fChamferLeg);
+	ctx._lineTo(iOx + CathR + CathSkirtR - fCoef, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg + fCoef);
+	//ctx._lineTo(iOx + CathR + CathSkirtR, iOy + CathNettoH + CathSkirtH - fButtThcikness*Math.tan(deg2rad(90-CathButtA)));
+
+	ctx._lineTo(iOx + CathR + CathSkirtH*Math.tan(deg2rad(90-CathSkirtA)), iOy + CathNettoH + CathSkirtH);
 
 	// position ourselves directly on the spherical part
 	ctx._lineTo(iOx + CathR, iOy + CathNettoH); 
@@ -210,13 +219,20 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
 	// position ourselves directly on the spherical part
 	ctx._lineTo(iOx - CathR, iOy + CathNettoH);
 
-	ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA*10)), iOy + CathNettoH + CathSkirtH);
+	ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA)), iOy + CathNettoH + CathSkirtH);
 
-	// rounding on the left
-	ctx._lineTo(iOx - CathR - CathSkirtR+0.5, iOy + CathNettoH + CathSkirtH);
-	ctx._lineTo(iOx - CathR - CathSkirtR, iOy + CathNettoH + CathSkirtH - 0.5);
 
-	ctx._lineTo(iOx - CathR - CathSkirtR, iOy + CathNettoH - CathSkirtR + CathSkirtH);
+	ctx._lineTo(iOx - CathR - CathSkirtR + fCoef, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg + fCoef);
+	ctx._lineTo(iOx - CathR - CathSkirtR, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA))-fChamferLeg);
+
+
+	//ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA)), iOy + CathNettoH + CathSkirtH);
+
+	// chamfering on the left
+	//ctx._lineTo(iOx - CathR - CathSkirtR+0.5, iOy + CathNettoH + CathSkirtH);
+	//ctx._lineTo(iOx - CathR - CathSkirtR, iOy + CathNettoH + CathSkirtH - 0.5);
+
+	//ctx._lineTo(iOx - CathR - CathSkirtR, iOy + CathNettoH - CathSkirtR + CathSkirtH);
 	ctx._lineTo(iOx - CathR - CathSkirtR, iOy);
 	ctx._lineTo(iOx,iOy);             
 
@@ -365,90 +381,92 @@ ctx.stroke();
 /* #endregion */
 
 /* #region Space charge */
-el.value += "\n\n&reg mat=1,den=" + SpaceCharge;
-el.value += " &   ! DEN is charge density in Coul/cm^3\n";
+if (SpaceCharge != 0)
+{
+	el.value += "\n\n&reg mat=1,den=" + SpaceCharge;
+	el.value += " &   ! DEN is charge density in Coul/cm^3\n";
 
-ctx.beginPath();
+	ctx.beginPath();
 
-	// main surface
-	// for (var i = 0; i <= 40; i++) {
-	// 	var xp = fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
-	// 	var yp = fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+		// main surface
+		// for (var i = 0; i <= 40; i++) {
+		// 	var xp = fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+		// 	var yp = fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
 
-	// 	ctx._lineTo(xp, yp);
-	// }
+		// 	ctx._lineTo(xp, yp);
+		// }
 
-    // left
-    var xpPlasmaL = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
-    var ypPlasmaL = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+		// left
+		var xpPlasmaL = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+		var ypPlasmaL = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
 
-    //left
-    var xpCathL = fFocusX + CathFocusR*Math.cos(Math.PI/2.0 + fStartAngle);
-    var ypCathL = fFocusY - CathFocusR*Math.sin(Math.PI/2.0 + fStartAngle);
+		//left
+		var xpCathL = fFocusX + CathFocusR*Math.cos(Math.PI/2.0 + fStartAngle);
+		var ypCathL = fFocusY - CathFocusR*Math.sin(Math.PI/2.0 + fStartAngle);
 
-    ctx._moveTo(LinearMix(xpCathL, xpPlasmaL, 0.85),
-                LinearMix(ypCathL, ypPlasmaL, 0.85)
-    );
+		ctx._moveTo(LinearMix(xpCathL, xpPlasmaL, 0.85),
+					LinearMix(ypCathL, ypPlasmaL, 0.85)
+		);
 
-	// // left offset circle
-	for (var i = 1; i < 20; i++) {
-		var xp = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+		// // left offset circle
+		for (var i = 1; i < 20; i++) {
+			var xp = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+			var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
 
-		// prevent swallow tail formation
-		if (xp < 74) ctx._lineTo(xp, yp -1);
-	}	
-
-
-    // main plasma circe
-    if (iRPlasma > 2) {
-        for (var i = 19; i > 0; i--) {
-            var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-            var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-
-            ctx._lineTo(xp, yp-1);
-        }
-    }
-
-	// right offset circle
-	for (var i = 20-1; i > 0; i--) {
-		var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-		var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-
-		// prevent swallow tail formation
-		if (xp > 76) ctx._lineTo(xp, yp-1);
-	}
+			// prevent swallow tail formation
+			if (xp < 74) ctx._lineTo(xp, yp -1);
+		}	
 
 
+		// main plasma circe
+		if (iRPlasma > 2) {
+			for (var i = 19; i > 0; i--) {
+				var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
+				var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
 
-    // right
-    var xpPlasmaR = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
-    var ypPlasmaR = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+				ctx._lineTo(xp, yp-1);
+			}
+		}
 
-    // right
-    var xpCathR = fFocusX + CathFocusR*Math.cos(Math.PI/2.0 - fStartAngle);
-    var ypCathR = fFocusY - CathFocusR*Math.sin(Math.PI/2.0 - fStartAngle);
-                
-    ctx._lineTo(LinearMix(xpCathR, xpPlasmaR, 0.85),
-                LinearMix(ypCathR, ypPlasmaR, 0.85)
-    );
+		// right offset circle
+		for (var i = 20-1; i > 0; i--) {
+			var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+			var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
 
-    ctx._lineTo(iOx,
-                LinearMix(iOy + CathNettoH - gSphSegH, iOy + CathNettoH - gSphSegH + CathFocusR, 0.5)
-    );
-
-    ctx._lineTo(LinearMix(xpCathL, xpPlasmaL, 0.85),
-                LinearMix(ypCathL, ypPlasmaL, 0.85)
-    );
-
-    // ctx._lineTo(fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle),
-	// 			fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle) );
+			// prevent swallow tail formation
+			if (xp > 76) ctx._lineTo(xp, yp-1);
+		}
 
 
-	ctx.fillStyle = "Orange";
-	ctx.fill();
-ctx.stroke();
 
+		// right
+		var xpPlasmaR = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+		var ypPlasmaR = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
+
+		// right
+		var xpCathR = fFocusX + CathFocusR*Math.cos(Math.PI/2.0 - fStartAngle);
+		var ypCathR = fFocusY - CathFocusR*Math.sin(Math.PI/2.0 - fStartAngle);
+					
+		ctx._lineTo(LinearMix(xpCathR, xpPlasmaR, 0.85),
+					LinearMix(ypCathR, ypPlasmaR, 0.85)
+		);
+
+		ctx._lineTo(iOx,
+					LinearMix(iOy + CathNettoH - gSphSegH, iOy + CathNettoH - gSphSegH + CathFocusR, 0.5)
+		);
+
+		ctx._lineTo(LinearMix(xpCathL, xpPlasmaL, 0.85),
+					LinearMix(ypCathL, ypPlasmaL, 0.85)
+		);
+
+		// ctx._lineTo(fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle),
+		// 			fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle) );
+
+
+		ctx.fillStyle = "Orange";
+		ctx.fill();
+	ctx.stroke();
+}
 /* #endregion */
 
 

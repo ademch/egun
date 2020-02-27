@@ -9,7 +9,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:60px; left:650px;">  <input type=number id = "CathR" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Cath R</label>
 <label style="z-index:101; position:absolute; top:85px; left:650px;"> <input type=number id = "CathFocusR" style="width: 7ch" value="42" oninput="DrawGun()"> mm &nbsp; Cath focus R</label>
 <label style="z-index:101; position:absolute; top:110px; left:650px;">  <input type=number id = "CathSkirtR" style="width: 7ch" value="3" oninput="DrawGun()"> mm &nbsp; Cath skirt thickness</label>
-<label style="z-index:101; position:absolute; top:135px; left:650px;"> <input type=number id = "CathSkirtH" style="width: 7ch" value="3" step = "0.1" oninput="DrawGun()"> mm &nbsp; Cath skirt H</label>
+<label style="z-index:101; position:absolute; top:135px; left:650px;"> <input type=number id = "CathSkirtH" style="width: 7ch" value="3" step = "1" oninput="DrawGun()"> mm &nbsp; Cath skirt H</label>
 <label style="z-index:101; position:absolute; top:160px; left:650px;"> <input type=number id = "CathSkirtA" style="width: 7ch" value="60" step = "5" oninput="DrawGun()"> mm &nbsp; Cath skirt angle</label>
 <label style="z-index:101; position:absolute; top:185px; left:650px;"> <input type=number id = "CathButtA" style="width: 7ch" value="90" step = "1" oninput="DrawGun()"> mm &nbsp; Cath butt angle</label>
 
@@ -227,7 +227,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                                 "SFFocusY"         : $F('SFFocusY'),            // calculated
                                                 "CathSkirtR"       : $F('CathSkirtR'),
                                                 "CathSkirtH"       : $F('CathSkirtH'),
-                                                "CathSkirtA"       : $F('CathSkirtA')},
+                                                "CathSkirtA"       : $F('CathSkirtA'),
+                                                "CathButtA"        : $F('CathButtA')},
                                             "AnodeParams": {
                                                 "AnodeCathGap"         : $F('AnodeCathGap'),
                                                 "AnodeInnerR"          : $F('AnodeInnerR'),
@@ -378,7 +379,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                 "SFFocusY"             : $F('SFFocusY'),          // calculated
                 "CathSkirtR"           : $F('CathSkirtR'),
                 "CathSkirtH"           : $F('CathSkirtH'),
-                "CathSkirtA"           : $F('CathSkirtA')},
+                "CathSkirtA"           : $F('CathSkirtA'),
+                "CathButtA"            : $F('CathButtA')},
             "AnodeParams": {
                 "AnodeCathGap"         : $F('AnodeCathGap'),
                 "AnodeInnerR"          : $F('AnodeInnerR'),
