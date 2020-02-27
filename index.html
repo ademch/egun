@@ -7,23 +7,24 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <label style="z-index:101; position:absolute; top:10px; left:650px;">  <p style="font-size:20px">Cathode parameters</p></label>
 <label style="z-index:101; position:absolute; top:60px; left:650px;">  <input type=number id = "CathR" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Cath R</label>
-<label style="z-index:101; position:absolute; top:85px; left:650px;">  <input type=number id = "CathSkirtR" style="width: 7ch" value="3" oninput="DrawGun()"> mm &nbsp; Cath skirt thickness</label>
-<label style="z-index:101; position:absolute; top:110px; left:650px;"> <input type=number id = "CathSkirtH" style="width: 7ch" value="3" step = "0.1" oninput="DrawGun()"> mm &nbsp; Cath skirt H</label>
-<label style="z-index:101; position:absolute; top:135px; left:650px;"> <input type=number id = "CathSkirtA" style="width: 7ch" value="60" step = "5" oninput="DrawGun()"> mm &nbsp; Cath skirt angle</label>
-<label style="z-index:101; position:absolute; top:160px; left:650px;"> <input type=number id = "CathFocusR" style="width: 7ch" value="42" oninput="DrawGun()"> mm &nbsp; Cath focus R</label>
+<label style="z-index:101; position:absolute; top:85px; left:650px;"> <input type=number id = "CathFocusR" style="width: 7ch" value="42" oninput="DrawGun()"> mm &nbsp; Cath focus R</label>
+<label style="z-index:101; position:absolute; top:110px; left:650px;">  <input type=number id = "CathSkirtR" style="width: 7ch" value="3" oninput="DrawGun()"> mm &nbsp; Cath skirt thickness</label>
+<label style="z-index:101; position:absolute; top:135px; left:650px;"> <input type=number id = "CathSkirtH" style="width: 7ch" value="3" step = "0.1" oninput="DrawGun()"> mm &nbsp; Cath skirt H</label>
+<label style="z-index:101; position:absolute; top:160px; left:650px;"> <input type=number id = "CathSkirtA" style="width: 7ch" value="60" step = "5" oninput="DrawGun()"> mm &nbsp; Cath skirt angle</label>
+<label style="z-index:101; position:absolute; top:185px; left:650px;"> <input type=number id = "CathButtA" style="width: 7ch" value="90" step = "1" oninput="DrawGun()"> mm &nbsp; Cath butt angle</label>
 
-<label style="z-index:101; position:absolute; top:180px; left:650px;"> <p style="font-size:20px">Anode parameters</p></label>
-<label style="z-index:101; position:absolute; top:230px; left:650px;"> <input type=number id = "AnodeCathGap" style="width: 7ch" value="4" oninput="DrawGun()"> mm &nbsp; Anode/cath gap </label>
-<label style="z-index:101; position:absolute; top:255px; left:650px;"> <input type=number id = "AnodeInnerR" style="width: 7ch" value="22" oninput="DrawGun()"> mm &nbsp; Anode inner R</label>
-<label style="z-index:101; position:absolute; top:280px; left:650px;"> <input type=number id = "AnodeRadialGap" style="width: 7ch" step = "0.5" value="5" oninput="DrawGun()"> mm &nbsp; Radial gap</label>
-<label style="z-index:101; position:absolute; top:305px; left:650px;"> <input type=number id = "AnodeSaddleH" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Anode saddle h</label>
-<label style="z-index:101; position:absolute; top:330px; left:650px;"> <input type=number id = "AnodeCurvH" style="width: 7ch" value="34" oninput="DrawGun()"> mm &nbsp; Anode curve h</label>
-<label style="z-index:101; position:absolute; top:355px; left:650px;"> <input type=number id = "AnodeNozzleR" style="width: 7ch" value="12" oninput="DrawGun()"> mm &nbsp; Anode nozzle R</label>
-<label style="z-index:101; position:absolute; top:380px; left:650px;"> <input type=number id = "AnodeNozzleH" style="width: 7ch" value="6" oninput="DrawGun()"> mm &nbsp; Anode nozzle h</label>
-<label style="z-index:101; position:absolute; top:405px; left:650px;"> <input type=number id = "AnodeNozzleThroatR" style="width: 7ch" value="6" oninput="DrawGun()"> mm &nbsp; Anode throat R</label>
-<label style="z-index:101; position:absolute; top:430px; left:650px;"> <input type=number id = "AnodeNozzleThroatH" style="width: 7ch" value="2" oninput="DrawGun()"> mm &nbsp; Anode throat h</label>
-<label style="z-index:101; position:absolute; top:455px; left:650px;"> <input type=number id = "AnodeNozzleDiffusorR" style="width: 7ch" value="13" oninput="DrawGun()"> mm &nbsp; Anode nozzle diffusor R</label>
-<label style="z-index:101; position:absolute; top:480px; left:650px;"> <input type=number id = "AnodeNozzleDiffusorH" style="width: 7ch" value="9" oninput="DrawGun()"> mm &nbsp; Anode nozzle diffusor h</label>
+<label style="z-index:101; position:absolute; top:200px; left:650px;"> <p style="font-size:20px">Anode parameters</p></label>
+<label style="z-index:101; position:absolute; top:250px; left:650px;"> <input type=number id = "AnodeCathGap" style="width: 7ch" value="4" oninput="DrawGun()"> mm &nbsp; Anode/cath gap </label>
+<label style="z-index:101; position:absolute; top:275px; left:650px;"> <input type=number id = "AnodeInnerR" style="width: 7ch" value="22" oninput="DrawGun()"> mm &nbsp; Anode inner R</label>
+<label style="z-index:101; position:absolute; top:300px; left:650px;"> <input type=number id = "AnodeRadialGap" style="width: 7ch" step = "0.5" value="5" oninput="DrawGun()"> mm &nbsp; Radial gap</label>
+<label style="z-index:101; position:absolute; top:325px; left:650px;"> <input type=number id = "AnodeSaddleH" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Anode saddle h</label>
+<label style="z-index:101; position:absolute; top:350px; left:650px;"> <input type=number id = "AnodeCurvH" style="width: 7ch" value="34" oninput="DrawGun()"> mm &nbsp; Anode curve h</label>
+<label style="z-index:101; position:absolute; top:375px; left:650px;"> <input type=number id = "AnodeNozzleR" style="width: 7ch" value="12" oninput="DrawGun()"> mm &nbsp; Anode nozzle R</label>
+<label style="z-index:101; position:absolute; top:400px; left:650px;"> <input type=number id = "AnodeNozzleH" style="width: 7ch" value="6" oninput="DrawGun()"> mm &nbsp; Anode nozzle h</label>
+<label style="z-index:101; position:absolute; top:425px; left:650px;"> <input type=number id = "AnodeNozzleThroatR" style="width: 7ch" value="6" oninput="DrawGun()"> mm &nbsp; Anode throat R</label>
+<label style="z-index:101; position:absolute; top:450px; left:650px;"> <input type=number id = "AnodeNozzleThroatH" style="width: 7ch" value="2" oninput="DrawGun()"> mm &nbsp; Anode throat h</label>
+<label style="z-index:101; position:absolute; top:475px; left:650px;"> <input type=number id = "AnodeNozzleDiffusorR" style="width: 7ch" value="13" oninput="DrawGun()"> mm &nbsp; Anode nozzle diffusor R</label>
+<label style="z-index:101; position:absolute; top:500px; left:650px;"> <input type=number id = "AnodeNozzleDiffusorH" style="width: 7ch" value="9" oninput="DrawGun()"> mm &nbsp; Anode nozzle diffusor h</label>
 
 <label style="z-index:101; position:absolute; top:10px; left:950px;"> <p style="font-size:20px">Superfish parameters</p></label>
 <label style="z-index:101; position:absolute; top:60px; left:950px;"> <input type=number id = "SFFocusX" style="width: 7ch; color: #b9b8b8" readonly> mm &nbsp; Focus x </label>
@@ -31,11 +32,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:120px; left:950px;"> <input type=number id = "SFBeamHalfAngle" style="width: 7ch; color: #b9b8b8" readonly> rad &nbsp; Beam half angle </label>
 <label style="z-index:101; position:absolute; top:150px; left:950px;"> <input type=number id = "SFIntGran" style="width: 7ch" value="100"> itms &nbsp; Field interp gran (15cm/x)</label>
 
-<label style="z-index:101; position:absolute; top:180px; left:950px;"> <p style="font-size:20px">Plasma params</p></label>
-<label style="z-index:101; position:absolute; top:230px; left:950px;"> <input type=number id = "CathDarkSpace" style="width: 7ch" value="16" oninput="DrawGun()"> mm &nbsp; Cathode dark space </label>
-<label style="z-index:101; position:absolute; top:260px; left:950px;"> <input type=number id = "AccelerationVoltage" style="width: 7ch" value="10000" step = "1000" oninput="DrawGun()"> V &nbsp; Acceleration voltage </label>
-<label style="z-index:101; position:absolute; top:290px; left:950px;"> <input type=number id = "SpaceCharge" style="width: 8ch" value="0.55e-9" step="1e-10" oninput="DrawGun()"> Coul/cm^3 &nbsp; Space charge </label>
-<div style="z-index:101; position:absolute; top:320px; left:950px;">
+<label style="z-index:101; position:absolute; top:200px; left:950px;"> <p style="font-size:20px">Plasma params</p></label>
+<label style="z-index:101; position:absolute; top:250px; left:950px;"> <input type=number id = "CathDarkSpace" style="width: 7ch" value="16" oninput="DrawGun()"> mm &nbsp; Cathode dark space </label>
+<label style="z-index:101; position:absolute; top:280px; left:950px;"> <input type=number id = "AccelerationVoltage" style="width: 7ch" value="10000" step = "1000" oninput="DrawGun()"> V &nbsp; Acceleration voltage </label>
+<label style="z-index:101; position:absolute; top:310px; left:950px;"> <input type=number id = "SpaceCharge" style="width: 8ch" value="0.55e-9" step="1e-10" oninput="DrawGun()"> Coul/cm^3 &nbsp; Space charge </label>
+<div style="z-index:101; position:absolute; top:340px; left:950px;">
     <input type="checkbox" id="SweepCDS">
     <label>Sweep 6-26</label>
 </div>
