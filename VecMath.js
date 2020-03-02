@@ -35,6 +35,23 @@ function VectorLength(a)
 	return Math.sqrt(x);
 }
 
+function VectorMult(s, v) {
+	var x = s * v[0];
+	var y = s * v[1];
+	var z = s * v[2];
+
+	return [x,y,z];
+}
+
+function VectorNormalize(a)
+{
+	var len = VectorLength(a);
+
+	if (len < Number.EPSILON) return [...a];
+
+	return VectorMult(1.0/len, a);
+}
+
 function VectorAngle(a, b)
 {
     var l1 = Math.sqrt(VectorDot(a, a));
@@ -50,18 +67,18 @@ function VectorAngle(a, b)
     return Math.acos(cosTheta);
 }
 
-function VectorMult(s, v) {
-	var x = s * v[0];
-	var y = s * v[1];
-	var z = s * v[2];
-
-	return [x,y,z];
-}
-
 function VectorAdd(v0, v1) {
 	var x = v0[0] + v1[0];
 	var y = v0[1] + v1[1];
 	var z = v0[2] + v1[2];
+
+	return [x,y,z];
+}
+
+function VectorSub(v0, v1) {
+	var x = v0[0] - v1[0];
+	var y = v0[1] - v1[1];
+	var z = v0[2] - v1[2];
 
 	return [x,y,z];
 }
@@ -114,8 +131,10 @@ module.exports.sqr               = sqr;
 module.exports.VectorCross       = VectorCross;
 module.exports.VectorDot         = VectorDot;
 module.exports.VectorLength      = VectorLength;
+module.exports.VectorNormalize      = VectorNormalize;
 module.exports.VectorAngle       = VectorAngle;
 module.exports.VectorMult        = VectorMult;
 module.exports.VectorAdd         = VectorAdd;
+module.exports.VectorSub         = VectorSub;
 module.exports.radToDeg          = radToDeg;
 module.exports.SLERP             = SLERP;
