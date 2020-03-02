@@ -374,7 +374,7 @@ function Vxyz(vPos,     vVelPrev,  dt,  Particle)
 
 function EmitElectrons()
 {
-const fShort = 0.2;	// cm
+const fShort = 0.02;	// cm
 
 	// for (var i = 0; i < 41; i++) {
 	// 	var xp = CathodeParams.SFFocusX + (CathodeParams.CathFocusR-fShort)*Math.cos(Math.PI/2.0 - CathodeParams.SFBeamHalfAngle + i*CathodeParams.SFBeamHalfAngle/20);
