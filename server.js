@@ -491,8 +491,20 @@ const fShort = 0.022;	// cm
 // x,y,z- cm
 function TraceParticleTrajectory(x,y,z, Particle)
 {
-var aVelXYZ  = [0.0, 0.0, 0.0];
-var vOldVel  = [0.0, 0.0, 0.0];
+var vOldVel = [0.0, 0.0, 0.0];
+var aVelXYZ;
+
+if (Particle === ParticleEnum.ELECTRON)
+{
+	vInitVel = VecMath.VectorSub([CathodeParams.SFFocusX, CathodeParams.SFFocusY, 0], [x,y,z]);
+	vInitVel = VecMath.VectorNormalize(vInitVel);
+
+	const Qe    =-1.60217662e-19;	// coul
+	const Me    = 9.10938356e-31;	// kg
+
+	vMag = Math.sqrt(2.0*Qe/Me*-0.01);
+	vOldVel = VecMath.VectorMult(vMag, vInitVel);
+}
 
 var vPos = [x,y,z];     // cm
 var dt = (Particle === ParticleEnum.ELECTRON) ? 1e-11 : 1e-8;
