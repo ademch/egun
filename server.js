@@ -502,7 +502,7 @@ if (Particle === ParticleEnum.ELECTRON)
 	const Qe    =-1.60217662e-19;	// coul
 	const Me    = 9.10938356e-31;	// kg
 
-	vMag = Math.sqrt(2.0*Qe/Me*-0.01);
+	vMag = Math.sqrt(2.0*Qe/Me*-PlasmaParams.StartingEnergy);
 	vOldVel = VecMath.VectorMult(vMag, vInitVel);
 }
 

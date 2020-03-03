@@ -32,17 +32,19 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:120px; left:950px;"> <input type=number id = "SFBeamHalfAngle" style="width: 7ch; color: #b9b8b8" readonly> rad &nbsp; Beam half angle </label>
 <label style="z-index:101; position:absolute; top:150px; left:950px;"> <input type=number id = "SFIntGran" style="width: 7ch" value="100"> itms &nbsp; Field interp gran (15cm/x)</label>
 
-<label style="z-index:101; position:absolute; top:200px; left:950px;"> <p style="font-size:20px">Plasma params</p></label>
+<label style="z-index:101; position:absolute; top:200px; left:950px;"> <p style="font-size:20px">Discharge params</p></label>
 <label style="z-index:101; position:absolute; top:250px; left:950px;"> <input type=number id = "CathDarkSpace" style="width: 7ch" value="16" oninput="DrawGun()"> mm &nbsp; Cathode dark space </label>
 <label style="z-index:101; position:absolute; top:280px; left:950px;"> <input type=number id = "AccelerationVoltage" style="width: 7ch" value="10000" step = "1000" oninput="DrawGun()"> V &nbsp; Acceleration voltage </label>
 <label style="z-index:101; position:absolute; top:310px; left:950px;"> <input type=number id = "SpaceCharge" style="width: 8ch" value="0.55e-9" step="1e-10" oninput="DrawGun()"> Coul/cm^3 &nbsp; Space charge </label>
-<div style="z-index:101; position:absolute; top:340px; left:950px;">
+<label style="z-index:101; position:absolute; top:340px; left:950px;"> <input type=number id = "StartingEnergy" style="width: 7ch" value="20" step="1" oninput="DrawGun()"> eV &nbsp; Starting energy </label>
+<div style="z-index:101; position:absolute; top:370px; left:950px;">
     <input type="checkbox" id="SweepCDS">
     <label>Sweep 6-26</label>
 </div>
 
 
-<table style="z-index:101; position:absolute; top:430px; left:950px;">
+<label style="z-index:101; position:absolute; top:420px; left:950px;"> <p style="font-size:20px">Profiles</p></label>
+<table style="z-index:101; position:absolute; top:470px; left:950px;">
     <tr>
         <td colspan="3">
             <select id="GunParams" class="REST" name="GunParams" onchange="onRESTSelect(this.value)" style="width: 250px"></select>
@@ -62,33 +64,33 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 </table>
 
 
-<div style="z-index:101; position:absolute; top:540px; left:1160px;">
+<div style="z-index:101; position:absolute; top:570px; left:1160px;">
         <input type="checkbox" id="UsePrecalcFields" name="UsePrecalcFields" title="Skip fields calculation" value="UsePrecalcFields">
         <label for="UsePrecalcFields">Use precalc fields</label>
 </div>
 
-<div style="z-index:101; position:absolute; top:610px; left:1080px;">
+<div style="z-index:101; position:absolute; top:640px; left:1080px;">
         <input type="checkbox" id="PlotFields" name="PlotFields" title="Render calculated ES/MS field" value="PlotFields">
         <label for="PlotFields">Plot fields</label>
 </div>
 
-<div style="z-index:101; position:absolute; top:540px; left:660px;">
+<div style="z-index:101; position:absolute; top:570px; left:660px;">
         <input type="checkbox" id="CalcESField" name="CalcESField" title="Calculate ES field" value="CalcESField">
         <label for="CalcESField">Electrostatic</label>
 </div>
-<div style="z-index:101; position:absolute; top:610px; left:660px;">
+<div style="z-index:101; position:absolute; top:640px; left:660px;">
         <input type="checkbox" id="CalcMSField" name="CalcMSField" title="Calculate MS field" value="CalcMSField">
         <label for="CalcMSField">Magnetostatic</label>
 </div>
 
-<div style="z-index:101; position:absolute; top:595px; left:1245px;">
+<div style="z-index:101; position:absolute; top:625px; left:1245px;">
     <input type="radio" id="ParticleElectron" name="ParticleSelector" title="Trace electron flow" checked>
     <label for="ParticleSelector">Electrons</label><br>
     <input type="radio" id="ParticleIon" name="ParticleSelector" title="Trace ion flow">
     <label for="ParticleSelector">Ions</label>
 </div>
 
-<table style="z-index:101; position:absolute; top:570px; left:670px;">
+<table style="z-index:101; position:absolute; top:600px; left:670px;">
     <tr>
         <td><img id="loadingImg" src='/Media/loading.gif' height="20" width ="20" style="display: none"></td>
         <td><form id="postEStaticData"> <input id="CalcButton" type="submit" value="Calculate"> </form></td>
@@ -108,7 +110,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     </tr>
 </table>
 
-<div class="bevelBox"style="z-index:100; position:absolute; top:530px; left:650px; width:690px; height:110px; border: 1px solid #808080;"></div>
+<div class="bevelBox"style="z-index:100; position:absolute; top:560px; left:650px; width:690px; height:110px; border: 1px solid #808080;"></div>
 
 <label style="z-index:101; position:absolute; top:680px; left:650px;">  <p style="font-size:20px">Focusing lens #1</p></label>
 <label style="z-index:101; position:absolute; top:730px; left:650px;">  <input type=number id = "Lens1DistToGun" style="width: 7ch" value="30" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
@@ -244,7 +246,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                             "PlasmaParams": {
                                                 "CathDarkSpace"        : CathDarkSpace,
                                                 "AccelerationVoltage"  : $F('AccelerationVoltage'),
-                                                "SpaceCharge"          : $F('SpaceCharge')},
+                                                "SpaceCharge"          : $F('SpaceCharge'),
+                                                "StartingEnergy"       : $F('StartingEnergy')},
                                             "Lens1Params": {
                                                 "Lens1DistToGun"       : $F('Lens1DistToGun'),
                                                 "Lens1InnerR"          : $F('Lens1InnerR'),
@@ -396,7 +399,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             "PlasmaParams": {
                 "CathDarkSpace"        : $F('CathDarkSpace'),
                 "AccelerationVoltage"  : $F('AccelerationVoltage'),
-                "SpaceCharge"          : $F('SpaceCharge')},
+                "SpaceCharge"          : $F('SpaceCharge'),
+                "StartingEnergy"       : $F('StartingEnergy')},
             "Lens1Params": {
                 "Lens1DistToGun"       : $F('Lens1DistToGun'),
                 "Lens1InnerR"          : $F('Lens1InnerR'),
