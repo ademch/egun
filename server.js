@@ -459,7 +459,7 @@ const fShort = 0.022;	// cm
         var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 0.3)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "DarkTurquoise";
-        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
     }
 
     
@@ -470,7 +470,7 @@ const fShort = 0.022;	// cm
         var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 1.0)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "PaleGreen";
-        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
     }
 
 
@@ -481,7 +481,7 @@ const fShort = 0.022;	// cm
         var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 1.6)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "OrangeRed";
-        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
     }
 
 }
@@ -507,7 +507,7 @@ if (Particle === ParticleEnum.ELECTRON)
 }
 
 var vPos = [x,y,z];     // cm
-var dt = (Particle === ParticleEnum.ELECTRON) ? 1e-11 : 1e-8;
+var dt = (Particle === ParticleEnum.ELECTRON) ? 1e-11 : 1e-9;
 const Vc=299.7915942e6;	// m/s
 
 
