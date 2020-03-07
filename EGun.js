@@ -349,7 +349,7 @@ ctx.beginPath();
     // main plasma circe
 
     // (handling situation when CDSpace is larger than radius)
-    if (iRPlasma > 2) {
+    if (iRPlasma > 5) {
         for (var i = 1; i < 20; i++) {
             var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
             var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
@@ -386,21 +386,71 @@ if (SpaceCharge != 0)
 	el.value += "\n\n&reg mat=1,den=" + SpaceCharge;
 	el.value += " &   ! DEN is charge density in Coul/cm^3\n";
 
-	ctx.beginPath();
+    ctx.beginPath();
+    
 
-		//main surface
-		for (var i = 1; i < 20; i++) {
-			var xp = fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-			var yp = fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
+        var SpaceChargeType = 1;
+        switch (SpaceChargeType)
+        {
+            case 0: // staying inside cathode
 
-			ctx._lineTo(xp, yp);
+                //main surface
+                for (var i = 1; i < 20; i++) {
+                    var xp = fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
+                    var yp = fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
+
+                    ctx._lineTo(xp, yp);
+                }
+                
+                ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA))+1, iOy + CathNettoH + CathSkirtH);
+                ctx._lineTo(iOx + CathR + CathSkirtH*Math.tan(deg2rad(90-CathSkirtA))-1, iOy + CathNettoH + CathSkirtH);
+
+                ctx._lineTo(fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle+ 1*fStartAngle/10),
+                            fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle+ 1*fStartAngle/10) );
+            break;
+
+            case 1: // filling the whole area between cathode and anode
+            
+            	// main surface
+                for (var i = 0; i <= 40; i++) {
+                    var xp = fFocusX + (CathFocusR-20)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+                    var yp = fFocusY - (CathFocusR-20)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+
+                    ctx._lineTo(xp, yp);
+                }
+
+                // left offset circle
+                for (var i = 1; i < 20; i++) {
+                    var xp = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+                    var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+
+                    // prevent swallow tail formation
+                    if (xp < 74) ctx._lineTo(xp, yp -1);
+                }	
+
+                // main plasma circe
+                if (iRPlasma > 5) {
+                    for (var i = 19; i > 0; i--) {
+                        var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
+                        var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
+
+                        ctx._lineTo(xp, yp-1);
+                    }
+                }
+
+                // right offset circle
+                for (var i = 20-1; i > 0; i--) {
+                    var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+                    var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+
+                    // prevent swallow tail formation
+                    if (xp > 76) ctx._lineTo(xp, yp-1);
+                }
+
+                ctx._lineTo(fFocusX + (CathFocusR-20)*Math.cos(Math.PI/2.0 - fStartAngle),
+                            fFocusY - (CathFocusR-20)*Math.sin(Math.PI/2.0 - fStartAngle) );
+            break;
         }
-        
-        ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA))+1, iOy + CathNettoH + CathSkirtH);
-        ctx._lineTo(iOx + CathR + CathSkirtH*Math.tan(deg2rad(90-CathSkirtA))-1, iOy + CathNettoH + CathSkirtH);
-
-        ctx._lineTo(fFocusX + (CathFocusR-1)*Math.cos(Math.PI/2.0 - fStartAngle+ 1*fStartAngle/10),
-                    fFocusY - (CathFocusR-1)*Math.sin(Math.PI/2.0 - fStartAngle+ 1*fStartAngle/10) );
 
 		// left
 		// var xpPlasmaL = iOx - CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-1/20) + fStartAngle*1/20));
@@ -587,10 +637,10 @@ const FocalPlane  = 135+12+12+250;
                 
     ctx.font = "14px Georgia";
     ctx._fillText("SphSegH= " + gSphSegH.toPrecision(2) + " mm",
-                 (iOx-16), (iOy + 5));
+                 (iOx-16), (iOy + 4));
     ctx.font = "14px Georgia";
     ctx._fillText("SphSegH= " + (2.0*Math.PI*CathFocusR*gSphSegH/100.0).toPrecision(2) + " cm\u00B2",
-                 (iOx-16), (iOy + 9));
+                 (iOx-16), (iOy + 8));
 
 /* #endregion */
 
