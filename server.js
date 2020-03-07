@@ -124,9 +124,6 @@ app.post("/calculate", (req, res) => {
     Lens1Params     = req.body.Lens1Params;
     Lens2Params     = req.body.Lens2Params;
 
-	SuperfishParams.AutofishES.replace(/\n/g, "\r\n");
-	SuperfishParams.AutofishMS.replace(/\n/g, "\r\n");
-
 	// ----------------------
 	// Electrostatic: 15cm x 15cm zone
 	EF_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
@@ -143,11 +140,14 @@ app.post("/calculate", (req, res) => {
 	MFy_IntervLength = 60.0/MFy_IntervNumber;	// mm
 	// ----------------------
 
-	setImmediate(() => {
+	var AutofishES_Source = SuperfishParams.AutofishES.replace(/\n/g, "\r\n");
+	var AutofishMS_Source = SuperfishParams.AutofishMS.replace(/\n/g, "\r\n");
+
+    setImmediate(() => {
 		if (SuperfishParams.CalcESField)	
-			fs.writeFileSync(SF_ES_SourcePath, SuperfishParams.AutofishES);
-		if (SuperfishParams.CalcMSField)	
-			fs.writeFileSync(SF_MS_SourcePath, SuperfishParams.AutofishMS);
+			fs.writeFileSync(SF_ES_SourcePath, AutofishES_Source);
+		if (SuperfishParams.CalcMSField)
+			fs.writeFileSync(SF_MS_SourcePath, AutofishMS_Source);
 
 		StartSuperFish();
 	});
