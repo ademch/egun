@@ -17,18 +17,18 @@ if (process.env.NODE_ENV !== 'production') {
 	require('dotenv').config();
   }
 
-const SF_PathAutomesh = "C:\\LANL\\AUTOMESH.EXE";
-const SF_PathPoisson = 'C:\\LANL\\POISSON.EXE';
-const SF_WSPlot = 'C:\\LANL\\WSFPLOT.EXE';
-const SF_SF7 = 'C:\\LANL\\SF7.EXE';
-const SendKeys = '.\\BashScripts\\SendKeys.bat';
-const Tmt = '.\\BashScripts\\tmt.bat';
-const SF_Title = '"WSFPplot 7.17 --- Poisson Superfish Plotting Program     File 1.T35"';
-const SF_TitleProp = '"Bit Image File Output (PCX/BMP/PNG format)"';
+const SF_PathAutomesh  = "C:\\LANL\\AUTOMESH.EXE";
+const SF_PathPoisson   = 'C:\\LANL\\POISSON.EXE';
+const SF_WSPlot        = 'C:\\LANL\\WSFPLOT.EXE';
+const SF_SF7           = 'C:\\LANL\\SF7.EXE';
+const SendKeys         = '.\\BashScripts\\SendKeys.bat';
+const Tmt              = '.\\BashScripts\\tmt.bat';
+const SF_Title         = '"WSFPplot 7.17 --- Poisson Superfish Plotting Program     File 1.T35"';
+const SF_TitleProp     = '"Bit Image File Output (PCX/BMP/PNG format)"';
 const SF_ES_SourcePath = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.am';
 const SF_MS_SourcePath = 'C:\\LANL\\Examples\\Magnetostatic\\Try\\1.am';
-const SF_ES_t35Path = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.T35';
-const SF_MS_t35Path = 'C:\\LANL\\Examples\\Magnetostatic\\Try\\1.T35';
+const SF_ES_t35Path    = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.T35';
+const SF_MS_t35Path    = 'C:\\LANL\\Examples\\Magnetostatic\\Try\\1.T35';
 
 var ResultImagePath;
 
@@ -43,9 +43,22 @@ var PlasmaParams;
 var Lens1Params;
 var Lens2Params;
 
-var EF_IntervNumber = 1000;
-var EF_IntervBoundN = EF_IntervNumber + 1;
-var EF_IntervLength = 15.0/EF_IntervNumber;	// mm
+// Electrostatic
+var EFx_IntervNumber; // eg: 100;
+var EFx_IntervBoundN; // eg: EF_IntervNumber + 1;
+var EFx_IntervLength; // eg: 7.5/EF_IntervNumber;	// mm
+
+var EFy_IntervNumber; // eg: 100;
+var EFy_IntervBoundN; // eg: EF_IntervNumber + 1;
+var EFy_IntervLength; // eg: 15.0/EF_IntervNumber;	// mm
+
+// Magnetostatic
+var MFx_IntervNumber;
+var MFx_IntervBoundN;
+var MFx_IntervLength;
+var MFy_IntervNumber;
+var MFy_IntervBoundN;
+var MFy_IntervLength;
 
 var aEF_values = [];
 var aMF_values = [];
@@ -125,17 +138,21 @@ app.post("/calculate", (req, res) => {
     Lens2Params     = req.body.Lens2Params;
 
 	// ----------------------
-	// Electrostatic: 15cm x 15cm zone
-	EF_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
-	EF_IntervBoundN = EF_IntervNumber + 1;
-	EF_IntervLength = 15.0/EF_IntervNumber;		// mm
+	// Electrostatic: 7.5cm x 15cm zone
+	EFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
+	EFx_IntervBoundN = EFx_IntervNumber + 1;
+    EFx_IntervLength = 7.5/EFx_IntervNumber;	// mm
+    
+    EFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	EFy_IntervBoundN = EFy_IntervNumber + 1;
+	EFy_IntervLength = 15.0/EFy_IntervNumber;	// mm
 
-	// Magnetostatic: 15cm x 60cm zone
+	// Magnetostatic: 7.5cm x 60cm zone
 	MFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
 	MFx_IntervBoundN = MFx_IntervNumber + 1;
-	MFx_IntervLength = 15.0/MFx_IntervNumber;	// mm
+	MFx_IntervLength = 7.5/MFx_IntervNumber;	// mm
 
-	MFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*4;	//  <---
+	MFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*8;	//  <---
 	MFy_IntervBoundN = MFy_IntervNumber + 1;
 	MFy_IntervLength = 60.0/MFy_IntervNumber;	// mm
 	// ----------------------
@@ -177,7 +194,7 @@ function ReadFieldValues(ES_problem, path_to_file, aF_values)
 		
 		var bStartFound = false;
 		var strMatch = ES_problem ? "    (cm)          (cm)           (V/cm)        (V/cm)        (V/cm)         (V)  ":
-									"    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        (G/cm)";
+									"    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        Index";
 
 		var path = path_to_file.substr(0, path_to_file.lastIndexOf("\\") + 1);
 		var rd = readline.createInterface({
@@ -233,10 +250,7 @@ function _PeekField(/*in*/ x, y, z,
 
 	x -= 7.5;								        // shift the gun so its center coincide with oY axis
 	var alpha = Math.atan2(z,x);			        // measure the angle (-pi<alpha<pi)
-	if (x < 0) alpha += Math.PI;			        // negative oX direction is 180 deg behind, compensate
-    if (x < 0) x = -Math.sqrt(x*x + z*z);	        // z=0 (rotate given vector to xOz plane)
-    else x = Math.sqrt(x*x + z*z);                  // observe the direction
-	x += 7.5;								        // shift back
+    x = Math.sqrt(x*x + z*z);                       // z=0 (rotate given vector to xOz plane)
 	
 	var xRmdr = x % Fx_IntervLength;				// coord within one cell (e.g. 0<=v<5 )
 	var yRmdr = y % Fy_IntervLength;
@@ -303,8 +317,8 @@ function PeekElectrField(/*in*/ vPos)
    
     aElField = _PeekField(vPos[0], vPos[1], vPos[2],
                           aEF_values,
-                          EF_IntervBoundN,EF_IntervBoundN,
-                          EF_IntervLength,EF_IntervLength);
+                          EFx_IntervBoundN,EFy_IntervBoundN,
+                          EFx_IntervLength,EFy_IntervLength);
 
     // V/cm -> V/m
     aElField[0] *= 100.0; aElField[1] *= 100.0; aElField[2] *= 100.0;
@@ -593,10 +607,10 @@ function DrawFieldValues(ES_problem, path_to_file, result_ind)
         loadImage(path + ind + '.png')
         .then( (image) => {
             
-            if (ES_problem)
-                ctx.drawImage(image, 0,0);//, canvas_w,canvas_h);
+            if (ES_problem) //       sx sy  sw  sh    dx  dy  dw  dh
+                ctx.drawImage(image, 53,98, 790,1560, 851,97, 790,1560);
             else
-                ctx.drawImage(image, 0,-304);//, canvas_w,canvas_h);
+                ctx.drawImage(image, 103,398, 750,6230, 851,97, 750,6230);
             
             resolve(result_ind);
             }
@@ -780,14 +794,14 @@ function StartSF7(ES_problem, path_to_file)
 	
 		if (ES_problem) {
 		var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
-			in7 += '0, 0, 15, 15          ! Grid corners for map\r\n';
-			in7 += EF_IntervNumber + ' ' + EF_IntervNumber;
+			in7 += '0, 0, 7.5, 15         ! Grid corners for map\r\n';
+			in7 += EFx_IntervNumber + ' ' + EFy_IntervNumber;
 			in7 += '             ! Number of radial and longitudinal increments \r\n';
 			in7 += 'end\r\n';
 		}
 		else {
 		var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
-			in7 += '0, -45, 15, 15        ! Grid corners for map\r\n';
+			in7 += '0, -45, 7.5, 15       ! Grid corners for map\r\n';
 			in7 += MFx_IntervNumber + ' ' + MFy_IntervNumber;
 			in7 += '             ! Number of radial and longitudinal increments \r\n';
 			in7 += 'end\r\n';
@@ -867,7 +881,7 @@ function StartWSFPlotSendCommands(ES_problem, wsf_child)
 		// saves png image with the name according to internal autoincrement rule
 		console.log("Sending WSFPlot commands");
 		if (ES_problem)
-			child_process.exec('cmd /c start "" cmd /c ' + SendKeys + ' ' + SF_Title + ' "%co{TAB}{TAB}1700{TAB}1700~c"');
+			child_process.exec('cmd /c start "" cmd /c ' + SendKeys + ' ' + SF_Title + ' "%co{TAB}{TAB}850{TAB}1700~c"');
 		else
 			child_process.exec('cmd /c start "" cmd /c ' + SendKeys + ' ' + SF_Title + ' "%co{TAB}{TAB}1700{TAB}6800~c"');
 
