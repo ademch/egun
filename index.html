@@ -32,14 +32,20 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:120px; left:950px;"> <input type=number id = "SFBeamHalfAngle" style="width: 7ch; color: #b9b8b8" readonly> rad &nbsp; Beam half angle </label>
 <label style="z-index:101; position:absolute; top:150px; left:950px;"> <input type=number id = "SFIntGran" style="width: 7ch" value="50"> itms &nbsp; Field interp gran (7.5cm/x)</label>
 
-<label style="z-index:101; position:absolute; top:200px; left:950px;"> <p style="font-size:20px">Discharge params</p></label>
+<label style="z-index:101; position:absolute; top:200px; left:950px;"> <p style="font-size:20px">Discharge parameters</p></label>
 <label style="z-index:101; position:absolute; top:250px; left:950px;"> <input type=number id = "CathDarkSpace" style="width: 7ch" value="16" oninput="DrawGun()"> mm &nbsp; Cathode dark space </label>
-<label style="z-index:101; position:absolute; top:280px; left:950px;"> <input type=number id = "AccelerationVoltage" style="width: 7ch" value="10000" step = "1000" oninput="DrawGun()"> V &nbsp; Acceleration voltage </label>
-<label style="z-index:101; position:absolute; top:310px; left:950px;"> <input type=number id = "SpaceCharge" style="width: 8ch" value="0.55e-9" step="1e-10" oninput="DrawGun()"> Coul/cm^3 &nbsp; Space charge </label>
-<label style="z-index:101; position:absolute; top:340px; left:950px;"> <input type=number id = "StartingEnergy" style="width: 7ch" value="20" step="1" oninput="DrawGun()"> eV &nbsp; Starting energy </label>
-<div style="z-index:101; position:absolute; top:370px; left:950px;">
+<label style="z-index:101; position:absolute; top:275px; left:950px;"> <input type=number id = "AccelerationVoltage" style="width: 7ch" value="10000" step = "1000" oninput="DrawGun()"> V &nbsp; Acceleration voltage </label>
+<label style="z-index:101; position:absolute; top:300px; left:950px;"> <input type=number id = "SpaceCharge" style="width: 8ch" value="0.55e-9" step="1e-10" oninput="DrawGun()"> Coul/cm^3 &nbsp; Space charge </label>
+<label style="z-index:101; position:absolute; top:325px; left:950px;"> <input type=number id = "SpaceChargeGap" style="width: 7ch" value="10" step="1" oninput="DrawGun()"> mm &nbsp; Space charge gap </label>
+<label style="z-index:101; position:absolute; top:350px; left:950px;"> <input type=number id = "StartingEnergy" style="width: 7ch" value="20" step="1" oninput="DrawGun()"> eV &nbsp; Starting energy </label>
+<div style="z-index:101; position:absolute; top:380px; left:950px;">
     <input type="checkbox" id="SweepCDS">
     <label>Sweep 6-26</label>
+</div>
+
+<div style="z-index:101; position:absolute; top:405px; left:950px;">
+    <input type="checkbox" id="SoundOnCompletion" checked>
+    <label>Sound on completion</label>
 </div>
 
 
@@ -248,6 +254,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                                 "CathDarkSpace"        : CathDarkSpace,
                                                 "AccelerationVoltage"  : $F('AccelerationVoltage'),
                                                 "SpaceCharge"          : $F('SpaceCharge'),
+                                                "SpaceChargeGap"       : $F('SpaceChargeGap'),
                                                 "StartingEnergy"       : $F('StartingEnergy')},
                                             "Lens1Params": {
                                                 "Lens1DistToGun"       : $F('Lens1DistToGun'),
@@ -345,7 +352,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                 var d = new Date();
                 document.getElementById("ElectronImage").src = "http://127.0.0.1:3000/image" + "?" + d.getTime();
 
-                playBeep();
+                if ($("SoundOnCompletion").checked) playBeep();
                 bOnce = false;
             }
     
@@ -401,6 +408,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                 "CathDarkSpace"        : $F('CathDarkSpace'),
                 "AccelerationVoltage"  : $F('AccelerationVoltage'),
                 "SpaceCharge"          : $F('SpaceCharge'),
+                "SpaceChargeGap"       : $F('SpaceChargeGap'),
                 "StartingEnergy"       : $F('StartingEnergy')},
             "Lens1Params": {
                 "Lens1DistToGun"       : $F('Lens1DistToGun'),

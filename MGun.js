@@ -91,22 +91,22 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	el.value += " &\n";
 
 	ctx.beginPath();
-        ctx._moveTo(iOx + 32,      iStart);              
-        ctx._lineTo(iOx + 32 + 33, iStart);       
-        ctx._lineTo(iOx + 32 + 33, iStart + 9); 
-        ctx._lineTo(iOx + 32,      iStart + 9); 
-        ctx._lineTo(iOx + 32,      iStart); 
+        ctx._moveTo(iOx + 22,      iStart);              
+        ctx._lineTo(iOx + 22 + 43, iStart);       
+        ctx._lineTo(iOx + 22 + 43, iStart + 9); 
+        ctx._lineTo(iOx + 22,      iStart + 9); 
+        ctx._lineTo(iOx + 22,      iStart); 
 
 	ctx.stroke();
 
 	// LEFT
 
 	ctx.beginPath();
-        ctx._moveTo(iOx - 32,      iStart, false);              
-        ctx._lineTo(iOx - 32 - 33, iStart, false);       
-        ctx._lineTo(iOx - 32 - 33, iStart + 9, false); 
-        ctx._lineTo(iOx - 32,      iStart + 9, false); 
-        ctx._lineTo(iOx - 32,      iStart, false); 
+        ctx._moveTo(iOx - 22,      iStart, false);              
+        ctx._lineTo(iOx - 22 - 43, iStart, false);       
+        ctx._lineTo(iOx - 22 - 43, iStart + 9, false); 
+        ctx._lineTo(iOx - 22,      iStart + 9, false); 
+        ctx._lineTo(iOx - 22,      iStart, false); 
 
 	ctx.fillStyle = "LightBlue";
 	ctx.fill();

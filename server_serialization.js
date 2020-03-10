@@ -35,6 +35,7 @@ const egunSchema = new mongoose.Schema({
         CathDarkSpace        : Number,
         AccelerationVoltage  : Number,
         SpaceCharge          : Number,
+        SpaceChargeGap       : Number,
         StartingEnergy       : Number},
     Lens1Params: {
         Lens1DistToGun       : Number,

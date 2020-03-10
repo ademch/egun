@@ -115,6 +115,7 @@ var ctx = c.getContext("2d");
 	var CathDarkSpace 		 = parseFloat(document.getElementById("CathDarkSpace").value);
 	var AccelerationVoltage  = parseFloat(document.getElementById("AccelerationVoltage").value);
 	var SpaceCharge          = parseFloat(document.getElementById("SpaceCharge").value);
+	var SpaceChargeGap       = parseFloat(document.getElementById("SpaceChargeGap").value);
 /* #endregion */
 
 /* #region Print Superfish 1st region params */
@@ -472,14 +473,14 @@ if (SpaceCharge != 0)
                 // LEFT (do not change to right)
                 
                 // position exactly on the line
-                ctx._moveTo(iOx, fFocusY - (CathFocusR-20), false);
+                ctx._moveTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap), false);
 
                 var bCenterArcExists = true;
 
                 // main surface
-                for (var i = 21; i <= 40; i++) {
-                    var xp = fFocusX + (CathFocusR-20)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
-                    var yp = fFocusY - (CathFocusR-20)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+                for (var i = 21; i <= 35; i++) {
+                    var xp = fFocusX + (CathFocusR-SpaceChargeGap)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+                    var yp = fFocusY - (CathFocusR-SpaceChargeGap)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
 
                     ctx._lineTo(xp, yp, false);
                 }
@@ -506,14 +507,14 @@ if (SpaceCharge != 0)
 
                 // move exactly to the center (reuse y either from offset circle or from central arc)
                 ctx._lineTo(iOx, yp-1, false);
-                ctx._lineTo(iOx, fFocusY - (CathFocusR-20), false);
+                ctx._lineTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap), false);
 
             ctx.fillStyle = "Orange";
             ctx.fill();
             ctx.stroke();
 
             ctx.beginPath();
-                ctx._moveTo(iOx, fFocusY - (CathFocusR-20));
+                ctx._moveTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap));
                 ctx._lineTo(iOx, yp-1);
 
                 if (bCenterArcExists) {
@@ -535,14 +536,14 @@ if (SpaceCharge != 0)
                 }
 
                 // main surface
-                for (var i = 0; i < 20; i++) {
-                    var xp = fFocusX + (CathFocusR-20)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
-                    var yp = fFocusY - (CathFocusR-20)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+                for (var i = 5; i < 20; i++) {
+                    var xp = fFocusX + (CathFocusR-SpaceChargeGap)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
+                    var yp = fFocusY - (CathFocusR-SpaceChargeGap)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
 
                     ctx._lineTo(xp, yp);
                 }
                 
-                ctx._lineTo(iOx, fFocusY - (CathFocusR-20));
+                ctx._lineTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap));
 
             ctx.stroke();
         break;

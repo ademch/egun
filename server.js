@@ -469,8 +469,8 @@ const fShort = 0.022;	// cm
     for (var i = 0; i < 30; i++) {
 		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.3;
 
-        var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0 - 0.3)*Math.cos(2.0*Math.PI*i/30);
-        var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 0.3)*Math.sin(2.0*Math.PI*i/30);
+        var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0)*Math.cos(2.0*Math.PI*i/30);
+        var zp =                          (AnodeParams.AnodeNozzleR/10.0)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "DarkTurquoise";
         TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
