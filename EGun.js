@@ -477,8 +477,8 @@ if (SpaceCharge != 0)
 
                 var bCenterArcExists = true;
 
-                // main surface
-                for (var i = 21; i <= 35; i++) {
+                // cathode surface
+                for (var i = 21; i <=40; i++) {
                     var xp = fFocusX + (CathFocusR-SpaceChargeGap)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
                     var yp = fFocusY - (CathFocusR-SpaceChargeGap)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
 
@@ -495,7 +495,7 @@ if (SpaceCharge != 0)
                     else {bCenterArcExists = false; break;}
                 }	
 
-                // main plasma circe
+                // plasma central circe
                 if (bCenterArcExists) {
                     for (var i = 19; i > 10; i--) {
                         var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
@@ -517,6 +517,7 @@ if (SpaceCharge != 0)
                 ctx._moveTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap));
                 ctx._lineTo(iOx, yp-1);
 
+                // plasma central circe
                 if (bCenterArcExists) {
                     for (var i = 9; i > 0; i--) {
                         var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
@@ -536,7 +537,7 @@ if (SpaceCharge != 0)
                 }
 
                 // main surface
-                for (var i = 5; i < 20; i++) {
+                for (var i = 0; i < 20; i++) {
                     var xp = fFocusX + (CathFocusR-SpaceChargeGap)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
                     var yp = fFocusY - (CathFocusR-SpaceChargeGap)*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
 
