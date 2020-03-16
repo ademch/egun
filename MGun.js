@@ -23,7 +23,7 @@ function _lineToMS(x,y, sf_output = true) {
 function DrawGunMagnetostatic()
 {
 
-var c = document.getElementById("myCanvas");
+var c = document.getElementById("FrontCanvas");
 var ctx = c.getContext("2d");
 
 	ctx._moveTo = _moveToMS; 

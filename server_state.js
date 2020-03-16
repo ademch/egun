@@ -12,5 +12,12 @@ var ServerEnum = {
     Electron : 8
 }
 
+var ProblemType = {
+    ES : 0, // Electrostatic
+    MS : 1, // Magnetostatic
+    DS : 2  // Deflection magnetostatic
+}
 
-module.exports.ServerEnum = ServerEnum;
+
+module.exports.ServerEnum  = ServerEnum;
+module.exports.ProblemType = ProblemType;

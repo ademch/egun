@@ -2,9 +2,12 @@
 <html>
 <body>
 
-<canvas id="myCanvas" width="615" height="2414" style="border:2px solid #d3d3d3;">
+<canvas id="FrontCanvas" width="615" height="2414" style="border:2px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.</canvas>
 
+<canvas id="DeflectionCanvas" width="615" height="615" style="border:2px solid #d3d3d3; position:absolute; top:1200px; left:650px;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+    
 <label style="z-index:101; position:absolute; top:10px; left:650px;">  <p style="font-size:20px">Cathode parameters</p></label>
 <label style="z-index:101; position:absolute; top:60px; left:650px;">  <input type=number id = "CathR" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Cath R</label>
 <label style="z-index:101; position:absolute; top:85px; left:650px;"> <input type=number id = "CathFocusR" style="width: 7ch" value="42" oninput="DrawGun()"> mm &nbsp; Cath focus R</label>
@@ -75,7 +78,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
         <label for="UsePrecalcFields">Use precalc fields</label>
 </div>
 
-<div style="z-index:101; position:absolute; top:640px; left:1080px;">
+<div style="z-index:101; position:absolute; top:635px; left:1080px;">
         <input type="checkbox" id="PlotFields" name="PlotFields" title="Render calculated ES/MS field" value="PlotFields">
         <label for="PlotFields">Plot fields</label>
 </div>
@@ -84,12 +87,17 @@ Your browser does not support the HTML5 canvas tag.</canvas>
         <input type="checkbox" id="CalcESField" name="CalcESField" title="Calculate ES field" value="CalcESField">
         <label for="CalcESField">Electrostatic</label>
 </div>
-<div style="z-index:101; position:absolute; top:640px; left:660px;">
+<div style="z-index:101; position:absolute; top:635px; left:660px;">
         <input type="checkbox" id="CalcMSField" name="CalcMSField" title="Calculate MS field" value="CalcMSField">
         <label for="CalcMSField">Magnetostatic</label>
 </div>
+<div style="z-index:101; position:absolute; top:660px; left:660px;">
+    <input type="checkbox" id="CalcDSField" name="CalcDSField" title="Calculate Deflection field" value="CalcDSField">
+    <label for="CalcDSField">Deflection</label>
+</div>
 
-<div style="z-index:101; position:absolute; top:625px; left:1245px;">
+
+<div style="z-index:101; position:absolute; top:635px; left:1245px;">
     <input type="radio" id="ParticleElectron" name="ParticleSelector" title="Trace electron flow" checked>
     <label for="ParticleSelector">Electrons</label><br>
     <input type="radio" id="ParticleIon" name="ParticleSelector" title="Trace ion flow">
@@ -116,24 +124,30 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     </tr>
 </table>
 
-<div class="bevelBox"style="z-index:100; position:absolute; top:560px; left:650px; width:690px; height:110px; border: 1px solid #808080;"></div>
+<div class="bevelBox"style="z-index:100; position:absolute; top:560px; left:650px; width:690px; height:130px; border: 1px solid #808080;"></div>
 
-<label style="z-index:101; position:absolute; top:680px; left:650px;">  <p style="font-size:20px">Focusing lens #1</p></label>
-<label style="z-index:101; position:absolute; top:730px; left:650px;">  <input type=number id = "Lens1DistToGun" style="width: 7ch" value="30" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
-<label style="z-index:101; position:absolute; top:755px; left:650px;">  <input type=number id = "Lens1InnerR" style="width: 7ch" value="50" oninput="DrawGun()"> mm &nbsp; Coil inner R</label>
-<label style="z-index:101; position:absolute; top:780px; left:650px;"> <input type=number id = "Lens1Thickness" style="width: 7ch" value="10" oninput="DrawGun()"> mm &nbsp; Coil thickness</label>
-<label style="z-index:101; position:absolute; top:805px; left:650px;"> <input type=number id = "Lens1Height" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
-<label style="z-index:101; position:absolute; top:830px; left:650px;"> <input type=number id = "Lens1TotCurrent" style="width: 7ch" value="2500" step = "100" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
-<label style="z-index:101; position:absolute; top:855px; left:650px;"> <input type=number id = "Lens1CoreThickness" style="width: 7ch" value="0" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
+<label style="z-index:101; position:absolute; top:700px; left:650px;"> <p style="font-size:20px">Focusing lens #1</p></label>
+<label style="z-index:101; position:absolute; top:750px; left:650px;"> <input type=number id = "Lens1DistToGun" style="width: 7ch" value="30" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
+<label style="z-index:101; position:absolute; top:775px; left:650px;"> <input type=number id = "Lens1InnerR" style="width: 7ch" value="50" oninput="DrawGun()"> mm &nbsp; Coil inner R</label>
+<label style="z-index:101; position:absolute; top:800px; left:650px;"> <input type=number id = "Lens1Thickness" style="width: 7ch" value="10" oninput="DrawGun()"> mm &nbsp; Coil thickness</label>
+<label style="z-index:101; position:absolute; top:825px; left:650px;"> <input type=number id = "Lens1Height" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
+<label style="z-index:101; position:absolute; top:850px; left:650px;"> <input type=number id = "Lens1TotCurrent" style="width: 7ch" value="2500" step = "100" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
+<label style="z-index:101; position:absolute; top:875px; left:650px;"> <input type=number id = "Lens1CoreThickness" style="width: 7ch" value="0" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
 
 
-<label style="z-index:101; position:absolute; top:680px; left:950px;">  <p style="font-size:20px">Focusing lens #2</p></label>
-<label style="z-index:101; position:absolute; top:730px; left:950px;">  <input type=number id = "Lens2DistToGun" style="width: 7ch" value="85" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
-<label style="z-index:101; position:absolute; top:755px; left:950px;">  <input type=number id = "Lens2InnerR" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil inner R</label>
-<label style="z-index:101; position:absolute; top:780px; left:950px;"> <input type=number id = "Lens2Thickness" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Coil thickness</label>
-<label style="z-index:101; position:absolute; top:805px; left:950px;"> <input type=number id = "Lens2Height" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
-<label style="z-index:101; position:absolute; top:830px; left:950px;"> <input type=number id = "Lens2TotCurrent" style="width: 7ch" value="0" step = "100" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
-<label style="z-index:101; position:absolute; top:855px; left:950px;"> <input type=number id = "Lens2CoreThickness" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
+<label style="z-index:101; position:absolute; top:700px; left:950px;"> <p style="font-size:20px">Focusing lens #2</p></label>
+<label style="z-index:101; position:absolute; top:750px; left:950px;"> <input type=number id = "Lens2DistToGun" style="width: 7ch" value="85" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
+<label style="z-index:101; position:absolute; top:775px; left:950px;"> <input type=number id = "Lens2InnerR" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil inner R</label>
+<label style="z-index:101; position:absolute; top:800px; left:950px;"> <input type=number id = "Lens2Thickness" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Coil thickness</label>
+<label style="z-index:101; position:absolute; top:825px; left:950px;"> <input type=number id = "Lens2Height" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
+<label style="z-index:101; position:absolute; top:850px; left:950px;"> <input type=number id = "Lens2TotCurrent" style="width: 7ch" value="0" step = "100" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
+<label style="z-index:101; position:absolute; top:875px; left:950px;"> <input type=number id = "Lens2CoreThickness" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
+
+<label style="z-index:101; position:absolute; top:900px; left:650px;"> <p style="font-size:20px">Deflection coil</p></label>
+<label style="z-index:101; position:absolute; top:950px; left:650px;"> <input type=number id = "DeflCoilDistToGun" style="width: 7ch" value="130" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
+<label style="z-index:101; position:absolute; top:975px; left:650px;"> <input type=number id = "DeflCoilHeight" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
+<label style="z-index:101; position:absolute; top:1000px; left:650px;"> <input type=number id = "DeflCoilTotCurrent" style="width: 7ch" value="100" step = "10" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
+
 
 <a href="#" id="btn-download" onclick="downloadImage()">Download image</a>
 
@@ -141,6 +155,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <textarea id = "ElectrostaticTextArea" rows = "30" cols = "85">Your text here</textarea>
 <textarea id = "MagnetostaticTextArea" rows = "30" cols = "85">Your text here</textarea>
+<textarea id = "DeflectionTextArea" rows = "30" cols = "85">Your text here</textarea>
 
 
 <img src="/Media/Stubs/131.png" id="ElectronImage" alt="Girl in a jacket" width="646" height="2382" style="mix-blend-mode: multiply; position:absolute; top:-28px; left:-28px;">
@@ -149,7 +164,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
     function downloadImage(){
         document.getElementById("btn-download").download = "image.png";
-        document.getElementById("btn-download").href = document.getElementById("myCanvas").toDataURL("image/png").replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+        document.getElementById("btn-download").href = document.getElementById("FrontCanvas").toDataURL("image/png").replace(/^data:image\/[^;]/, 'data:application/octet-stream');
     }
 
     var _beep = new window.Audio("/Media/01 Rom Test.mp3")
@@ -223,11 +238,13 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                                 "SFIntGran"        : $F('SFIntGran'),
                                                 "AutofishES"       : $('ElectrostaticTextArea').value, // text
                                                 "AutofishMS"       : $('MagnetostaticTextArea').value, // text
+                                                "AutofishDS"       : $('DeflectionTextArea').value,    // text
                                                 "UsePrecalcFields" : $("UsePrecalcFields").checked,    // bool
                                                 "PlotFields"       : $("PlotFields").checked,          // bool
                                                 "TraceElectron"    : $("ParticleElectron").checked,    // bool
                                                 "CalcESField"      : $("CalcESField").checked,         // bool
-                                                "CalcMSField"      : $("CalcMSField").checked},        // bool
+                                                "CalcMSField"      : $("CalcMSField").checked,         // bool
+                                                "CalcDSField"      : $("CalcDSField").checked},        // bool
                                             "CathodeParams": {
                                                 "CathR"            : $F('CathR'),
                                                 "CathFocusR"       : $F('CathFocusR')/10.0,     // convert to cm
@@ -269,7 +286,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                                 "Lens2Thickness"       : $F('Lens2Thickness'),
                                                 "Lens2Height"          : $F('Lens2Height'),
                                                 "Lens2TotCurrent"      : $F('Lens2TotCurrent'),
-                                                "Lens2CoreThickness"   : $F('Lens2CoreThickness') }
+                                                "Lens2CoreThickness"   : $F('Lens2CoreThickness') },
+                                            "DeflCoilParams": {
+                                                "DeflCoilDistToGun"    : $F('DeflCoilDistToGun'),
+                                                "DeflCoilHeight"       : $F('DeflCoilHeight'),
+                                                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent') },
                                         }),
                //mode    : 'cors'
            })
@@ -282,12 +303,14 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <script type="text/javascript" src="EGun.js"> </script>
 <script type="text/javascript" src="MGun.js"> </script>
+<script type="text/javascript" src="DGun.js"> </script>
 
 <script>
     function DrawGun()
     {
         DrawGunElectrostatic();
         DrawGunMagnetostatic();
+        DrawGunDeflection();
     }
 
     DrawGun();

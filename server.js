@@ -10,6 +10,7 @@ var readline = require('readline');
 var assert = require('assert');
 var srv_state = require('./server_state');
 var VecMath = require('./VecMath');
+var FieldW = require('./FieldWorker');
 
 var child_process = require('child_process');
 
@@ -27,8 +28,10 @@ const SF_Title         = '"WSFPplot 7.17 --- Poisson Superfish Plotting Program 
 const SF_TitleProp     = '"Bit Image File Output (PCX/BMP/PNG format)"';
 const SF_ES_SourcePath = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.am';
 const SF_MS_SourcePath = 'C:\\LANL\\Examples\\Magnetostatic\\Try\\1.am';
+const SF_DS_SourcePath = 'C:\\LANL\\Examples\\Magnetostatic\\Deflection\\1.am';
 const SF_ES_t35Path    = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.T35';
 const SF_MS_t35Path    = 'C:\\LANL\\Examples\\Magnetostatic\\Try\\1.T35';
+const SF_DS_t35Path    = 'C:\\LANL\\Examples\\Magnetostatic\\Deflection\\1.T35';
 
 var ResultImagePath;
 
@@ -43,25 +46,10 @@ var PlasmaParams;
 var Lens1Params;
 var Lens2Params;
 
-// Electrostatic
-var EFx_IntervNumber; // eg: 100;
-var EFx_IntervBoundN; // eg: EF_IntervNumber + 1;
-var EFx_IntervLength; // eg: 7.5/EF_IntervNumber;	// mm
-
-var EFy_IntervNumber; // eg: 100;
-var EFy_IntervBoundN; // eg: EF_IntervNumber + 1;
-var EFy_IntervLength; // eg: 15.0/EF_IntervNumber;	// mm
-
-// Magnetostatic
-var MFx_IntervNumber;
-var MFx_IntervBoundN;
-var MFx_IntervLength;
-var MFy_IntervNumber;
-var MFy_IntervBoundN;
-var MFy_IntervLength;
 
 var aEF_values = [];
 var aMF_values = [];
+var aDF_values = [];
 
 const canvas_w = 1700;		// 1500 + margins
 const canvas_h = 6270;		// 4500 + margins - [image alignment shift]
@@ -72,6 +60,7 @@ const ctx = canvas.getContext('2d')
 const { Image } = require('image-js');
 
 var ServerState = srv_state.ServerEnum.ONLINE;
+var ProblemType = srv_state.ProblemType;
 
 var app = express();
 //app.use(cors());
@@ -136,35 +125,46 @@ app.post("/calculate", (req, res) => {
     PlasmaParams    = req.body.PlasmaParams;
     Lens1Params     = req.body.Lens1Params;
     Lens2Params     = req.body.Lens2Params;
-
+    DeflCoilParams  = req.body.DeflCoilParams;
 	// ----------------------
 	// Electrostatic: 7.5cm x 15cm zone
-	EFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
-	EFx_IntervBoundN = EFx_IntervNumber + 1;
-    EFx_IntervLength = 7.5/EFx_IntervNumber;	// mm
+	FieldW.EFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
+	FieldW.EFx_IntervBoundN = FieldW.EFx_IntervNumber + 1;
+    FieldW.EFx_IntervLength = 7.5/FieldW.EFx_IntervNumber;	// mm
     
-    EFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
-	EFy_IntervBoundN = EFy_IntervNumber + 1;
-	EFy_IntervLength = 15.0/EFy_IntervNumber;	// mm
+    FieldW.EFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.EFy_IntervBoundN = FieldW.EFy_IntervNumber + 1;
+	FieldW.EFy_IntervLength = 15.0/FieldW.EFy_IntervNumber;	// mm
 
 	// Magnetostatic: 7.5cm x 60cm zone
-	MFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
-	MFx_IntervBoundN = MFx_IntervNumber + 1;
-	MFx_IntervLength = 7.5/MFx_IntervNumber;	// mm
+	FieldW.MFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
+	FieldW.MFx_IntervBoundN = FieldW.MFx_IntervNumber + 1;
+	FieldW.MFx_IntervLength = 7.5/FieldW.MFx_IntervNumber;	// mm
 
-	MFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*8;	//  <---
-	MFy_IntervBoundN = MFy_IntervNumber + 1;
-	MFy_IntervLength = 60.0/MFy_IntervNumber;	// mm
-	// ----------------------
+	FieldW.MFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*8;	//  <---
+	FieldW.MFy_IntervBoundN = FieldW.MFy_IntervNumber + 1;
+	FieldW.MFy_IntervLength = 60.0/FieldW.MFy_IntervNumber;	// mm
+    // ----------------------
+	// Deflection: 15cm x 15cm zone
+	FieldW.DFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.DFx_IntervBoundN = FieldW.DFx_IntervNumber + 1;
+    FieldW.DFx_IntervLength = 15.0/FieldW.DFx_IntervNumber;	// mm
+    
+    FieldW.DFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.DFy_IntervBoundN = FieldW.DFy_IntervNumber + 1;
+	FieldW.DFy_IntervLength = 15.0/FieldW.DFy_IntervNumber;	// mm
 
 	var AutofishES_Source = SuperfishParams.AutofishES.replace(/\n/g, "\r\n");
 	var AutofishMS_Source = SuperfishParams.AutofishMS.replace(/\n/g, "\r\n");
+	var AutofishDS_Source = SuperfishParams.AutofishDS.replace(/\n/g, "\r\n");
 
     setImmediate(() => {
 		if (SuperfishParams.CalcESField)	
 			fs.writeFileSync(SF_ES_SourcePath, AutofishES_Source);
 		if (SuperfishParams.CalcMSField)
 			fs.writeFileSync(SF_MS_SourcePath, AutofishMS_Source);
+        if (SuperfishParams.CalcDSField)
+			fs.writeFileSync(SF_DS_SourcePath, AutofishDS_Source);
 
 		StartSuperFish();
 	});
@@ -184,7 +184,7 @@ var ParticleEnum = {
 }
 
 
-function ReadFieldValues(ES_problem, path_to_file, aF_values)
+function ReadFieldValues(p_type, path_to_file, aF_values)
 {
 	return new Promise(function(resolve,reject) {
 
@@ -193,9 +193,15 @@ function ReadFieldValues(ES_problem, path_to_file, aF_values)
 		console.log('Reading Field values...');
 		
 		var bStartFound = false;
-		var strMatch = ES_problem ? "    (cm)          (cm)           (V/cm)        (V/cm)        (V/cm)         (V)  ":
-									"    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        Index";
-
+        var strMatch;
+        
+        if (p_type == ProblemType.ES)
+			strMatch = "    (cm)          (cm)           (V/cm)        (V/cm)        (V/cm)         (V)  ";
+		if (p_type == ProblemType.MS)
+			strMatch = "    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        Index";
+        if (p_type == ProblemType.DS)
+            strMatch = "    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        (G/cm)";
+        
 		var path = path_to_file.substr(0, path_to_file.lastIndexOf("\\") + 1);
 		var rd = readline.createInterface({
 			input: fs.createReadStream(path + 'OUTSF7.TXT'),
@@ -219,110 +225,6 @@ function ReadFieldValues(ES_problem, path_to_file, aF_values)
 			resolve();
 		});
 	});
-}
-
-
-
-// Fetches interpolated value from aF_values
-function _PeekField(/*in*/ x, y, z,
-						   aF_values,
-						   Fx_IntervBoundN,Fy_IntervBoundN,
-						   Fx_IntervLength,Fy_IntervLength)
-{
-	assert(aF_values.length == Fx_IntervBoundN*Fy_IntervBoundN);
-
-	// Looking from the top of the gun we have polar coordinate system:
-	// All coordinates on a circle with the center in p(7.5,y,0) have the same field as the point
-	// of intersection of the circle with known XoY plane values
-
-	//										   |
-    //                                        ...         _
-	//								     ..    |    ..    \ -alpha
-	//								 ..        |       ..
-	//								..         | p       .. alpha=0
-	//			                 --------------o---------o-----> X
-	//				                ..        /| alpha   .. (x^2+z^2;y,0)
-	//								  ..     / |       ..   
-	//								     .. /  |    ..    /_ +alpha
-	//								       o  ...
-	//									  /    |
-	//								  x;y;z	  \/ Z
-
-	x -= 7.5;								        // shift the gun so its center coincide with oY axis
-	var alpha = Math.atan2(z,x);			        // measure the angle (-pi<alpha<pi)
-    x = Math.sqrt(x*x + z*z);                       // z=0 (rotate given vector to xOz plane)
-	
-	var xRmdr = x % Fx_IntervLength;				// coord within one cell (e.g. 0<=v<5 )
-	var yRmdr = y % Fy_IntervLength;
-
-	var xt = xRmdr/Fx_IntervLength;					// normalized coord within one cell (0<=v<1 )
-	var yt = yRmdr/Fy_IntervLength;
-  
- 	var xInt = Math.floor(x / Fx_IntervLength);		// number of the whole cells within one hor/vert strip
-  	var yInt = Math.floor(y / Fy_IntervLength);
-	// ----->
-	// ----->    
-    
-    // Watch for staying inside the area of known values
-    if ( (xInt +  yInt*Fx_IntervBoundN < 0) || ((xInt+1) + (yInt+1)*Fx_IntervBoundN >= aF_values.length)) {
-        var p00 = aF_values[0];
-        var p10 = aF_values[0];
-        var p01 = aF_values[0];
-        var p11 = aF_values[0];
-    }
-    else {
-        var p00 = aF_values[ xInt    +  yInt*Fx_IntervBoundN];
-        var p10 = aF_values[(xInt+1) +  yInt*Fx_IntervBoundN];
-        var p01 = aF_values[ xInt    + (yInt+1)*Fx_IntervBoundN];
-        var p11 = aF_values[(xInt+1) + (yInt+1)*Fx_IntervBoundN];
-    }
-
-if (p00 === undefined)
-    console.log("");
-
-	var field = [ VecMath.LinearInterpolate(VecMath.LinearInterpolate(p00[0],p10[0], xt), VecMath.LinearInterpolate(p01[0],p11[0], xt), yt),
-                  VecMath.LinearInterpolate(VecMath.LinearInterpolate(p00[1],p01[1], yt), VecMath.LinearInterpolate(p10[1],p11[1], yt), xt) ];
-
-	// rotate result field from xOy plane around oY axis
-	fSin = Math.sin(alpha);	fCos = Math.cos(alpha);
-
-	//field[2] = 0;
-
-	fieldN = [];
-	fieldN[1] = field[1];
-	fieldN[0] = field[0]*fCos;// - field[2]*fSin;
-	fieldN[2] = field[0]*fSin;// + field[2]*fCos;
-
-    return fieldN;
-    
-    //return field;
-}
-
-function PeekMagnField(/*in*/ vPos)
-{
-    aMgField = _PeekField(vPos[0], vPos[1]+45.0, vPos[2],
-                          aMF_values,
-                          MFx_IntervBoundN,MFy_IntervBoundN,
-                          MFx_IntervLength,MFy_IntervLength);
-
-    // G -> T
-    aMgField[0] *= 0.0001; aMgField[1] *= 0.0001; aMgField[2] *= 0.0001;
-    return aMgField;
-}
-
-function PeekElectrField(/*in*/ vPos)
-{
-    // electric field is only calculated for y > 0, other places have negligibly small field
-    if (vPos[1] < 0.0) return [0,0,0];
-   
-    aElField = _PeekField(vPos[0], vPos[1], vPos[2],
-                          aEF_values,
-                          EFx_IntervBoundN,EFy_IntervBoundN,
-                          EFx_IntervLength,EFy_IntervLength);
-
-    // V/cm -> V/m
-    aElField[0] *= 100.0; aElField[1] *= 100.0; aElField[2] *= 100.0;
-    return aElField;
 }
 
 // Calculates electron velocity taking field strength and the current speed
@@ -355,8 +257,11 @@ function ForceFunc(vPos,     VelPrev,   Particle)
     //Me=3.32e-24;	//H2 molecule
     
     // sample fields in the current point
-	E = PeekElectrField(vPos);  // V/m
-    B = PeekMagnField(vPos);    // T
+	var E  = FieldW.PeekElectrField(vPos);        // V/m
+    var Bm = FieldW.PeekMagnField(vPos);          // T
+    var Bd = FieldW.PeekDeflectionField(vPos);    // T
+
+    var B = VecMath.VectorAdd(Bm, Bd);
 
 	var VPrevSqr = VecMath.VectorDot(VelPrev, VelPrev);
 	LorentzContraction = Math.pow( 1.0-(VPrevSqr)/Vc_2, 1.5 );
@@ -710,17 +615,23 @@ function DrawParamsOnTheImage()
 
 
 // ES_problem if true, MS problem otherwise
-function StartAutomesh(ES_problem, path_to_file)
+function StartAutomesh(p_type, path_to_file)
 {
 	return new Promise((resolve, reject) => {
 		
-		if ( ES_problem && !SuperfishParams.CalcESField) {
+		if ( (p_type == ProblemType.ES) && !SuperfishParams.CalcESField) {
 			// exit in case ES field calc was not demanded
 			resolve();
 			return;
 		}
-		if (!ES_problem && !SuperfishParams.CalcMSField) {
+		if ( (p_type == ProblemType.MS) && !SuperfishParams.CalcMSField) {
 			// exit in case MS field calc was not demanded
+			resolve();
+			return;
+        }
+        if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
+            // exit in case DS field calc was not demanded
+            ServerState = srv_state.ServerEnum.AUTOMESH;
 			resolve();
 			return;
 		}
@@ -737,7 +648,7 @@ function StartAutomesh(ES_problem, path_to_file)
 			{
 				console.log("Finished in " + (new Date() - startDate) + "ms\n");
 				
-                if (!ES_problem || !SuperfishParams.CalcMSField)	// make sure state changes on ES and MS has been processed
+                if (p_type == ProblemType.DS)	// make sure state changes on ES/MS/DS has been processed
                     ServerState = srv_state.ServerEnum.AUTOMESH;
 				resolve();
 			}
@@ -745,17 +656,23 @@ function StartAutomesh(ES_problem, path_to_file)
 	});
 }
 
-function StartPoisson(ES_problem, path_to_file)
+function StartPoisson(p_type, path_to_file)
 {
 	return new Promise((resolve, reject) => {
 
-		if ( ES_problem && !SuperfishParams.CalcESField) {
+		if ( (p_type == ProblemType.ES) && !SuperfishParams.CalcESField) {
 			// exit in case ES field calc was not demanded
 			resolve();
 			return;
 		}
-		if (!ES_problem && !SuperfishParams.CalcMSField) {
+		if ( (p_type == ProblemType.MS) && !SuperfishParams.CalcMSField) {
 			// exit in case MS field calc was not demanded
+			resolve();
+			return;
+        }
+        if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
+            // exit in case DS field calc was not demanded
+            ServerState = srv_state.ServerEnum.AUTOMESH;
 			resolve();
 			return;
 		}
@@ -768,44 +685,57 @@ function StartPoisson(ES_problem, path_to_file)
 		{
 			console.log("Finished in " + (new Date() - startDate) + "ms\n");
 			
-			if (!ES_problem || !SuperfishParams.CalcMSField)	// make sure state changes on ES and MS has been processed
-				ServerState = srv_state.ServerEnum.POISSON;
-			resolve();		
+            if (p_type == ProblemType.DS)	// make sure state changes on ES/MS/DS has been processed
+                ServerState = srv_state.ServerEnum.POISSON;
+			resolve();
 		});
 	});
 }
 
-function StartSF7(ES_problem, path_to_file)
+function StartSF7(p_type, path_to_file)
 {
 	return new Promise((resolve, reject) => {
 
-		if ( ES_problem && !SuperfishParams.CalcESField) {
+		if ( (p_type == ProblemType.ES) && !SuperfishParams.CalcESField) {
 			// exit in case ES field calc was not demanded
 			resolve();
 			return;
 		}
-		if (!ES_problem && !SuperfishParams.CalcMSField) {
+		if ( (p_type == ProblemType.MS) && !SuperfishParams.CalcMSField) {
 			// exit in case MS field calc was not demanded
+			resolve();
+			return;
+        }
+        if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
+            // exit in case DS field calc was not demanded
+            ServerState = srv_state.ServerEnum.AUTOMESH;
 			resolve();
 			return;
 		}
 
 		var pathDir = path_to_file.substr(0, path_to_file.lastIndexOf("\\") + 1);
 	
-		if (ES_problem) {
+		if (p_type == ProblemType.ES) {
 		var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
 			in7 += '0, 0, 7.5, 15         ! Grid corners for map\r\n';
-			in7 += EFx_IntervNumber + ' ' + EFy_IntervNumber;
+			in7 += FieldW.EFx_IntervNumber + ' ' + FieldW.EFy_IntervNumber;
 			in7 += '             ! Number of radial and longitudinal increments \r\n';
 			in7 += 'end\r\n';
 		}
-		else {
+		else if (p_type == ProblemType.MS) {
 		var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
 			in7 += '0, -45, 7.5, 15       ! Grid corners for map\r\n';
-			in7 += MFx_IntervNumber + ' ' + MFy_IntervNumber;
+			in7 += FieldW.MFx_IntervNumber + ' ' + FieldW.MFy_IntervNumber;
 			in7 += '             ! Number of radial and longitudinal increments \r\n';
 			in7 += 'end\r\n';
-		}
+        }
+		else if (p_type == ProblemType.DS) {
+        var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
+            in7 += '0, 0, 15, 15          ! Grid corners for map\r\n';
+            in7 += FieldW.DFx_IntervNumber + ' ' + FieldW.DFy_IntervNumber;
+            in7 += '               ! Number of radial and longitudinal increments \r\n';
+            in7 += 'end\r\n';
+        }
 		
 		fs.writeFileSync(pathDir + '1.IN7', in7);
 
@@ -817,14 +747,14 @@ function StartSF7(ES_problem, path_to_file)
 			{
 				console.log("Finished in " + (new Date() - startDate) + "ms\n");
 
-				if (!ES_problem || !SuperfishParams.CalcMSField)	// make sure state changes after ES and MS has been processed
-					ServerState = srv_state.ServerEnum.SF7;
-				resolve();		
+                if (p_type == ProblemType.DS)	// make sure state changes on ES/MS/DS has been processed
+                    ServerState = srv_state.ServerEnum.SF7;
+				resolve();
 			});
 	});
 }
 
-function StartWSFPlot(ES_problem, path_to_file)
+function StartWSFPlot(p_type, path_to_file)
 {
 	return new Promise((resolve, reject) => {
 
@@ -833,13 +763,18 @@ function StartWSFPlot(ES_problem, path_to_file)
 			return;
 		}
 
-		if ( ES_problem && !SuperfishParams.CalcESField) {
+		if ( (p_type == ProblemType.ES) && !SuperfishParams.CalcESField) {
 			// exit in case ES field calc was not demanded
 			resolve();
 			return;
 		}
-		if (!ES_problem && !SuperfishParams.CalcMSField) {
+		if ( (p_type == ProblemType.MS) && !SuperfishParams.CalcMSField) {
 			// exit in case MS field calc was not demanded
+			resolve();
+			return;
+        }
+        if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
+            // exit in case DS field calc was not demanded
 			resolve();
 			return;
 		}
@@ -855,7 +790,7 @@ function StartWSFPlot(ES_problem, path_to_file)
 	});
 }
 
-function StartWSFPlotSendCommands(ES_problem, wsf_child)
+function StartWSFPlotSendCommands(p_type, wsf_child)
 {
 	return new Promise((resolve, reject) => {
 
@@ -865,15 +800,18 @@ function StartWSFPlotSendCommands(ES_problem, wsf_child)
 			return;
 		}
 
-		if ( ES_problem && !SuperfishParams.CalcESField) {
+		if ( (p_type == ProblemType.ES) && !SuperfishParams.CalcESField) {
 			// exit in case ES field calc was not demanded
 			resolve();
 			return;
 		}
-		if (!ES_problem && !SuperfishParams.CalcMSField) {
-            // exit in case MS field calc was not demanded
-            ServerState = srv_state.ServerEnum.WSFPlot;
-
+		if ( (p_type == ProblemType.MS) && !SuperfishParams.CalcMSField) {
+			// exit in case MS field calc was not demanded
+			resolve();
+			return;
+        }
+        if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
+            // exit in case DS field calc was not demanded
 			resolve();
 			return;
 		}
@@ -890,8 +828,8 @@ function StartWSFPlotSendCommands(ES_problem, wsf_child)
 		child.on('exit', (code) => {
 			wsf_child.kill('SIGINT');
 			
-			if (!ES_problem || !SuperfishParams.CalcMSField)	// make sure state changes on ES and MS has been processed
-				ServerState = srv_state.ServerEnum.WSFPlot;
+            if (p_type == ProblemType.DS)	// make sure state changes on ES/MS/DS has been processed
+                ServerState = srv_state.ServerEnum.WSFPlot;
 			console.log("Finishing WSFPlot\n");
 		
 			resolve();
@@ -921,18 +859,24 @@ function StartSuperFish()
 	}
 	else
 	{
-		StartAutomesh(true, SF_ES_SourcePath)
-		.then( () => { return StartAutomesh(false, SF_MS_SourcePath); }, chainError)
-		.then( () => { return StartPoisson(true,  SF_ES_t35Path); }, chainError)
-		.then( () => { return StartPoisson(false, SF_MS_t35Path); }, chainError)
-		.then( () => { return StartSF7(true,  SF_ES_t35Path); }, chainError)
-		.then( () => { return StartSF7(false, SF_MS_t35Path); }, chainError)
-		.then( () => { return StartWSFPlot(true,  SF_ES_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(true, wsf_child); }, chainError)
-		.then( () => { return StartWSFPlot(false, SF_MS_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(false, wsf_child); }, chainError)
-		.then( () => {	return ReadFieldValues(true,  SF_ES_SourcePath, aEF_values); }, chainError)
-        .then( () => {	return ReadFieldValues(false, SF_MS_SourcePath, aMF_values); }, chainError)
+		StartAutomesh(ProblemType.ES, SF_ES_SourcePath)
+		.then( () => { return StartAutomesh(ProblemType.MS, SF_MS_SourcePath); }, chainError)
+		.then( () => { return StartAutomesh(ProblemType.DS, SF_DS_SourcePath); }, chainError)
+		.then( () => { return StartPoisson(ProblemType.ES, SF_ES_t35Path); }, chainError)
+		.then( () => { return StartPoisson(ProblemType.MS, SF_MS_t35Path); }, chainError)
+		.then( () => { return StartPoisson(ProblemType.DS, SF_DS_t35Path); }, chainError)
+		.then( () => { return StartSF7(ProblemType.ES, SF_ES_t35Path); }, chainError)
+		.then( () => { return StartSF7(ProblemType.MS, SF_MS_t35Path); }, chainError)
+		.then( () => { return StartSF7(ProblemType.DS, SF_DS_t35Path); }, chainError)
+		.then( () => { return StartWSFPlot(ProblemType.ES,  SF_ES_t35Path); }, chainError)
+		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.ES, wsf_child); }, chainError)
+		.then( () => { return StartWSFPlot(ProblemType.MS, SF_MS_t35Path); }, chainError)
+		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.MS, wsf_child); }, chainError)
+		.then( () => { return StartWSFPlot(ProblemType.DS, SF_DS_t35Path); }, chainError)
+		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.DS, wsf_child); }, chainError)
+		.then( () => {	return ReadFieldValues(ProblemType.ES, SF_ES_SourcePath, aEF_values); }, chainError)
+        .then( () => {	return ReadFieldValues(ProblemType.MS, SF_MS_SourcePath, aMF_values); }, chainError)
+		.then( () => {	return ReadFieldValues(ProblemType.DS, SF_DS_SourcePath, aDF_values); }, chainError)
 		.then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
         .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
 		.then( (aInd) => {	DrawElectronMap(aInd); }, chainError)

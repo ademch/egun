@@ -82,7 +82,7 @@ var EGUNHeight = 0;
 function DrawGunElectrostatic()
 {
 
-var c = document.getElementById("myCanvas");
+var c = document.getElementById("FrontCanvas");
 var ctx = c.getContext("2d");
 
 	ctx._moveTo   = _moveTo; 
