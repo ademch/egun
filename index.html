@@ -10,8 +10,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     
 <label style="z-index:101; position:absolute; top:10px; left:650px;">  <p style="font-size:20px">Cathode parameters</p></label>
 <label style="z-index:101; position:absolute; top:60px; left:650px;">  <input type=number id = "CathR" style="width: 7ch" value="20" oninput="DrawGun()"> mm &nbsp; Cath R</label>
-<label style="z-index:101; position:absolute; top:85px; left:650px;"> <input type=number id = "CathFocusR" style="width: 7ch" value="42" oninput="DrawGun()"> mm &nbsp; Cath focus R</label>
-<label style="z-index:101; position:absolute; top:110px; left:650px;">  <input type=number id = "CathSkirtR" style="width: 7ch" value="3" oninput="DrawGun()"> mm &nbsp; Cath skirt thickness</label>
+<label style="z-index:101; position:absolute; top:85px; left:650px;">  <input type=number id = "CathFocusR" style="width: 7ch" value="42" oninput="DrawGun()"> mm &nbsp; Cath focus R</label>
+<label style="z-index:101; position:absolute; top:110px; left:650px;"> <input type=number id = "CathSkirtR" style="width: 7ch" value="3" oninput="DrawGun()"> mm &nbsp; Cath skirt thickness</label>
 <label style="z-index:101; position:absolute; top:135px; left:650px;"> <input type=number id = "CathSkirtH" style="width: 7ch" value="3" step = "1" oninput="DrawGun()"> mm &nbsp; Cath skirt H</label>
 <label style="z-index:101; position:absolute; top:160px; left:650px;"> <input type=number id = "CathSkirtA" style="width: 7ch" value="60" step = "5" oninput="DrawGun()"> mm &nbsp; Cath skirt angle</label>
 <label style="z-index:101; position:absolute; top:185px; left:650px;"> <input type=number id = "CathButtA" style="width: 7ch" value="90" step = "1" oninput="DrawGun()"> mm &nbsp; Cath butt angle</label>
@@ -30,8 +30,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:500px; left:650px;"> <input type=number id = "AnodeNozzleDiffusorH" style="width: 7ch" value="9" oninput="DrawGun()"> mm &nbsp; Anode nozzle diffusor h</label>
 
 <label style="z-index:101; position:absolute; top:10px; left:950px;"> <p style="font-size:20px">Superfish parameters</p></label>
-<label style="z-index:101; position:absolute; top:60px; left:950px;"> <input type=number id = "SFFocusX" style="width: 7ch; color: #b9b8b8" readonly> mm &nbsp; Focus x </label>
-<label style="z-index:101; position:absolute; top:90px; left:950px;"> <input type=number id = "SFFocusY" style="width: 7ch; color: #b9b8b8" readonly> mm &nbsp; Focus y </label>
+<label style="z-index:101; position:absolute; top:60px; left:950px;"> <input type=number id = "SFFocusX" style="width: 7ch; color: #b9b8b8" readonly> cm &nbsp; Focus x </label>
+<label style="z-index:101; position:absolute; top:90px; left:950px;"> <input type=number id = "SFFocusY" style="width: 7ch; color: #b9b8b8" readonly> cm &nbsp; Focus y </label>
 <label style="z-index:101; position:absolute; top:120px; left:950px;"> <input type=number id = "SFBeamHalfAngle" style="width: 7ch; color: #b9b8b8" readonly> rad &nbsp; Beam half angle </label>
 <label style="z-index:101; position:absolute; top:150px; left:950px;"> <input type=number id = "SFIntGran" style="width: 7ch" value="50"> itms &nbsp; Field interp gran (7.5cm/x)</label>
 
@@ -144,9 +144,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:875px; left:950px;"> <input type=number id = "Lens2CoreThickness" style="width: 7ch" value="5" oninput="DrawGun()"> mm &nbsp; Core thickness</label>
 
 <label style="z-index:101; position:absolute; top:900px; left:650px;"> <p style="font-size:20px">Deflection coil</p></label>
-<label style="z-index:101; position:absolute; top:950px; left:650px;"> <input type=number id = "DeflCoilDistToGun" style="width: 7ch" value="130" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
-<label style="z-index:101; position:absolute; top:975px; left:650px;"> <input type=number id = "DeflCoilHeight" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
-<label style="z-index:101; position:absolute; top:1000px; left:650px;"> <input type=number id = "DeflCoilTotCurrent" style="width: 7ch" value="100" step = "10" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
+<label style="z-index:101; position:absolute; top:950px; left:650px;"> <input type=number id = "DeflAbsPosY" style="width: 7ch; color: #b9b8b8" readonly> cm &nbsp;&nbsp; Absolute position Y </label>
+<label style="z-index:101; position:absolute; top:975px; left:650px;"> <input type=number id = "DeflCoilDistToGun" style="width: 7ch" value="130" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
+<label style="z-index:101; position:absolute; top:1000px; left:650px;"> <input type=number id = "DeflCoilHeight" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
+<label style="z-index:101; position:absolute; top:1025px; left:650px;"> <input type=number id = "DeflCoilTotCurrent" style="width: 7ch" value="100" step = "10" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
 
 
 <a href="#" id="btn-download" onclick="downloadImage()">Download image</a>
@@ -167,7 +168,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
         document.getElementById("btn-download").href = document.getElementById("FrontCanvas").toDataURL("image/png").replace(/^data:image\/[^;]/, 'data:application/octet-stream');
     }
 
-    var _beep = new window.Audio("/Media/01 Rom Test.mp3")
+    var _beep = new window.Audio("/Media/01 Rom Test.mp3");
     function playBeep() { _beep.play()};
     
     var timer = false;
@@ -289,8 +290,9 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                                 "Lens2CoreThickness"   : $F('Lens2CoreThickness') },
                                             "DeflCoilParams": {
                                                 "DeflCoilDistToGun"    : $F('DeflCoilDistToGun'),
+                                                "DeflAbsPosY"          : $F('DeflAbsPosY'),           // calculated
                                                 "DeflCoilHeight"       : $F('DeflCoilHeight'),
-                                                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent') },
+                                                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent') }
                                         }),
                //mode    : 'cors'
            })
@@ -446,9 +448,14 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                 "Lens2Thickness"       : $F('Lens2Thickness'),
                 "Lens2Height"          : $F('Lens2Height'),
                 "Lens2TotCurrent"      : $F('Lens2TotCurrent'),
-                "Lens2CoreThickness"   : $F('Lens2CoreThickness') }
+                "Lens2CoreThickness"   : $F('Lens2CoreThickness') },
+            "DeflCoilParams": {
+                "DeflCoilDistToGun"    : $F('DeflCoilDistToGun'),
+                "DeflCoilHeight"       : $F('DeflCoilHeight'),
+                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent') }
                 }
     }
+
 
     function JSONtoGUI(item)
     {
@@ -462,6 +469,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             $(param).value = item.Lens1Params[param];
         for (var param in item.Lens2Params)
             $(param).value = item.Lens2Params[param];
+        for (var param in item.DeflCoilParams)
+            $(param).value = item.DeflCoilParams[param];
 
         DrawGun();
     }

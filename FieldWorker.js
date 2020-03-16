@@ -1,30 +1,40 @@
+var assert = require('assert');
+var VecMath = require('./VecMath');
 
-// Electrostatic
-var EFx_IntervNumber; // eg: 100;
-var EFx_IntervBoundN; // eg: EF_IntervNumber + 1;
-var EFx_IntervLength; // eg: 7.5/EF_IntervNumber;	// mm
+var aEF_values = [];
+var aMF_values = [];
+var aDF_values = [];
 
-var EFy_IntervNumber; // eg: 100;
-var EFy_IntervBoundN; // eg: EF_IntervNumber + 1;
-var EFy_IntervLength; // eg: 15.0/EF_IntervNumber;	// mm
+var DeflCoilParams = {};
 
-// Magnetostatic
-var MFx_IntervNumber;
-var MFx_IntervBoundN;
-var MFx_IntervLength;
+var Dim = {
+    // Electrostatic
+    EFx_IntervNumber: undefined, // eg: 100;
+    EFx_IntervBoundN: undefined, // eg: EF_IntervNumber + 1;
+    EFx_IntervLength: undefined, // eg: 7.5/EF_IntervNumber;	// mm
 
-var MFy_IntervNumber;
-var MFy_IntervBoundN;
-var MFy_IntervLength;
+    EFy_IntervNumber: undefined, // eg: 100;
+    EFy_IntervBoundN: undefined, // eg: EF_IntervNumber + 1;
+    EFy_IntervLength: undefined, // eg: 15.0/EF_IntervNumber;	// mm
 
-// Delection Magnetostatic
-var DFx_IntervNumber;
-var DFx_IntervBoundN;
-var DFx_IntervLength;
+    // Magnetostatic
+    MFx_IntervNumber: undefined,
+    MFx_IntervBoundN: undefined,
+    MFx_IntervLength: undefined,
 
-var DFy_IntervNumber;
-var DFy_IntervBoundN;
-var DFy_IntervLength;
+    MFy_IntervNumber: undefined,
+    MFy_IntervBoundN: undefined,
+    MFy_IntervLength: undefined,
+
+    // Deflection Magnetostatic
+    DFx_IntervNumber: undefined,
+    DFx_IntervBoundN: undefined,
+    DFx_IntervLength: undefined,
+
+    DFy_IntervNumber: undefined,
+    DFy_IntervBoundN: undefined,
+    DFy_IntervLength: undefined
+};
 
 
 // Fetches interpolated value from aF_values
@@ -164,13 +174,13 @@ if (p00 === undefined)
 function PeekDeflectionField(/*in*/ vPos)
 {
     // deflection field is only calculated for y > 0, other places have negligibly small field
-    if (vPos[1] <= DeflCoilParams.DeflCoilDistToGun - DeflCoilParams.DeflCoilHeight/2.0) return [0,0,0];
-    if (vPos[1] >= DeflCoilParams.DeflCoilDistToGun + DeflCoilParams.DeflCoilHeight/2.0) return [0,0,0];
+    if (vPos[1] <= DeflCoilParams.DeflAbsPosY - DeflCoilParams.DeflCoilHeight/20.0) return [0,0,0];     // mm -> cm
+    if (vPos[1] >= DeflCoilParams.DeflAbsPosY + DeflCoilParams.DeflCoilHeight/20.0) return [0,0,0];     // mm -> cm
 
-    aMgField = _PeekFieldRaw(vPos[0], vPos[1], vPos[2]+15,
+    aMgField = _PeekFieldRaw(vPos[0], vPos[1], vPos[2]+7.5,
                              aDF_values,
-                             DFx_IntervBoundN,DFy_IntervBoundN,
-                             DFx_IntervLength,DFy_IntervLength);
+                             Dim.DFx_IntervBoundN,Dim.DFy_IntervBoundN,
+                             Dim.DFx_IntervLength,Dim.DFy_IntervLength);
 
     // G -> T
     aMgField[0] *= 0.0001; aMgField[1] *= 0.0001; aMgField[2] *= 0.0001;
@@ -181,8 +191,8 @@ function PeekMagnField(/*in*/ vPos)
 {
     aMgField = _PeekField(vPos[0], vPos[1]+45.0, vPos[2],
                           aMF_values,
-                          MFx_IntervBoundN,MFy_IntervBoundN,
-                          MFx_IntervLength,MFy_IntervLength);
+                          Dim.MFx_IntervBoundN,Dim.MFy_IntervBoundN,
+                          Dim.MFx_IntervLength,Dim.MFy_IntervLength);
 
     // G -> T
     aMgField[0] *= 0.0001; aMgField[1] *= 0.0001; aMgField[2] *= 0.0001;
@@ -196,8 +206,8 @@ function PeekElectrField(/*in*/ vPos)
    
     aElField = _PeekField(vPos[0], vPos[1], vPos[2],
                           aEF_values,
-                          EFx_IntervBoundN,EFy_IntervBoundN,
-                          EFx_IntervLength,EFy_IntervLength);
+                          Dim.EFx_IntervBoundN,Dim.EFy_IntervBoundN,
+                          Dim.EFx_IntervLength,Dim.EFy_IntervLength);
 
     // V/cm -> V/m
     aElField[0] *= 100.0; aElField[1] *= 100.0; aElField[2] *= 100.0;
@@ -208,27 +218,9 @@ module.exports.PeekDeflectionField = PeekDeflectionField;
 module.exports.PeekMagnField = PeekMagnField;
 module.exports.PeekElectrField = PeekElectrField;
 
+module.exports.Dim = Dim;
+module.exports.DeflCoilParams = DeflCoilParams;
 
-module.exports.EFx_IntervNumber = EFx_IntervNumber;
-module.exports.EFx_IntervBoundN = EFx_IntervBoundN;
-module.exports.EFx_IntervLength = EFx_IntervLength;
-
-module.exports.EFy_IntervNumber = EFy_IntervNumber;
-module.exports.EFy_IntervBoundN = EFy_IntervBoundN;
-module.exports.EFy_IntervLength = EFy_IntervLength;
-
-module.exports.MFx_IntervNumber = MFx_IntervNumber;
-module.exports.MFx_IntervBoundN = MFx_IntervBoundN;
-module.exports.MFx_IntervLength = MFx_IntervLength;
-
-module.exports.MFy_IntervNumber = MFy_IntervNumber;
-module.exports.MFy_IntervBoundN = MFy_IntervBoundN;
-module.exports.MFy_IntervLength = MFy_IntervLength;
-
-module.exports.DFx_IntervNumber = DFx_IntervNumber;
-module.exports.DFx_IntervBoundN = DFx_IntervBoundN;
-module.exports.DFx_IntervLength = DFx_IntervLength;
-
-module.exports.DFy_IntervNumber = DFy_IntervNumber;
-module.exports.DFy_IntervBoundN = DFy_IntervBoundN;
-module.exports.DFy_IntervLength = DFy_IntervLength;
+module.exports.aEF_values = aEF_values;
+module.exports.aMF_values = aMF_values;
+module.exports.aDF_values = aDF_values;

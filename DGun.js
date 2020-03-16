@@ -190,18 +190,21 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
         //if ((iChuck!=0) && (iChuck!=6)) continue;
 
 
-             if (iChuck==0)  Current =  100;
-        else if (iChuck==1)  Current =  70;
-        else if (iChuck==2)  Current =  50;
-        else if (iChuck==3)  Current =  0;
-        else if (iChuck==4)  Current = -50;
-        else if (iChuck==5)  Current = -70;
-        else if (iChuck==6)  Current = -100;
-        else if (iChuck==7)  Current = -70;
-        else if (iChuck==8)  Current = -50;
-        else if (iChuck==9)  Current =  0;
-        else if (iChuck==10) Current =  50;
-        else if (iChuck==11) Current =  70;
+             if (iChuck==0)  Current =    0;
+        else if (iChuck==1)  Current =   50;
+        else if (iChuck==2)  Current =   70;
+        else if (iChuck==3)  Current =  100;
+        else if (iChuck==4)  Current =   70;
+        else if (iChuck==5)  Current =   50;
+        else if (iChuck==6)  Current =    0;
+        else if (iChuck==7)  Current =  -50;
+        else if (iChuck==8)  Current =  -70;
+        else if (iChuck==9)  Current = -100;
+        else if (iChuck==10) Current =  -70;
+        else if (iChuck==11) Current =  -50;
+
+
+        
 
         el.value += "\n\n&reg mat=1, cur=";
         el.value += Current.toFixed(1);
@@ -237,18 +240,21 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     {
         //if ((iChuck!=0) && (iChuck!=6)) continue;
 
-             if (iChuck==0)  Current = -100;
-        else if (iChuck==1)  Current = -70;
-        else if (iChuck==2)  Current = -50;
-        else if (iChuck==3)  Current =  0;
-        else if (iChuck==4)  Current =  50;
-        else if (iChuck==5)  Current =  70;
-        else if (iChuck==6)  Current = 100;
-        else if (iChuck==7)  Current =  70;
-        else if (iChuck==8)  Current =  50;
-        else if (iChuck==9)  Current =  0;
-        else if (iChuck==10) Current = -50;
-        else if (iChuck==11) Current = -70;
+             if (iChuck==0)  Current = -  0;
+        else if (iChuck==1)  Current =  -50;
+        else if (iChuck==2)  Current =  -70;
+        else if (iChuck==3)  Current = -100;
+        else if (iChuck==4)  Current =  -70;
+        else if (iChuck==5)  Current =  -50;
+        else if (iChuck==6)  Current =    0;
+        else if (iChuck==7)  Current =   50;
+        else if (iChuck==8)  Current =   70;
+        else if (iChuck==9)  Current =  100;
+        else if (iChuck==10) Current =   70;
+        else if (iChuck==11) Current =   50;
+
+
+
 
         el.value += "\n\n&reg mat=1, cur=";
         el.value += Current.toFixed(1);
@@ -281,17 +287,20 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 /* #region Lens #1 */
 
-	// RIGHT
+    // RIGHT
+    
+    var DeflAbsPosY = iStart + DeflCoilDistToGun;
+    document.getElementById("DeflAbsPosY").value = (RegionEStatic_H*fScaleSuperFish - DeflAbsPosY*fScaleSuperFish).toPrecision(3);
 
     var c = document.getElementById("FrontCanvas");
     var ctx = c.getContext("2d");
 
     ctx.beginPath();
-        ctx._moveTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0);              
-        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight/2.0);       
-        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun + DeflCoilHeight/2.0); 
-        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun + DeflCoilHeight/2.0); 
-        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0); 
+        ctx._moveTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false);              
+        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false);       
+        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun + DeflCoilHeight/2.0, false); 
+        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun + DeflCoilHeight/2.0, false); 
+        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false); 
     ctx.stroke();
 
 // LEFT

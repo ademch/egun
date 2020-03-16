@@ -46,11 +46,6 @@ var PlasmaParams;
 var Lens1Params;
 var Lens2Params;
 
-
-var aEF_values = [];
-var aMF_values = [];
-var aDF_values = [];
-
 const canvas_w = 1700;		// 1500 + margins
 const canvas_h = 6270;		// 4500 + margins - [image alignment shift]
 
@@ -125,34 +120,39 @@ app.post("/calculate", (req, res) => {
     PlasmaParams    = req.body.PlasmaParams;
     Lens1Params     = req.body.Lens1Params;
     Lens2Params     = req.body.Lens2Params;
-    DeflCoilParams  = req.body.DeflCoilParams;
+	DeflCoilParams  = req.body.DeflCoilParams;
+
+	Object.assign(FieldW.DeflCoilParams, DeflCoilParams);
+	
+	//FieldW.DeflCoilParams.DeflAbsPosY = DeflCoilParams.DeflAbsPosY;
+
 	// ----------------------
 	// Electrostatic: 7.5cm x 15cm zone
-	FieldW.EFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
-	FieldW.EFx_IntervBoundN = FieldW.EFx_IntervNumber + 1;
-    FieldW.EFx_IntervLength = 7.5/FieldW.EFx_IntervNumber;	// mm
+	FieldW.Dim.EFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
+	FieldW.Dim.EFx_IntervBoundN = FieldW.Dim.EFx_IntervNumber + 1;
+    FieldW.Dim.EFx_IntervLength = 7.5/FieldW.Dim.EFx_IntervNumber;	// mm
     
-    FieldW.EFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
-	FieldW.EFy_IntervBoundN = FieldW.EFy_IntervNumber + 1;
-	FieldW.EFy_IntervLength = 15.0/FieldW.EFy_IntervNumber;	// mm
+    FieldW.Dim.EFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.Dim.EFy_IntervBoundN = FieldW.Dim.EFy_IntervNumber + 1;
+	FieldW.Dim.EFy_IntervLength = 15.0/FieldW.Dim.EFy_IntervNumber;	// mm
 
 	// Magnetostatic: 7.5cm x 60cm zone
-	FieldW.MFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
-	FieldW.MFx_IntervBoundN = FieldW.MFx_IntervNumber + 1;
-	FieldW.MFx_IntervLength = 7.5/FieldW.MFx_IntervNumber;	// mm
+	FieldW.Dim.MFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran);
+	FieldW.Dim.MFx_IntervBoundN = FieldW.Dim.MFx_IntervNumber + 1;
+	FieldW.Dim.MFx_IntervLength = 7.5/FieldW.Dim.MFx_IntervNumber;	// mm
 
-	FieldW.MFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*8;	//  <---
-	FieldW.MFy_IntervBoundN = FieldW.MFy_IntervNumber + 1;
-	FieldW.MFy_IntervLength = 60.0/FieldW.MFy_IntervNumber;	// mm
+	FieldW.Dim.MFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*8;	//  <---
+	FieldW.Dim.MFy_IntervBoundN = FieldW.Dim.MFy_IntervNumber + 1;
+	FieldW.Dim.MFy_IntervLength = 60.0/FieldW.Dim.MFy_IntervNumber;	// mm
     // ----------------------
 	// Deflection: 15cm x 15cm zone
-	FieldW.DFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
-	FieldW.DFx_IntervBoundN = FieldW.DFx_IntervNumber + 1;
-    FieldW.DFx_IntervLength = 15.0/FieldW.DFx_IntervNumber;	// mm
+	FieldW.Dim.DFx_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.Dim.DFx_IntervBoundN = FieldW.Dim.DFx_IntervNumber + 1;
+    FieldW.Dim.DFx_IntervLength = 15.0/FieldW.Dim.DFx_IntervNumber;	// mm
     
-    FieldW.DFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
-	FieldW.DFy_IntervBoundN = FieldW.DFy_IntervNumber + 1;
-	FieldW.DFy_IntervLength = 15.0/FieldW.DFy_IntervNumber;	// mm
+    FieldW.Dim.DFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.Dim.DFy_IntervBoundN = FieldW.Dim.DFy_IntervNumber + 1;
+	FieldW.Dim.DFy_IntervLength = 15.0/FieldW.Dim.DFy_IntervNumber;	// mm
 
 	var AutofishES_Source = SuperfishParams.AutofishES.replace(/\n/g, "\r\n");
 	var AutofishMS_Source = SuperfishParams.AutofishMS.replace(/\n/g, "\r\n");
@@ -718,21 +718,21 @@ function StartSF7(p_type, path_to_file)
 		if (p_type == ProblemType.ES) {
 		var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
 			in7 += '0, 0, 7.5, 15         ! Grid corners for map\r\n';
-			in7 += FieldW.EFx_IntervNumber + ' ' + FieldW.EFy_IntervNumber;
+			in7 += FieldW.Dim.EFx_IntervNumber + ' ' + FieldW.Dim.EFy_IntervNumber;
 			in7 += '             ! Number of radial and longitudinal increments \r\n';
 			in7 += 'end\r\n';
 		}
 		else if (p_type == ProblemType.MS) {
 		var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
 			in7 += '0, -45, 7.5, 15       ! Grid corners for map\r\n';
-			in7 += FieldW.MFx_IntervNumber + ' ' + FieldW.MFy_IntervNumber;
+			in7 += FieldW.Dim.MFx_IntervNumber + ' ' + FieldW.Dim.MFy_IntervNumber;
 			in7 += '             ! Number of radial and longitudinal increments \r\n';
 			in7 += 'end\r\n';
         }
 		else if (p_type == ProblemType.DS) {
         var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
             in7 += '0, 0, 15, 15          ! Grid corners for map\r\n';
-            in7 += FieldW.DFx_IntervNumber + ' ' + FieldW.DFy_IntervNumber;
+            in7 += FieldW.Dim.DFx_IntervNumber + ' ' + FieldW.Dim.DFy_IntervNumber;
             in7 += '               ! Number of radial and longitudinal increments \r\n';
             in7 += 'end\r\n';
         }
@@ -846,12 +846,15 @@ function StartSuperFish()
 
 	if (SuperfishParams.UsePrecalcFields)
 	{
-		StartWSFPlot(true,  SF_ES_t35Path)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(true, wsf_child); }, chainError)
-		.then( () => { return StartWSFPlot(false, SF_MS_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(false, wsf_child); }, chainError)
-		.then( () => {	return ReadFieldValues(true,  SF_ES_SourcePath, aEF_values); }, chainError)
-        .then( () => {	return ReadFieldValues(false, SF_MS_SourcePath, aMF_values); }, chainError)
+		StartWSFPlot(ProblemType.ES,  SF_ES_t35Path)
+		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.ES, wsf_child); }, chainError)
+		.then( () => { return StartWSFPlot(ProblemType.MS, SF_MS_t35Path); }, chainError)
+		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.MS, wsf_child); }, chainError)
+		.then( () => { return StartWSFPlot(ProblemType.DS, SF_DS_t35Path); }, chainError)
+		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.DS, wsf_child); }, chainError)
+		.then( () => {	return ReadFieldValues(ProblemType.ES, SF_ES_SourcePath, FieldW.aEF_values); }, chainError)
+        .then( () => {	return ReadFieldValues(ProblemType.MS, SF_MS_SourcePath, FieldW.aMF_values); }, chainError)
+		.then( () => {	return ReadFieldValues(ProblemType.DS, SF_DS_SourcePath, FieldW.aDF_values); }, chainError)
 		.then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
         .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
 		.then( (aInd) => {	DrawElectronMap(aInd); }, chainError)
@@ -874,9 +877,9 @@ function StartSuperFish()
 		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.MS, wsf_child); }, chainError)
 		.then( () => { return StartWSFPlot(ProblemType.DS, SF_DS_t35Path); }, chainError)
 		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.DS, wsf_child); }, chainError)
-		.then( () => {	return ReadFieldValues(ProblemType.ES, SF_ES_SourcePath, aEF_values); }, chainError)
-        .then( () => {	return ReadFieldValues(ProblemType.MS, SF_MS_SourcePath, aMF_values); }, chainError)
-		.then( () => {	return ReadFieldValues(ProblemType.DS, SF_DS_SourcePath, aDF_values); }, chainError)
+		.then( () => {	return ReadFieldValues(ProblemType.ES, SF_ES_SourcePath, FieldW.aEF_values); }, chainError)
+        .then( () => {	return ReadFieldValues(ProblemType.MS, SF_MS_SourcePath, FieldW.aMF_values); }, chainError)
+		.then( () => {	return ReadFieldValues(ProblemType.DS, SF_DS_SourcePath, FieldW.aDF_values); }, chainError)
 		.then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
         .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
 		.then( (aInd) => {	DrawElectronMap(aInd); }, chainError)
