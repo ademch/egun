@@ -174,8 +174,8 @@ if (p00 === undefined)
 function PeekDeflectionField(/*in*/ vPos)
 {
     // deflection field is only calculated for y > 0, other places have negligibly small field
-    if (vPos[1] <= DeflCoilParams.DeflAbsPosY - DeflCoilParams.DeflCoilHeight/20.0) return [0,0,0];     // mm -> cm
-    if (vPos[1] >= DeflCoilParams.DeflAbsPosY + DeflCoilParams.DeflCoilHeight/20.0) return [0,0,0];     // mm -> cm
+    if (vPos[1] <= DeflCoilParams.DeflAbsPosY) return [0,0,0];                                          // mm -> cm
+    if (vPos[1] >= DeflCoilParams.DeflAbsPosY + DeflCoilParams.DeflCoilHeight/10.0) return [0,0,0];     // mm -> cm
 
     aMgField = _PeekFieldRaw(vPos[0], vPos[1], vPos[2]+7.5,
                              aDF_values,

@@ -170,7 +170,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
     // COILS
 
-    var fCoilSpacer = 1;                          // space between chuck and winding
+    var fCoilSpacer = 1;                            // space between chuck and winding
     var fDInnerCoil = fDInnerCore + 2;              // radius of the inner circle of the coil
     var fDOuterCoil = fDOuterCore - fCoilSpacer;
     var fCoilHalfThickness = 3;                     // thickness of a coil winding
@@ -296,26 +296,67 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     var ctx = c.getContext("2d");
 
     ctx.beginPath();
-        ctx._moveTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false);              
-        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false);       
-        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun + DeflCoilHeight/2.0, false); 
-        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun + DeflCoilHeight/2.0, false); 
-        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false); 
+        ctx._moveTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false);              
+        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight, false);       
+        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false); 
     ctx.stroke();
 
-// LEFT
+    // LEFT
 
     ctx.beginPath();
-        ctx._moveTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false);              
-        ctx._lineTo(iOx - fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false);       
-        ctx._lineTo(iOx - fDiamBig,                     iStart + DeflCoilDistToGun + DeflCoilHeight/2.0, false); 
-        ctx._lineTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun + DeflCoilHeight/2.0, false); 
-        ctx._lineTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight/2.0, false); 
+        ctx._moveTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false);              
+        ctx._lineTo(iOx - fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight, false);       
+        ctx._lineTo(iOx - fDiamBig,                     iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false); 
 
 	ctx.fillStyle = "YellowGreen";
 	ctx.fill();
 
 	ctx.stroke();
+
+/* #endregion */
+
+    ctx.beginPath();
+        ctx._moveTo(iOx + 15,      iStart, false);              
+        ctx._lineTo(iOx + 22,      iStart, false);       
+        ctx._lineTo(iOx + 22,      iStart + 9, false); 
+        ctx._lineTo(iOx + 24,      iStart + 9, false); 
+        ctx._lineTo(iOx + 24,      iStart + 125, false); 
+        ctx._lineTo(iOx + 27,      iStart + 136, false); 
+        ctx._lineTo(iOx + 50,      iStart + 136, false); 
+        ctx._lineTo(iOx + 50,      iStart + 125, false); 
+        ctx._lineTo(iOx + 55,      iStart + 125, false); 
+        ctx._lineTo(iOx + 55,      iStart + 145, false); 
+        ctx._lineTo(iOx + 31,      iStart + 145, false); 
+        ctx._lineTo(iOx + 31,      iStart + 149, false); 
+        ctx._lineTo(iOx + 20,      iStart + 149, false); 
+        ctx._lineTo(iOx + 15,      iStart + 130, false); 
+        ctx._lineTo(iOx + 15,      iStart, false); 
+    ctx.stroke();
+
+// LEFT
+
+    ctx.beginPath();
+        ctx._moveTo(iOx - 15,      iStart, false);              
+        ctx._lineTo(iOx - 22,      iStart, false);       
+        ctx._lineTo(iOx - 22,      iStart + 9, false); 
+        ctx._lineTo(iOx - 24,      iStart + 9, false); 
+        ctx._lineTo(iOx - 24,      iStart + 125, false); 
+        ctx._lineTo(iOx - 27,      iStart + 136, false); 
+        ctx._lineTo(iOx - 50,      iStart + 136, false); 
+        ctx._lineTo(iOx - 50,      iStart + 125, false); 
+        ctx._lineTo(iOx - 55,      iStart + 125, false); 
+        ctx._lineTo(iOx - 55,      iStart + 145, false); 
+        ctx._lineTo(iOx - 31,      iStart + 145, false); 
+        ctx._lineTo(iOx - 31,      iStart + 149, false); 
+        ctx._lineTo(iOx - 20,      iStart + 149, false); 
+        ctx._lineTo(iOx - 15,      iStart + 130, false); 
+        ctx._lineTo(iOx - 15,      iStart, false); 
+
+    ctx.stroke();
 
 /* #endregion */
 
