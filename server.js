@@ -45,6 +45,7 @@ var AnodeParams;
 var PlasmaParams;
 var Lens1Params;
 var Lens2Params;
+var DeflCoilParams;
 
 const canvas_w = 1700;		// 1500 + margins
 const canvas_h = 6270;		// 4500 + margins - [image alignment shift]

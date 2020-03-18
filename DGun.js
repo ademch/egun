@@ -137,8 +137,8 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	el.value += "\n\n&reg mat=1";
 	el.value += " &\n";
 
-    var fDInnerCore = 31.5;                             // radius of the inner core circle
-    var fDOutterCoreThickness = 6;                      // thickness of the core bulk
+    var fDInnerCore = 29;                             // radius of the inner core circle
+    var fDOutterCoreThickness = 4;                      // thickness of the core bulk
     var fDOuterCore = fDiamBig - fDOutterCoreThickness; // radius of the outter core circle
     var fChuckCoreHalfThickness = 3;                    // half thickness of the chuck
 
@@ -184,6 +184,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     fAngleCur     = deg2rad(0);
 
     var Current;
+    var aCurrent = [0.47*DeflCoilTotCurrent, 0.71*DeflCoilTotCurrent, DeflCoilTotCurrent];
 
     for (var iChuck=0; iChuck < fChucksNumbQuarter*4; iChuck++)
     {
@@ -191,20 +192,17 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 
              if (iChuck==0)  Current =    0;
-        else if (iChuck==1)  Current =   50;
-        else if (iChuck==2)  Current =   70;
-        else if (iChuck==3)  Current =  100;
-        else if (iChuck==4)  Current =   70;
-        else if (iChuck==5)  Current =   50;
+        else if (iChuck==1)  Current =   aCurrent[0];
+        else if (iChuck==2)  Current =   aCurrent[1];
+        else if (iChuck==3)  Current =   aCurrent[2];
+        else if (iChuck==4)  Current =   aCurrent[1];
+        else if (iChuck==5)  Current =   aCurrent[0];
         else if (iChuck==6)  Current =    0;
-        else if (iChuck==7)  Current =  -50;
-        else if (iChuck==8)  Current =  -70;
-        else if (iChuck==9)  Current = -100;
-        else if (iChuck==10) Current =  -70;
-        else if (iChuck==11) Current =  -50;
-
-
-        
+        else if (iChuck==7)  Current =  -aCurrent[0];
+        else if (iChuck==8)  Current =  -aCurrent[1];
+        else if (iChuck==9)  Current =  -aCurrent[2];
+        else if (iChuck==10) Current =  -aCurrent[1];
+        else if (iChuck==11) Current =  -aCurrent[0];
 
         el.value += "\n\n&reg mat=1, cur=";
         el.value += Current.toFixed(1);
@@ -241,17 +239,17 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
         //if ((iChuck!=0) && (iChuck!=6)) continue;
 
              if (iChuck==0)  Current = -  0;
-        else if (iChuck==1)  Current =  -50;
-        else if (iChuck==2)  Current =  -70;
-        else if (iChuck==3)  Current = -100;
-        else if (iChuck==4)  Current =  -70;
-        else if (iChuck==5)  Current =  -50;
+        else if (iChuck==1)  Current =  -aCurrent[0];
+        else if (iChuck==2)  Current =  -aCurrent[1];
+        else if (iChuck==3)  Current =  -aCurrent[2];
+        else if (iChuck==4)  Current =  -aCurrent[1];
+        else if (iChuck==5)  Current =  -aCurrent[0];
         else if (iChuck==6)  Current =    0;
-        else if (iChuck==7)  Current =   50;
-        else if (iChuck==8)  Current =   70;
-        else if (iChuck==9)  Current =  100;
-        else if (iChuck==10) Current =   70;
-        else if (iChuck==11) Current =   50;
+        else if (iChuck==7)  Current =   aCurrent[0];
+        else if (iChuck==8)  Current =   aCurrent[1];
+        else if (iChuck==9)  Current =   aCurrent[2];
+        else if (iChuck==10) Current =   aCurrent[1];
+        else if (iChuck==11) Current =   aCurrent[0];
 
 
 

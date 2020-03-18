@@ -620,13 +620,23 @@ if (SpaceCharge != 0)
 /* #endregion */
 
 
-/* #region DrawPaschenValuesOnTheImage */
+/* #region DrawFocalPlaneBunker */
 const FocalPlane  = 135+12+12+250;
     ctx.lineWidth = 2;
     ctx.strokeStyle = "black";
     ctx.beginPath();
 		ctx._moveTo( iOx-60, iOy + EGUNHeight + FocalPlane, false);
 		ctx._lineTo( iOx+60, iOy + EGUNHeight + FocalPlane, false);
+    ctx.stroke();
+
+    ctx.beginPath();
+        ctx._moveTo( iOx-60, iOy + EGUNHeight + FocalPlane -10, false);
+        ctx._lineTo( iOx-60, iOy + EGUNHeight + FocalPlane +10, false);
+    ctx.stroke();
+
+    ctx.beginPath();
+        ctx._moveTo( iOx+60, iOy + EGUNHeight + FocalPlane -10, false);
+        ctx._lineTo( iOx+60, iOy + EGUNHeight + FocalPlane +10, false);
     ctx.stroke();
 
     ctx.fillStyle = "black";
