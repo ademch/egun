@@ -151,41 +151,38 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 	if (Lens1CoreThickness != 0)
 	{
-		// RIGHT
 		el.value += "\n&reg mat=2";
 		el.value += " &\n";
 
-		var Lens1Outter = Lens1InnerR + Lens1Thickness;
+        var Lens1Outter = Lens1InnerR + Lens1Thickness;
+        const skeletonThickness = 3;    // thickness of a plastic frame
 
-		ctx.beginPath();
-            ctx._moveTo(iOx + Lens1InnerR - Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0);              
-            ctx._lineTo(iOx + Lens1Outter,                      iStart + Lens1DistToGun - Lens1Height/2.0);       
-            ctx._lineTo(iOx + Lens1Outter,                      iStart + Lens1DistToGun + Lens1Height/2.0); 
-            ctx._lineTo(iOx + Lens1InnerR,                      iStart + Lens1DistToGun + Lens1Height/2.0); 
-            //ctx._lineTo(iOx + Lens1InnerR,                      iStart + Lens1DistToGun + Lens1Height/2.0 -0); 
-            ctx._lineTo(iOx + Lens1InnerR - Lens1CoreThickness, iStart + Lens1DistToGun + Lens1Height/2.0 - 0); 
-            ctx._lineTo(iOx + Lens1InnerR - Lens1CoreThickness, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness); 
-            ctx._lineTo(iOx + Lens1Outter + Lens1CoreThickness, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness); 
-            ctx._lineTo(iOx + Lens1Outter + Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness); 
-            ctx._lineTo(iOx + Lens1InnerR - Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness); 
-            ctx._lineTo(iOx + Lens1InnerR - Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0);
+		// RIGHT
 
+        ctx.beginPath();
+            ctx._moveTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - 2);              
+            ctx._lineTo(iOx + Lens1Outter + 2,                      iStart + Lens1DistToGun - Lens1Height/2.0 - 2);       
+            ctx._lineTo(iOx + Lens1Outter + 2,                      iStart + Lens1DistToGun + Lens1Height/2.0 + 2); 
+            ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + 2); 
+            ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2); 
+            ctx._lineTo(iOx + Lens1Outter + Lens1CoreThickness + 2, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2); 
+            ctx._lineTo(iOx + Lens1Outter + Lens1CoreThickness + 2, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2); 
+            ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2); 
+            ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - 2);
 		ctx.stroke();
 
         // LEFT
         
 		ctx.beginPath();
-		ctx._moveTo(iOx - Lens1InnerR + Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0, false);              
-		ctx._lineTo(iOx - Lens1Outter,                      iStart + Lens1DistToGun - Lens1Height/2.0, false);       
-		ctx._lineTo(iOx - Lens1Outter,                      iStart + Lens1DistToGun + Lens1Height/2.0, false); 
-		ctx._lineTo(iOx - Lens1InnerR,                      iStart + Lens1DistToGun + Lens1Height/2.0, false); 
-		//ctx._lineTo(iOx - Lens1InnerR,                      iStart + Lens1DistToGun + Lens1Height/2.0 -0, false); 
-		ctx._lineTo(iOx - Lens1InnerR + Lens1CoreThickness, iStart + Lens1DistToGun + Lens1Height/2.0 - 0, false); 
-		ctx._lineTo(iOx - Lens1InnerR + Lens1CoreThickness, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness, false); 
-		ctx._lineTo(iOx - Lens1Outter - Lens1CoreThickness, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness, false); 
-		ctx._lineTo(iOx - Lens1Outter - Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness, false); 
-		ctx._lineTo(iOx - Lens1InnerR + Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness, false); 
-		ctx._lineTo(iOx - Lens1InnerR + Lens1CoreThickness, iStart + Lens1DistToGun - Lens1Height/2.0, false);
+            ctx._moveTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - 2, false);              
+            ctx._lineTo(iOx - Lens1Outter - 2,                      iStart + Lens1DistToGun - Lens1Height/2.0 - 2, false);       
+            ctx._lineTo(iOx - Lens1Outter - 2,                      iStart + Lens1DistToGun + Lens1Height/2.0 + 2, false); 
+            ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + 2, false); 
+            ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2, false); 
+            ctx._lineTo(iOx - Lens1Outter - Lens1CoreThickness - 2, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2, false); 
+            ctx._lineTo(iOx - Lens1Outter - Lens1CoreThickness - 2, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2, false); 
+            ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2, false); 
+            ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - 2, false);
 
 		ctx.fillStyle = "Lavender";
 		ctx.fill();
@@ -195,82 +192,82 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 /* #endregion */
 
-/* #region Lens #2 */
+// /* #region Lens #2 */
 
-	// RIGHT
+// 	// RIGHT
 
-	el.value += "\n&reg mat=1,cur=";
-	el.value += Lens2TotCurrent.toFixed(1);
-	el.value += " &\n";
+// 	el.value += "\n&reg mat=1,cur=";
+// 	el.value += Lens2TotCurrent.toFixed(1);
+// 	el.value += " &\n";
 
-	ctx.beginPath();
-        ctx._moveTo(iOx + Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0);              
-        ctx._lineTo(iOx + Lens2InnerR + Lens2Thickness, iStart + Lens2DistToGun - Lens2Height/2.0);       
-        ctx._lineTo(iOx + Lens2InnerR + Lens2Thickness, iStart + Lens2DistToGun + Lens2Height/2.0); 
-        ctx._lineTo(iOx + Lens2InnerR,                  iStart + Lens2DistToGun + Lens2Height/2.0); 
-        ctx._lineTo(iOx + Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0); 
-	ctx.stroke();
+// 	ctx.beginPath();
+//         ctx._moveTo(iOx + Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0);              
+//         ctx._lineTo(iOx + Lens2InnerR + Lens2Thickness, iStart + Lens2DistToGun - Lens2Height/2.0);       
+//         ctx._lineTo(iOx + Lens2InnerR + Lens2Thickness, iStart + Lens2DistToGun + Lens2Height/2.0); 
+//         ctx._lineTo(iOx + Lens2InnerR,                  iStart + Lens2DistToGun + Lens2Height/2.0); 
+//         ctx._lineTo(iOx + Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0); 
+// 	ctx.stroke();
 
-	// LEFT
+// 	// LEFT
 
-	ctx.beginPath();
-        ctx._moveTo(iOx - Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0, false);              
-        ctx._lineTo(iOx - Lens2InnerR - Lens2Thickness, iStart + Lens2DistToGun - Lens2Height/2.0, false);       
-        ctx._lineTo(iOx - Lens2InnerR - Lens2Thickness, iStart + Lens2DistToGun + Lens2Height/2.0, false); 
-        ctx._lineTo(iOx - Lens2InnerR,                  iStart + Lens2DistToGun + Lens2Height/2.0, false); 
-        ctx._lineTo(iOx - Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0, false); 
+// 	ctx.beginPath();
+//         ctx._moveTo(iOx - Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0, false);              
+//         ctx._lineTo(iOx - Lens2InnerR - Lens2Thickness, iStart + Lens2DistToGun - Lens2Height/2.0, false);       
+//         ctx._lineTo(iOx - Lens2InnerR - Lens2Thickness, iStart + Lens2DistToGun + Lens2Height/2.0, false); 
+//         ctx._lineTo(iOx - Lens2InnerR,                  iStart + Lens2DistToGun + Lens2Height/2.0, false); 
+//         ctx._lineTo(iOx - Lens2InnerR,                  iStart + Lens2DistToGun - Lens2Height/2.0, false); 
 
-	ctx.fillStyle = "YellowGreen";
-	ctx.fill();
+// 	ctx.fillStyle = "YellowGreen";
+// 	ctx.fill();
 
-	ctx.stroke();
+// 	ctx.stroke();
 
-/* #endregion */
+// /* #endregion */
 
-/* #region Lens #2 Core*/
+// /* #region Lens #2 Core*/
 
-if (Lens2CoreThickness != 0)
-{
-    // RIGHT
-    el.value += "\n&reg mat=2";
-    el.value += " &\n";
+// if (Lens2CoreThickness != 0)
+// {
+//     // RIGHT
+//     el.value += "\n&reg mat=2";
+//     el.value += " &\n";
 
-    var Lens2Outter = Lens2InnerR + Lens2Thickness;
+//     var Lens2Outter = Lens2InnerR + Lens2Thickness;
 
-    ctx.beginPath();
-        ctx._moveTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10);              
-        ctx._lineTo(iOx + Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0 +10);              
-        ctx._lineTo(iOx + Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0);              
-        ctx._lineTo(iOx + Lens2Outter,                       iStart + Lens2DistToGun - Lens2Height/2.0);       
-        ctx._lineTo(iOx + Lens2Outter,                       iStart + Lens2DistToGun + Lens2Height/2.0); 
-        ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0); 
-        ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness); 
-        ctx._lineTo(iOx + Lens2Outter + Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness); 
-        ctx._lineTo(iOx + Lens2Outter + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness); 
-        ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness); 
-        ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10);
+//     ctx.beginPath();
+//         ctx._moveTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10);              
+//         ctx._lineTo(iOx + Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0 +10);              
+//         ctx._lineTo(iOx + Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0);              
+//         ctx._lineTo(iOx + Lens2Outter,                       iStart + Lens2DistToGun - Lens2Height/2.0);       
+//         ctx._lineTo(iOx + Lens2Outter,                       iStart + Lens2DistToGun + Lens2Height/2.0); 
+//         ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0); 
+//         ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness); 
+//         ctx._lineTo(iOx + Lens2Outter + Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness); 
+//         ctx._lineTo(iOx + Lens2Outter + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness); 
+//         ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness); 
+//         ctx._lineTo(iOx + Lens2InnerR - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10);
 
-    ctx.stroke();
+//     ctx.stroke();
 
-    // LEFT
-    ctx.beginPath();
-        ctx._moveTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10, false);              
-        ctx._lineTo(iOx - Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0 +10, false);              
-        ctx._lineTo(iOx - Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0, false);              
-        ctx._lineTo(iOx - Lens2Outter,                       iStart + Lens2DistToGun - Lens2Height/2.0, false);       
-        ctx._lineTo(iOx - Lens2Outter,                       iStart + Lens2DistToGun + Lens2Height/2.0, false); 
-        ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0, false); 
-        ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness, false); 
-        ctx._lineTo(iOx - Lens2Outter - Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness, false); 
-        ctx._lineTo(iOx - Lens2Outter - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness, false); 
-        ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness, false); 
-        ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10, false);
+//     // LEFT
+//     ctx.beginPath();
+//         ctx._moveTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10, false);              
+//         ctx._lineTo(iOx - Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0 +10, false);              
+//         ctx._lineTo(iOx - Lens2InnerR,                       iStart + Lens2DistToGun - Lens2Height/2.0, false);              
+//         ctx._lineTo(iOx - Lens2Outter,                       iStart + Lens2DistToGun - Lens2Height/2.0, false);       
+//         ctx._lineTo(iOx - Lens2Outter,                       iStart + Lens2DistToGun + Lens2Height/2.0, false); 
+//         ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0, false); 
+//         ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness, false); 
+//         ctx._lineTo(iOx - Lens2Outter - Lens2CoreThickness,  iStart + Lens2DistToGun + Lens2Height/2.0 + Lens2CoreThickness, false); 
+//         ctx._lineTo(iOx - Lens2Outter - Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness, false); 
+//         ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 - Lens2CoreThickness, false); 
+//         ctx._lineTo(iOx - Lens2InnerR + Lens2CoreThickness,  iStart + Lens2DistToGun - Lens2Height/2.0 +10, false);
 
-    ctx.fillStyle = "Lavender";
-    ctx.fill();
+//     ctx.fillStyle = "Lavender";
+//     ctx.fill();
 
-    ctx.stroke();
-}
+//     ctx.stroke();
+// }
 
 /* #endregion */
 
