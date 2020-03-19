@@ -137,7 +137,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	el.value += "\n\n&reg mat=1";
 	el.value += " &\n";
 
-    var fDInnerCore = 29;                             // radius of the inner core circle
+    var fDInnerCore = 29;                               // radius of the inner core circle
     var fDOutterCoreThickness = 4;                      // thickness of the core bulk
     var fDOuterCore = fDiamBig - fDOutterCoreThickness; // radius of the outter core circle
     var fChuckCoreHalfThickness = 3;                    // half thickness of the chuck
@@ -191,18 +191,18 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
         //if ((iChuck!=0) && (iChuck!=6)) continue;
 
 
-             if (iChuck==0)  Current =    0;
-        else if (iChuck==1)  Current =   aCurrent[0];
-        else if (iChuck==2)  Current =   aCurrent[1];
-        else if (iChuck==3)  Current =   aCurrent[2];
-        else if (iChuck==4)  Current =   aCurrent[1];
-        else if (iChuck==5)  Current =   aCurrent[0];
-        else if (iChuck==6)  Current =    0;
-        else if (iChuck==7)  Current =  -aCurrent[0];
-        else if (iChuck==8)  Current =  -aCurrent[1];
-        else if (iChuck==9)  Current =  -aCurrent[2];
-        else if (iChuck==10) Current =  -aCurrent[1];
-        else if (iChuck==11) Current =  -aCurrent[0];
+             if (iChuck==0)  Current =  -20;
+        else if (iChuck==1)  Current =   20;
+        else if (iChuck==2)  Current =   67;
+        else if (iChuck==3)  Current =   86;
+        else if (iChuck==4)  Current =   86;
+        else if (iChuck==5)  Current =   67;
+        else if (iChuck==6)  Current =   20;
+        else if (iChuck==7)  Current =  -20;
+        else if (iChuck==8)  Current =  -67;
+        else if (iChuck==9)  Current =  -86;
+        else if (iChuck==10) Current =  -86;
+        else if (iChuck==11) Current =  -67;
 
         el.value += "\n\n&reg mat=1, cur=";
         el.value += Current.toFixed(1);
@@ -212,10 +212,10 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
         ctx.beginPath();
             ctx._moveTo(iCx + fDInnerCoil*Math.cos(fAngleCur + fAngleInnerCoilBase),
-                        iCy + fDInnerCoil*Math.sin(fAngleCur + fAngleInnerCoilBase));              
+                        iCy + fDInnerCoil*Math.sin(fAngleCur + fAngleInnerCoilBase));
         
             ctx._lineTo(iCx + fDOuterCoil*Math.cos(fAngleCur + fAngleOuterCoilBase),
-                        iCy + fDOuterCoil*Math.sin(fAngleCur + fAngleOuterCoilBase));              
+                        iCy + fDOuterCoil*Math.sin(fAngleCur + fAngleOuterCoilBase));
             
             ctx._lineTo(iCx + fDOuterCoil*Math.cos(fAngleCur + fAngleOuterCoilTop),
                         iCy + fDOuterCoil*Math.sin(fAngleCur + fAngleOuterCoilTop));       
@@ -238,18 +238,18 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     {
         //if ((iChuck!=0) && (iChuck!=6)) continue;
 
-             if (iChuck==0)  Current = -  0;
-        else if (iChuck==1)  Current =  -aCurrent[0];
-        else if (iChuck==2)  Current =  -aCurrent[1];
-        else if (iChuck==3)  Current =  -aCurrent[2];
-        else if (iChuck==4)  Current =  -aCurrent[1];
-        else if (iChuck==5)  Current =  -aCurrent[0];
-        else if (iChuck==6)  Current =    0;
-        else if (iChuck==7)  Current =   aCurrent[0];
-        else if (iChuck==8)  Current =   aCurrent[1];
-        else if (iChuck==9)  Current =   aCurrent[2];
-        else if (iChuck==10) Current =   aCurrent[1];
-        else if (iChuck==11) Current =   aCurrent[0];
+             if (iChuck==0)  Current =   20;
+        else if (iChuck==1)  Current =   -20;
+        else if (iChuck==2)  Current =   -65;
+        else if (iChuck==3)  Current =   -86;
+        else if (iChuck==4)  Current =   -86;
+        else if (iChuck==5)  Current =   -65;
+        else if (iChuck==6)  Current =   -20;
+        else if (iChuck==7)  Current =   20;
+        else if (iChuck==8)  Current =   65;
+        else if (iChuck==9)  Current =   86;
+        else if (iChuck==10) Current =   86;
+        else if (iChuck==11) Current =   65;
 
 
 
