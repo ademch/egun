@@ -8,7 +8,7 @@ var iCy = 75;					// mm
 function PrintSuperFishXY_DS(x, y)
 {
 var el = document.getElementById("DeflectionTextArea");
-	el.value += "&po x=" + x.toPrecision(4) + ", y=" + (RegionDStatic_H*fScaleSuperFish - y).toPrecision(4) + " &\r\n";
+	el.value += "&po x=" + x.toPrecision(6) + ", y=" + (RegionDStatic_H*fScaleSuperFish - y).toPrecision(6) + " &\r\n";
 }
 
 function PrintSuperFishArc_DS(x, y, radius, start, end)
@@ -17,9 +17,9 @@ var el = document.getElementById("DeflectionTextArea");
     var xStart = x + radius*Math.cos(start);
     var yStart = y + radius*Math.sin(start);
 
-	el.value += "&po x=" + xStart.toPrecision(4) + ", y=" + (RegionDStatic_H*fScaleSuperFish - yStart).toPrecision(4) + " &\r\n";
-    el.value += "&po nt=2,r=" + radius.toPrecision(4) + ", theta=" + -rad2deg(end).toPrecision(4) +
-                ", x0=" + x.toPrecision(4) + ", y0=" + x.toPrecision(4) + " &\r\n";
+	el.value += "&po x=" + xStart.toPrecision(6) + ", y=" + (RegionDStatic_H*fScaleSuperFish - yStart).toPrecision(6) + " &\r\n";
+    el.value += "&po nt=2,r=" + radius.toPrecision(6) + ", theta=" + -rad2deg(end).toPrecision(6) +
+                ", x0=" + x.toPrecision(6) + ", y0=" + y.toPrecision(6) + " &\r\n";
 }
 
 function PrintSuperFishCircle_DS(x, y, radius)
@@ -28,11 +28,11 @@ var el = document.getElementById("DeflectionTextArea");
     var xStart = x + radius;
     var yStart = y + 0;
 
-	el.value += "&po x=" + xStart.toPrecision(4) + ", y=" + (RegionDStatic_H*fScaleSuperFish - yStart).toPrecision(4) + " &\r\n";
-    el.value += "&po nt=2,r=" + radius.toPrecision(4) + ", theta=180.0" +
-                ", x0=" + x.toPrecision(4) + ", y0=" + x.toPrecision(4) + " &\r\n";
-    el.value += "&po nt=2,r=" + radius.toPrecision(4) + ", theta=360.0" +
-                ", x0=" + x.toPrecision(4) + ", y0=" + x.toPrecision(4) + " &\r\n";
+	el.value += "&po x=" + xStart.toPrecision(6) + ", y=" + (RegionDStatic_H*fScaleSuperFish - yStart).toPrecision(6) + " &\r\n";
+    el.value += "&po nt=2,r=" + radius.toPrecision(6) + ", theta=180.0" +
+                ", x0=" + x.toPrecision(6) + ", y0=" + y.toPrecision(6) + " &\r\n";
+    el.value += "&po nt=2,r=" + radius.toPrecision(6) + ", theta=360.0" +
+                ", x0=" + x.toPrecision(6) + ", y0=" + y.toPrecision(6) + " &\r\n";
 }
 
 
@@ -137,10 +137,10 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	el.value += "\n\n&reg mat=1";
 	el.value += " &\n";
 
-    var fDInnerCore = 29;                               // radius of the inner core circle
-    var fDOutterCoreThickness = 4;                      // thickness of the core bulk
+    var fDInnerCore = 30.5;                             // radius of the inner core circle
+    var fDOutterCoreThickness = 10;                      // thickness of the core bulk
     var fDOuterCore = fDiamBig - fDOutterCoreThickness; // radius of the outter core circle
-    var fChuckCoreHalfThickness = 3;                    // half thickness of the chuck
+    var fChuckCoreHalfThickness = 2.5;                    // half thickness of the chuck
 
     var fAngleInnerCore    = Math.asin(fChuckCoreHalfThickness/fDInnerCore);
     var fAngleOuterCore    = Math.asin(fChuckCoreHalfThickness/fDOuterCore);
@@ -173,36 +173,36 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     var fCoilSpacer = 1;                            // space between chuck and winding
     var fDInnerCoil = fDInnerCore + 2;              // radius of the inner circle of the coil
     var fDOuterCoil = fDOuterCore - fCoilSpacer;
-    var fCoilHalfThickness = 3;                     // thickness of a coil winding
+    var fCoilHalfThickness = 4;                     // thickness of a coil winding
 
     var fAngleInnerCoilBase  = Math.atan((fChuckCoreHalfThickness + fCoilSpacer)/fDInnerCoil);
     var fAngleOuterCoilBase  = Math.atan((fChuckCoreHalfThickness + fCoilSpacer)/fDOuterCoil);
     var fAngleInnerCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness)/fDInnerCoil);
-    var fAngleOuterCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness)/fDOuterCoil);
+    var fAngleOuterCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness + 2)/fDOuterCoil);
     
     
     fAngleCur     = deg2rad(0);
 
     var Current;
-    var aCurrent = [0.47*DeflCoilTotCurrent, 0.71*DeflCoilTotCurrent, DeflCoilTotCurrent];
+    var aCurrent = [0.47*DeflCoilTotCurrent, 0.71*DeflCoilTotCurrent, 1.0*DeflCoilTotCurrent];
 
     for (var iChuck=0; iChuck < fChucksNumbQuarter*4; iChuck++)
     {
         //if ((iChuck!=0) && (iChuck!=6)) continue;
 
 
-             if (iChuck==0)  Current =  -20;
-        else if (iChuck==1)  Current =   20;
-        else if (iChuck==2)  Current =   67;
-        else if (iChuck==3)  Current =   86;
-        else if (iChuck==4)  Current =   86;
-        else if (iChuck==5)  Current =   67;
-        else if (iChuck==6)  Current =   20;
-        else if (iChuck==7)  Current =  -20;
-        else if (iChuck==8)  Current =  -67;
-        else if (iChuck==9)  Current =  -86;
-        else if (iChuck==10) Current =  -86;
-        else if (iChuck==11) Current =  -67;
+             if (iChuck==0)  Current =    0;
+        else if (iChuck==1)  Current =   aCurrent[0];
+        else if (iChuck==2)  Current =   aCurrent[1];
+        else if (iChuck==3)  Current =   aCurrent[2];
+        else if (iChuck==4)  Current =   aCurrent[1];
+        else if (iChuck==5)  Current =   aCurrent[0];
+        else if (iChuck==6)  Current =    0;
+        else if (iChuck==7)  Current =  -aCurrent[0];
+        else if (iChuck==8)  Current =  -aCurrent[1];
+        else if (iChuck==9)  Current =  -aCurrent[2];
+        else if (iChuck==10) Current =  -aCurrent[1];
+        else if (iChuck==11) Current =  -aCurrent[0];
 
         el.value += "\n\n&reg mat=1, cur=";
         el.value += Current.toFixed(1);
@@ -212,10 +212,10 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
         ctx.beginPath();
             ctx._moveTo(iCx + fDInnerCoil*Math.cos(fAngleCur + fAngleInnerCoilBase),
-                        iCy + fDInnerCoil*Math.sin(fAngleCur + fAngleInnerCoilBase));
+                        iCy + fDInnerCoil*Math.sin(fAngleCur + fAngleInnerCoilBase));              
         
             ctx._lineTo(iCx + fDOuterCoil*Math.cos(fAngleCur + fAngleOuterCoilBase),
-                        iCy + fDOuterCoil*Math.sin(fAngleCur + fAngleOuterCoilBase));
+                        iCy + fDOuterCoil*Math.sin(fAngleCur + fAngleOuterCoilBase));              
             
             ctx._lineTo(iCx + fDOuterCoil*Math.cos(fAngleCur + fAngleOuterCoilTop),
                         iCy + fDOuterCoil*Math.sin(fAngleCur + fAngleOuterCoilTop));       
@@ -238,18 +238,18 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     {
         //if ((iChuck!=0) && (iChuck!=6)) continue;
 
-             if (iChuck==0)  Current =   20;
-        else if (iChuck==1)  Current =   -20;
-        else if (iChuck==2)  Current =   -65;
-        else if (iChuck==3)  Current =   -86;
-        else if (iChuck==4)  Current =   -86;
-        else if (iChuck==5)  Current =   -65;
-        else if (iChuck==6)  Current =   -20;
-        else if (iChuck==7)  Current =   20;
-        else if (iChuck==8)  Current =   65;
-        else if (iChuck==9)  Current =   86;
-        else if (iChuck==10) Current =   86;
-        else if (iChuck==11) Current =   65;
+             if (iChuck==0)  Current = -  0;
+        else if (iChuck==1)  Current =  -aCurrent[0];
+        else if (iChuck==2)  Current =  -aCurrent[1];
+        else if (iChuck==3)  Current =  -aCurrent[2];
+        else if (iChuck==4)  Current =  -aCurrent[1];
+        else if (iChuck==5)  Current =  -aCurrent[0];
+        else if (iChuck==6)  Current =    0;
+        else if (iChuck==7)  Current =   aCurrent[0];
+        else if (iChuck==8)  Current =   aCurrent[1];
+        else if (iChuck==9)  Current =   aCurrent[2];
+        else if (iChuck==10) Current =   aCurrent[1];
+        else if (iChuck==11) Current =   aCurrent[0];
 
 
 
@@ -357,8 +357,6 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     ctx.stroke();
 
 /* #endregion */
-
-
 
 }
 
