@@ -427,7 +427,7 @@ if (Particle === ParticleEnum.ELECTRON)
 }
 
 var vPos = [x,y,z];     // cm
-var dt = (Particle === ParticleEnum.ELECTRON) ? 1e-11 : 1e-9;
+var dt = (Particle === ParticleEnum.ELECTRON) ? 1e-12 : 1e-9;   // 1e-11 gave poor results for deflection coil
 const Vc=299.7915942e6;	// m/s
 
 
