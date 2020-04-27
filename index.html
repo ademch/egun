@@ -85,15 +85,15 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <div style="z-index:101; position:absolute; top:570px; left:660px;">
         <input type="checkbox" id="CalcESField" name="CalcESField" title="Calculate ES field" value="CalcESField">
-        <label for="CalcESField">Electrostatic</label>
+        <label for="CalcESField">ES</label>
 </div>
 <div style="z-index:101; position:absolute; top:635px; left:660px;">
         <input type="checkbox" id="CalcMSField" name="CalcMSField" title="Calculate MS field" value="CalcMSField">
-        <label for="CalcMSField">Magnetostatic</label>
+        <label for="CalcMSField">MS focusing</label>
 </div>
 <div style="z-index:101; position:absolute; top:660px; left:660px;">
     <input type="checkbox" id="CalcDSField" name="CalcDSField" title="Calculate Deflection field" value="CalcDSField">
-    <label for="CalcDSField">Deflection</label>
+    <label for="CalcDSField">MS deflecting</label>
 </div>
 
 
@@ -147,6 +147,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <label style="z-index:101; position:absolute; top:975px; left:650px;"> <input type=number id = "DeflCoilDistToGun" style="width: 7ch" value="130" oninput="DrawGun()"> mm &nbsp; Dist to gun</label>
 <label style="z-index:101; position:absolute; top:1000px; left:650px;"> <input type=number id = "DeflCoilHeight" style="width: 7ch" value="25" oninput="DrawGun()"> mm &nbsp; Coil height </label>
 <label style="z-index:101; position:absolute; top:1025px; left:650px;"> <input type=number id = "DeflCoilTotCurrent" style="width: 7ch" value="100" step = "10" oninput="DrawGun()"> A*N &nbsp; Coil total current</label>
+<label style="z-index:101; position:absolute; top:1050px; left:650px;"> <input type=number id = "DeflCoilAirGap" style="width: 7ch" value="0" step = "0.5" oninput="DrawGun()"> mm &nbsp; Air gap</label>
 
 
 <a href="#" id="btn-download" onclick="downloadImage()">Download image</a>
@@ -291,7 +292,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
                                                 "DeflCoilDistToGun"    : $F('DeflCoilDistToGun'),
                                                 "DeflAbsPosY"          : $F('DeflAbsPosY'),           // calculated
                                                 "DeflCoilHeight"       : $F('DeflCoilHeight'),
-                                                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent') }
+                                                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent'),
+                                                "DeflCoilAirGap"       : $F('DeflCoilAirGap') }
                                         }),
                //mode    : 'cors'
            })
@@ -451,7 +453,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             "DeflCoilParams": {
                 "DeflCoilDistToGun"    : $F('DeflCoilDistToGun'),
                 "DeflCoilHeight"       : $F('DeflCoilHeight'),
-                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent') }
+                "DeflCoilTotCurrent"   : $F('DeflCoilTotCurrent'),
+                "DeflCoilAirGap"       : $F('DeflCoilAirGap') }
                 }
     }
 

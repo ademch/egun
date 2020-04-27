@@ -1,3 +1,7 @@
+function sqr(val) {
+    return val*val;
+}
+
 var RegionDStatic_W = 150; 		// mm
 var RegionDStatic_H = 150;		// mm
 
@@ -81,6 +85,7 @@ var ctx = c.getContext("2d");
 	var DeflCoilDistToGun    = parseFloat(document.getElementById("DeflCoilDistToGun").value);
 	var DeflCoilHeight       = parseFloat(document.getElementById("DeflCoilHeight").value);
 	var DeflCoilTotCurrent   = parseFloat(document.getElementById("DeflCoilTotCurrent").value);
+	var DeflCoilAirGap       = parseFloat(document.getElementById("DeflCoilAirGap").value);
 /* #endregion */
 
 /* #region Print Superfish 1st region params */
@@ -137,15 +142,17 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	el.value += "\n\n&reg mat=1";
 	el.value += " &\n";
 
-    var fDInnerCore = 30.5;                             // radius of the inner core circle
-    var fDOutterCoreThickness = 10;                      // thickness of the core bulk
-    var fDOuterCore = fDiamBig - fDOutterCoreThickness; // radius of the outter core circle
-    var fChuckCoreHalfThickness = 2.5;                    // half thickness of the chuck
+    var fDInnerCore = 30.5;                              // radius of the inner core circle
+    var fDOutterCoreThickness = 9;                       // thickness of the core bulk
+    var fDOuterCore = fDiamBig - fDOutterCoreThickness;  // radius of the outter core circle
+    var fChuckCoreHalfThickness = 2.5;                   // half thickness of the chuck
 
     var fAngleInnerCore    = Math.asin(fChuckCoreHalfThickness/fDInnerCore);
     var fAngleOuterCore    = Math.asin(fChuckCoreHalfThickness/fDOuterCore);
     var fChucksNumbQuarter = 3;
     var fAngleChucksD      = deg2rad(90/fChucksNumbQuarter);
+
+    var AirGapAngle = Math.acos(1.0-sqr(DeflCoilAirGap)/(sqr(fDiamBig)*2)); //deg2rad(1); // chord length = 2R*sin(a/2) => cos(a)= 1-L^2/2R^2
     
     var fAngleCur          = deg2rad(0);
 
@@ -155,7 +162,15 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
         
         for (var iChuck=0; iChuck < fChucksNumbQuarter*4; iChuck++)
         {
-            ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleOuterCore, fAngleCur + fAngleChucksD - fAngleOuterCore, true);       
+            if ( (DeflCoilAirGap > 0) && ((iChuck===0) || (iChuck===6)) )   // a case when the core is split in half
+            {
+                ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleOuterCore,                 fAngleCur + fAngleChucksD/2.0 - AirGapAngle, true);                
+                ctx._arc(iCx, iCy, fDiamBig,    fAngleCur + fAngleChucksD/2.0 - AirGapAngle, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, true);                
+                ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, fAngleCur + fAngleChucksD - fAngleOuterCore, true);                
+            }
+            else
+                ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleOuterCore, fAngleCur + fAngleChucksD - fAngleOuterCore, true);
+
             fAngleCur += fAngleChucksD;
             ctx._lineTo(iCx + fDInnerCore*Math.cos(fAngleCur - fAngleInnerCore),
                         iCy + fDInnerCore*Math.sin(fAngleCur - fAngleInnerCore));       
@@ -178,7 +193,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     var fAngleInnerCoilBase  = Math.atan((fChuckCoreHalfThickness + fCoilSpacer)/fDInnerCoil);
     var fAngleOuterCoilBase  = Math.atan((fChuckCoreHalfThickness + fCoilSpacer)/fDOuterCoil);
     var fAngleInnerCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness)/fDInnerCoil);
-    var fAngleOuterCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness + 2)/fDOuterCoil);
+    var fAngleOuterCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness)/fDOuterCoil);
     
     
     fAngleCur     = deg2rad(0);
@@ -188,16 +203,13 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
     for (var iChuck=0; iChuck < fChucksNumbQuarter*4; iChuck++)
     {
-        //if ((iChuck!=0) && (iChuck!=6)) continue;
-
-
-             if (iChuck==0)  Current =    0;
+             if (iChuck==0)  Current =   0;
         else if (iChuck==1)  Current =   aCurrent[0];
         else if (iChuck==2)  Current =   aCurrent[1];
         else if (iChuck==3)  Current =   aCurrent[2];
         else if (iChuck==4)  Current =   aCurrent[1];
         else if (iChuck==5)  Current =   aCurrent[0];
-        else if (iChuck==6)  Current =    0;
+        else if (iChuck==6)  Current =   0;
         else if (iChuck==7)  Current =  -aCurrent[0];
         else if (iChuck==8)  Current =  -aCurrent[1];
         else if (iChuck==9)  Current =  -aCurrent[2];
