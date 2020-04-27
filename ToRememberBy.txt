@@ -220,3 +220,27 @@ function IntegratePosOutOfThreeVelocities(aVel_1, aVel_0, aVel_Next, fPosX, fPos
     // v = VectorAdd(vVelPrev, VectorMult(dt/6.0, kTotal) );
 
 	// return v;
+
+
+        // sample electric field in the current point
+        aElField = [0,0,0];
+        await ES_FieldReader(fPosX, fPosY)
+        .then( (aPointF) => { aElField[0] = aPointF[0]; aElField[1]= aPointF[1]; aElField[2]=0; });
+
+function ES_FieldReader(x, y)
+{
+    return new Promise((resolve, reject) => {
+
+        fieldReader.stdin.write(x + ' ' + y + '\n');
+
+        fieldReader.stdout.once('data', (data) => {
+            //console.log(`stdout: ${data}`);
+            aPoint = data.toString().split(/\s+/);
+            resolve(aPoint);
+        });
+    });
+}
+
+
+    fieldReader = child_process.spawn('D:\\OR_JavaScript\\EGUN\\FieldReader\\FieldReader.exe', ['C:\\LANL\\Examples\\Electrostatic\\Try\\1.T35']);
+
