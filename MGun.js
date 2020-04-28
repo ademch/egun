@@ -165,8 +165,8 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
             ctx._lineTo(iOx + Lens1Outter + 2,                      iStart + Lens1DistToGun + Lens1Height/2.0 + 2); 
             ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + 2); 
             ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2); 
-            ctx._lineTo(iOx + Lens1Outter + Lens1CoreThickness + 2, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2); 
-            ctx._lineTo(iOx + Lens1Outter + Lens1CoreThickness + 2, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2); 
+            ctx._lineTo(iOx + Lens1Outter + 10 + 2,                 iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2); 
+            ctx._lineTo(iOx + Lens1Outter + 10 + 2,                 iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2); 
             ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2); 
             ctx._lineTo(iOx + Lens1InnerR - skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - 2);
 		ctx.stroke();
@@ -179,8 +179,8 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
             ctx._lineTo(iOx - Lens1Outter - 2,                      iStart + Lens1DistToGun + Lens1Height/2.0 + 2, false); 
             ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + 2, false); 
             ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2, false); 
-            ctx._lineTo(iOx - Lens1Outter - Lens1CoreThickness - 2, iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2, false); 
-            ctx._lineTo(iOx - Lens1Outter - Lens1CoreThickness - 2, iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2, false); 
+            ctx._lineTo(iOx - Lens1Outter - 10 - 2,                 iStart + Lens1DistToGun + Lens1Height/2.0 + Lens1CoreThickness + 2, false); 
+            ctx._lineTo(iOx - Lens1Outter - 10 - 2,                 iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2, false); 
             ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - Lens1CoreThickness - 2, false); 
             ctx._lineTo(iOx - Lens1InnerR + skeletonThickness,      iStart + Lens1DistToGun - Lens1Height/2.0 - 2, false);
 
