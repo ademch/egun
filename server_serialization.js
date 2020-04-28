@@ -50,7 +50,12 @@ const egunSchema = new mongoose.Schema({
         Lens2Thickness       : Number,
         Lens2Height          : Number,
         Lens2TotCurrent      : Number,
-        Lens2CoreThickness   : Number }
+        Lens2CoreThickness   : Number },
+    DeflCoilParams: {
+        DeflCoilDistToGun    : Number,
+        DeflCoilHeight       : Number,
+        DeflCoilTotCurrent   : Number,
+        DeflCoilAirGap       : Number }
     }
 );
 
@@ -59,13 +64,14 @@ Gun = mongoose.model('eGun', egunSchema);
 router.post("/add", (req, res) => {
     
     const gun = new Gun({
-        _id:           new mongoose.Types.ObjectId(),
-        name:          req.body.name,
-        CathodeParams: req.body.CathodeParams,
-        AnodeParams:   req.body.AnodeParams,
-        PlasmaParams:  req.body.PlasmaParams,
-        Lens1Params:   req.body.Lens1Params,
-        Lens2Params:   req.body.Lens2Params
+        _id:            new mongoose.Types.ObjectId(),
+        name:           req.body.name,
+        CathodeParams:  req.body.CathodeParams,
+        AnodeParams:    req.body.AnodeParams,
+        PlasmaParams:   req.body.PlasmaParams,
+        Lens1Params:    req.body.Lens1Params,
+        Lens2Params:    req.body.Lens2Params,
+        DeflCoilParams: req.body.Lens2Params
     });
 
     gun.save(err => {
