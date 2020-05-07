@@ -129,10 +129,10 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     el.value += "&reg mat=2";
     el.value += " &\n";
 
-    var fDiamBig = 50;
+    var fRadiusBig = 50;
 
     ctx.beginPath();
-        ctx._circle(iCx, iCy, fDiamBig, true);
+        ctx._circle(iCx, iCy, fRadiusBig, true);
 
         ctx.fillStyle = "Lavender";
 		ctx.fill();
@@ -142,17 +142,17 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	el.value += "\n\n&reg mat=1";
 	el.value += " &\n";
 
-    var fDInnerCore = 30.5;                              // radius of the inner core circle
-    var fDOutterCoreThickness = 9;                       // thickness of the core bulk
-    var fDOuterCore = fDiamBig - fDOutterCoreThickness;  // radius of the outter core circle
-    var fChuckCoreHalfThickness = 2.5;                   // half thickness of the chuck
+    var fDInnerCore = 30.5;                                // radius of the inner core circle
+    var fDOutterCoreThickness = 9;                         // thickness of the core bulk
+    var fDOuterCore = fRadiusBig - fDOutterCoreThickness;  // radius of the outter core circle
+    var fChuckCoreHalfThickness = 2.0;                     // half thickness of the chuck
 
     var fAngleInnerCore    = Math.asin(fChuckCoreHalfThickness/fDInnerCore);
     var fAngleOuterCore    = Math.asin(fChuckCoreHalfThickness/fDOuterCore);
     var fChucksNumbQuarter = 3;
     var fAngleChucksD      = deg2rad(90/fChucksNumbQuarter);
 
-    var AirGapAngle = Math.acos(1.0-sqr(DeflCoilAirGap)/(sqr(fDiamBig)*2)); //deg2rad(1); // chord length = 2R*sin(a/2) => cos(a)= 1-L^2/2R^2
+    var AirGapAngle = Math.acos(1.0-sqr(DeflCoilAirGap)/(sqr(fRadiusBig)*2)); //deg2rad(1); // chord length = 2R*sin(a/2) => cos(a)= 1-L^2/2R^2
     
     var fAngleCur          = deg2rad(0);
 
@@ -165,7 +165,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
             if ( (DeflCoilAirGap > 0) && ((iChuck===0) || (iChuck===6)) )   // a case when the core is split in half
             {
                 ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleOuterCore,                 fAngleCur + fAngleChucksD/2.0 - AirGapAngle, true);                
-                ctx._arc(iCx, iCy, fDiamBig,    fAngleCur + fAngleChucksD/2.0 - AirGapAngle, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, true);                
+                ctx._arc(iCx, iCy, fRadiusBig,    fAngleCur + fAngleChucksD/2.0 - AirGapAngle, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, true);                
                 ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, fAngleCur + fAngleChucksD - fAngleOuterCore, true);                
             }
             else
@@ -182,6 +182,16 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 		ctx.fill();         
     ctx.stroke();
 
+    // circle
+
+    // el.value += "&reg mat=2";
+    // el.value += " &\n";
+    // ctx._circle(iCx, iCy, 29, true);
+
+    // el.value += "&reg mat=1";
+    // el.value += " &\n";
+    // ctx._circle(iCx, iCy, 24, true);
+
 
     // COILS
 
@@ -193,7 +203,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     var fAngleInnerCoilBase  = Math.atan((fChuckCoreHalfThickness + fCoilSpacer)/fDInnerCoil);
     var fAngleOuterCoilBase  = Math.atan((fChuckCoreHalfThickness + fCoilSpacer)/fDOuterCoil);
     var fAngleInnerCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness)/fDInnerCoil);
-    var fAngleOuterCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness)/fDOuterCoil);
+    var fAngleOuterCoilTop   = Math.atan((fChuckCoreHalfThickness + fCoilSpacer + fCoilHalfThickness + 1)/fDOuterCoil);
     
     
     fAngleCur     = deg2rad(0);
@@ -306,21 +316,21 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     var ctx = c.getContext("2d");
 
     ctx.beginPath();
-        ctx._moveTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false);              
-        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight, false);       
-        ctx._lineTo(iOx + fDiamBig,                     iStart + DeflCoilDistToGun, false); 
-        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun, false); 
-        ctx._lineTo(iOx + fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false); 
+        ctx._moveTo(iOx + fDInnerCore,      iStart + DeflCoilDistToGun - DeflCoilHeight, false);              
+        ctx._lineTo(iOx + fRadiusBig,       iStart + DeflCoilDistToGun - DeflCoilHeight, false);       
+        ctx._lineTo(iOx + fRadiusBig,       iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx + fDInnerCore,      iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx + fDInnerCore,      iStart + DeflCoilDistToGun - DeflCoilHeight, false); 
     ctx.stroke();
 
     // LEFT
 
     ctx.beginPath();
-        ctx._moveTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false);              
-        ctx._lineTo(iOx - fDiamBig,                     iStart + DeflCoilDistToGun - DeflCoilHeight, false);       
-        ctx._lineTo(iOx - fDiamBig,                     iStart + DeflCoilDistToGun, false); 
-        ctx._lineTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun, false); 
-        ctx._lineTo(iOx - fDInnerCore,                  iStart + DeflCoilDistToGun - DeflCoilHeight, false); 
+        ctx._moveTo(iOx - fDInnerCore,      iStart + DeflCoilDistToGun - DeflCoilHeight, false);              
+        ctx._lineTo(iOx - fRadiusBig,       iStart + DeflCoilDistToGun - DeflCoilHeight, false);       
+        ctx._lineTo(iOx - fRadiusBig,       iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx - fDInnerCore,      iStart + DeflCoilDistToGun, false); 
+        ctx._lineTo(iOx - fDInnerCore,      iStart + DeflCoilDistToGun - DeflCoilHeight, false); 
 
 	ctx.fillStyle = "YellowGreen";
 	ctx.fill();
