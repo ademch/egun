@@ -188,9 +188,11 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
     // el.value += " &\n";
     // ctx._circle(iCx, iCy, 29, true);
 
-    // el.value += "&reg mat=1";
-    // el.value += " &\n";
-    // ctx._circle(iCx, iCy, 24, true);
+    // ctx.beginPath();
+    // ctx._circle(iCx, iCy, 30, true);
+    // ctx.fillStyle = "White";
+	// ctx.fill();         
+    // ctx.stroke();
 
 
     // COILS
@@ -305,7 +307,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 /* #endregion */
 
-/* #region Lens #1 */
+/* #region Beam Guide */
 
     // RIGHT
     
@@ -338,6 +340,8 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	ctx.stroke();
 
 /* #endregion */
+
+// RIGHT
 
     ctx.beginPath();
         ctx._moveTo(iOx + 15,      iStart, false);              
