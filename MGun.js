@@ -65,6 +65,7 @@ var ctx = c.getContext("2d");
 var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 /* #region Superfish 1st region */
+    el.value += "! Region 1\n";
 	PrintSuperFishXY_MS(0,                                      0);
 	PrintSuperFishXY_MS((RegionMStatic_W-iOx)*fScaleSuperFish,  0);
 	PrintSuperFishXY_MS((RegionMStatic_W-iOx)*fScaleSuperFish,  RegionMStatic_H*fScaleSuperFish);
@@ -84,29 +85,29 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	// ctx.stroke();
 /* #endregion */
 
-/* #region Shield */
+/* #region Magnetic Shield */
 
 	// RIGHT
+    el.value += "! Magnetic Shield\n";
 	el.value += "&reg mat=2";
 	el.value += " &\n";
 
 	ctx.beginPath();
-        ctx._moveTo(iOx + 22,      iStart);              
-        ctx._lineTo(iOx + 22 + 43, iStart);       
-        ctx._lineTo(iOx + 22 + 43, iStart + 9); 
-        ctx._lineTo(iOx + 22,      iStart + 9); 
-        ctx._lineTo(iOx + 22,      iStart); 
-
+        ctx._moveTo(iOx + 15,      iStart);
+        ctx._lineTo(iOx + 15 + 2,  iStart);
+        ctx._lineTo(iOx + 15 + 2,  iStart + 9); 
+        ctx._lineTo(iOx + 15,      iStart + 9); 
+        ctx._lineTo(iOx + 15,      iStart);
 	ctx.stroke();
 
 	// LEFT
 
 	ctx.beginPath();
-        ctx._moveTo(iOx - 22,      iStart, false);              
-        ctx._lineTo(iOx - 22 - 43, iStart, false);       
-        ctx._lineTo(iOx - 22 - 43, iStart + 9, false); 
-        ctx._lineTo(iOx - 22,      iStart + 9, false); 
-        ctx._lineTo(iOx - 22,      iStart, false); 
+        ctx._moveTo(iOx - 15,      iStart, false);              
+        ctx._lineTo(iOx - 15 - 2,  iStart, false);       
+        ctx._lineTo(iOx - 15 - 2,  iStart + 9, false); 
+        ctx._lineTo(iOx - 15,      iStart + 9, false); 
+        ctx._lineTo(iOx - 15,      iStart, false); 
 
 	ctx.fillStyle = "LightBlue";
 	ctx.fill();
@@ -118,8 +119,8 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 /* #region Lens #1 */
 
 	// RIGHT
-
-	el.value += "\n&reg mat=1,cur=";
+    el.value += "\n! Focusing Lens 1\n";
+	el.value += "&reg mat=1,cur=";
 	el.value += Lens1TotCurrent.toFixed(1);
 	el.value += " &\n";
 
@@ -151,7 +152,8 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 	if (Lens1CoreThickness != 0)
 	{
-		el.value += "\n&reg mat=2";
+        el.value += "\n! Focusing Lens 1 Core\n";
+		el.value += "&reg mat=2";
 		el.value += " &\n";
 
         var Lens1Outter = Lens1InnerR + Lens1Thickness;
