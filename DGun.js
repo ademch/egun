@@ -307,7 +307,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 /* #endregion */
 
-/* #region Beam Guide */
+/* #region Deflection coil */
 
     // RIGHT
     
@@ -340,6 +340,9 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 	ctx.stroke();
 
 /* #endregion */
+
+
+/* #region Beam Guide */
 
 // RIGHT
 
