@@ -87,32 +87,32 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 /* #region Magnetic Shield */
 
-	// RIGHT
-    el.value += "! Magnetic Shield\n";
-	el.value += "&reg mat=2";
-	el.value += " &\n";
+	// // RIGHT
+    // el.value += "! Magnetic Shield\n";
+	// el.value += "&reg mat=2";
+	// el.value += " &\n";
 
-	ctx.beginPath();
-        ctx._moveTo(iOx + 15,      iStart);
-        ctx._lineTo(iOx + 15 + 2,  iStart);
-        ctx._lineTo(iOx + 15 + 2,  iStart + 9); 
-        ctx._lineTo(iOx + 15,      iStart + 9); 
-        ctx._lineTo(iOx + 15,      iStart);
-	ctx.stroke();
+	// ctx.beginPath();
+    //     ctx._moveTo(iOx + 15,      iStart);
+    //     ctx._lineTo(iOx + 15 + 2,  iStart);
+    //     ctx._lineTo(iOx + 15 + 2,  iStart + 9); 
+    //     ctx._lineTo(iOx + 15,      iStart + 9); 
+    //     ctx._lineTo(iOx + 15,      iStart);
+	// ctx.stroke();
 
-	// LEFT
+	// // LEFT
 
-	ctx.beginPath();
-        ctx._moveTo(iOx - 15,      iStart, false);              
-        ctx._lineTo(iOx - 15 - 2,  iStart, false);       
-        ctx._lineTo(iOx - 15 - 2,  iStart + 9, false); 
-        ctx._lineTo(iOx - 15,      iStart + 9, false); 
-        ctx._lineTo(iOx - 15,      iStart, false); 
+	// ctx.beginPath();
+    //     ctx._moveTo(iOx - 15,      iStart, false);              
+    //     ctx._lineTo(iOx - 15 - 2,  iStart, false);       
+    //     ctx._lineTo(iOx - 15 - 2,  iStart + 9, false); 
+    //     ctx._lineTo(iOx - 15,      iStart + 9, false); 
+    //     ctx._lineTo(iOx - 15,      iStart, false); 
 
-	ctx.fillStyle = "LightBlue";
-	ctx.fill();
+	// ctx.fillStyle = "LightBlue";
+	// ctx.fill();
 
-	ctx.stroke();
+	// ctx.stroke();
 
 /* #endregion */
 
@@ -194,7 +194,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 /* #endregion */
 
-// /* #region Lens #2 */
+/* #region Lens #2 */
 
 // 	// RIGHT
 
@@ -226,7 +226,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
 // /* #endregion */
 
-// /* #region Lens #2 Core*/
+/* #region Lens #2 Core*/
 
 // if (Lens2CoreThickness != 0)
 // {
