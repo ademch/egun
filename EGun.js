@@ -76,6 +76,38 @@ function CircleLineIntersect(xr,yr,r, x1,y1,x2,y2)
 	return [rootX2, rootY2];
 }
 
+function VectorMult(s, v) {
+	var x = s * v[0];
+	var y = s * v[1];
+	var z = s * v[2];
+
+	return [x,y,z];
+}
+
+function VectorAdd(v0, v1) {
+	var x = v0[0] + v1[0];
+	var y = v0[1] + v1[1];
+	var z = v0[2] + v1[2];
+
+	return [x,y,z];
+}
+
+function LineHorizontIntersect(yhorizont, x1,y1,x2,y2)
+{
+    return (yhorizont-y1)/(y2-y1) * (x2-x1) + x1;
+}
+
+
+function BezierCubic(aptCP0, aptCP1, aptCP2, aptCP3, t)
+{
+    var ptNew = VectorMult(                 (1-t)*(1-t)*(1-t), aptCP0);
+        ptNew = VectorAdd(ptNew,VectorMult(   3*t*(1-t)*(1-t), aptCP1));
+        ptNew = VectorAdd(ptNew,VectorMult(   3*t*t*(1-t),     aptCP2));
+        ptNew = VectorAdd(ptNew,VectorMult(   t*t*t,           aptCP3));
+
+    return ptNew;
+}
+
 
 var EGUNHeight = 0;
 
@@ -334,41 +366,38 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
         ctx._moveTo(iOx + AnodeNozzleThroatR-1, iOy + iH9);          
         ctx._lineTo(iOx + AnodeNozzleR-1, iOy + iH10);         
         
-        // Intermediate calculations
+        // Intermediate calculations:
         // circle with the center on the right cathode edge
         var inters = CircleLineIntersect(iOx + CathR,iOy + CathNettoH, AnodeCathGap + CathDarkSpace,
-                                        iOx + AnodeNozzleR, iOy + iH10,
-                                        iOx + AnodeInnerR, iOy + CathNettoH + AnodeCathGap + AnodeSaddleH);
+                                         iOx + AnodeNozzleR, iOy + iH10,
+                                         iOx + AnodeInnerR, iOy + CathNettoH + AnodeCathGap + AnodeSaddleH);
         inters[0] = (iOx + CathR - inters[0]);
         inters[1] = Math.abs(iOy + CathNettoH - inters[1]);
         var fAngleInters = Math.atan2(inters[0],inters[1]);
-        
-        var bCenterArcExists = true;
+
+        var cptR3 = [fFocusX,
+                     fFocusY - iRPlasma];
+
+        var intersXR2 = LineHorizontIntersect(cptR3[1],
+                                              iOx + AnodeNozzleR, iOy + iH10,
+                                              iOx + AnodeInnerR, iOy + CathNettoH + AnodeCathGap + AnodeSaddleH);
+        var cptR2 = [ (fFocusX + intersXR2)/2.0, cptR3[1] ];
+
+        var intersXR1 = LineHorizontIntersect(cptR3[1] -4,
+                                              iOx + AnodeNozzleR, iOy + iH10,
+                                              iOx + AnodeInnerR, iOy + CathNettoH + AnodeCathGap + AnodeSaddleH);
+        var cptR0 = [intersXR1 -1, cptR3[1] -4];
+        var cptR1 = [(fFocusX + intersXR1)/2.0, cptR3[1]];
 
         // right offset circle
-        for (var i = 1; i < 20; i++) {
-            var xp = iOx + CathR      + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-            var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
+        for (var i = 0; i <= 20; i++) {
+            var ptBezier = BezierCubic(cptR0, cptR1, cptR2, cptR3, i/20 );
+            var xp = ptBezier[0];
+            var yp = ptBezier[1];
 
-            // draw only until circle stays on one half of the plane (handling situation when CDSpace is larger than radius)
-            if (xp > 76) ctx._lineTo(xp, yp);
-            else {bCenterArcExists = false; break;}
-        }
-        
-        // Main plasma circle
-
-        // (handling situation when CDSpace is larger than radius)
-        if (bCenterArcExists) {
-            for (var i = 1; i < 10; i++) {
-                var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-                var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-
-                ctx._lineTo(xp, yp);
-            }
+            ctx._lineTo(xp, yp);
         }
 
-        // move exactly to the center (reuse y either from offset circle or from central arc)
-        ctx._lineTo(iOx, yp);
         ctx._lineTo(iOx, iOy + iH9);          
         ctx._lineTo(iOx + AnodeNozzleThroatR-1, iOy + iH9);
         
@@ -379,26 +408,29 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
 
     ctx.beginPath();
 
-        // move exactly to the center (reuse y either from offset circle or from central arc)
+        // move exactly to the center
         ctx._moveTo(iOx, iOy + iH9, false);          
-        ctx._lineTo(iOx, yp, false);
-
-        if (bCenterArcExists) {
-            for (var i = 11; i < 20; i++) {
-                var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-                var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-
-                ctx._lineTo(xp, yp, false);
-            }
-        }
 
         // left offset circle
-        for (var i = 20-1; i > 0; i--) {
-            var xp = iOx - CathR      + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-            var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-        
-            // draw only until circle stays on one half of the plane (handling situation when CDSpace is larger than radius)
-            if (xp < 74) ctx._lineTo(xp, yp, false);
+        var cptL3 = [fFocusX,
+                     fFocusY - iRPlasma];
+
+        var intersXL2 = LineHorizontIntersect(cptL3[1],
+                                              iOx - AnodeNozzleR, iOy + iH10,
+                                              iOx - AnodeInnerR, iOy + CathNettoH + AnodeCathGap + AnodeSaddleH);
+        var cptL2 = [ (fFocusX + intersXL2)/2.0, cptL3[1] ];
+
+        var intersXL1 = LineHorizontIntersect(cptL3[1] -4,
+                                              iOx - AnodeNozzleR, iOy + iH10,
+                                              iOx - AnodeInnerR, iOy + CathNettoH + AnodeCathGap + AnodeSaddleH);
+        var cptL0 = [intersXL1 +1, cptL3[1] -4];
+        var cptL1 = [(fFocusX + intersXL1)/2.0, cptL3[1]];
+
+
+        for (var i = 20; i >= 0; i--) {
+            var ptBezier = BezierCubic(cptL0, cptL1, cptL2, cptL3, i/20 );
+
+            ctx._lineTo(ptBezier[0], ptBezier[1], false);
         }
         
         
@@ -475,8 +507,6 @@ if (SpaceCharge != 0)
                 // position exactly on the line
                 ctx._moveTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap), false);
 
-                var bCenterArcExists = true;
-
                 // cathode surface
                 for (var i = 21; i <=40; i++) {
                     var xp = fFocusX + (CathFocusR-SpaceChargeGap)*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/20);
@@ -485,28 +515,14 @@ if (SpaceCharge != 0)
                     ctx._lineTo(xp, yp, false);
                 }
 
-                // left offset circle
-                for (var i = 1; i < 20; i++) {
-                    var xp = iOx - CathR +      (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 + (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-                    var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-
-                    // prevent swallow tail formation
-                    if (xp < 74) ctx._lineTo(xp, yp -1, false);
-                    else {bCenterArcExists = false; break;}
-                }	
-
                 // plasma central circe
-                if (bCenterArcExists) {
-                    for (var i = 19; i > 10; i--) {
-                        var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-                        var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
+                cptL0[1] -= 1; cptL1[1] -= 1; cptL2[1] -= 1; cptL3[1] -= 1;
+                for (var i = 0; i <=20; i++) {
+                    var ptBezier = BezierCubic(cptL0, cptL1, cptL2, cptL3, i/20 );
 
-                        ctx._lineTo(xp, yp-1, false);
-                    }
+                    ctx._lineTo( ptBezier[0], ptBezier[1], false);
                 }
 
-                // move exactly to the center (reuse y either from offset circle or from central arc)
-                ctx._lineTo(iOx, yp-1, false);
                 ctx._lineTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap), false);
 
             ctx.fillStyle = "Orange";
@@ -515,25 +531,14 @@ if (SpaceCharge != 0)
 
             ctx.beginPath();
                 ctx._moveTo(iOx, fFocusY - (CathFocusR-SpaceChargeGap));
-                ctx._lineTo(iOx, yp-1);
 
                 // plasma central circe
-                if (bCenterArcExists) {
-                    for (var i = 9; i > 0; i--) {
-                        var xp = fFocusX + iRPlasma*Math.cos(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
-                        var yp = fFocusY - iRPlasma*Math.sin(Math.PI/2.0 - fStartAngle + i*fStartAngle/10);
 
-                        ctx._lineTo(xp, yp-1);
-                    }
-                }
-
-                // right offset circle
-                for (var i = 19; i > 0; i--) {
-                    var xp = iOx + CathR + (AnodeCathGap + CathDarkSpace)*Math.cos(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-                    var yp = iOy + CathNettoH - (AnodeCathGap + CathDarkSpace)*Math.sin(3*Math.PI/2.0 - (fAngleInters*(1.0-i/20) + fStartAngle*i/20));
-
-                    // prevent swallow tail formation
-                    if (xp > 76) ctx._lineTo(xp, yp-1);
+                cptR0[1] -= 1; cptR1[1] -= 1; cptR2[1] -= 1; cptR3[1] -= 1;
+                for (var i = 20; i >= 0; i--) {
+                    var ptBezier = BezierCubic(cptR0, cptR1, cptR2, cptR3, i/20 );
+        
+                    ctx._lineTo(ptBezier[0], ptBezier[1] );
                 }
 
                 // main surface
@@ -618,7 +623,6 @@ if (SpaceCharge != 0)
 
 }
 /* #endregion */
-
 
 /* #region DrawFocalPlaneBunker */
 const FocalPlane  = 135+12+12+250;
