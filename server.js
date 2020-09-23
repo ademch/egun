@@ -373,10 +373,10 @@ const fShort = 0.022;	// cm
 
 
     for (var i = 0; i < 30; i++) {
-		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.3;
+		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.6;
 
-        var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0)*Math.cos(2.0*Math.PI*i/30);
-        var zp =                          (AnodeParams.AnodeNozzleR/10.0)*Math.sin(2.0*Math.PI*i/30);
+        var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0 + 0.2)*Math.cos(2.0*Math.PI*i/30);
+        var zp =                          (AnodeParams.AnodeNozzleR/10.0 + 0.2)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "DarkTurquoise";
         TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
@@ -384,7 +384,7 @@ const fShort = 0.022;	// cm
 
     
     for (var i = 0; i < 30; i++) {
-		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.3;
+		var yp  = CathodeParams.SFFocusY + CathodeParams.CathFocusR - PlasmaParams.CathDarkSpace + 0.4;
 
         var xp = CathodeParams.SFFocusX + (AnodeParams.AnodeNozzleR/10.0 - 1.0)*Math.cos(2.0*Math.PI*i/30);
         var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 1.0)*Math.sin(2.0*Math.PI*i/30);
@@ -530,12 +530,15 @@ function DrawFieldValues(ES_problem, path_to_file, result_ind)
 // draws them to the result image, adds electron traces and params
 function DrawElectronMap(aInd)
 {
-	console.log("Tracing electrons");
 
-    if (SuperfishParams.TraceElectron)
+    if (SuperfishParams.TraceElectron) {
+        console.log("Tracing electrons");
         EmitElectrons();
-    else
+    }
+    else {
+        console.log("Tracing ions");
         EmitIons();
+    }
 
     DrawParamsOnTheImage();
     
