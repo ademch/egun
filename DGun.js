@@ -82,14 +82,15 @@ var ctx = c.getContext("2d");
 	var el = document.getElementById("DeflectionTextArea");
 
 /* #region GUI params */
-	var DeflCoilDistToGun    = parseFloat(document.getElementById("DeflCoilDistToGun").value);
-	var DeflCoilHeight       = parseFloat(document.getElementById("DeflCoilHeight").value);
-	var DeflCoilTotCurrent   = parseFloat(document.getElementById("DeflCoilTotCurrent").value);
-	var DeflCoilAirGap       = parseFloat(document.getElementById("DeflCoilAirGap").value);
+	var DeflCoilDistToGun      = parseFloat(document.getElementById("DeflCoilDistToGun").value);
+	var DeflCoilHeight         = parseFloat(document.getElementById("DeflCoilHeight").value);
+	var DeflCoilTotCurrent     = parseFloat(document.getElementById("DeflCoilTotCurrent").value);
+    var DeflCoilAirGap         = parseFloat(document.getElementById("DeflCoilAirGap").value);
+    var DeflCoilEdgeCurrent    = parseFloat(document.getElementById("DeflCoilEdgeCurrent").value);
 /* #endregion */
 
 /* #region Print Superfish 1st region params */
-	el.value  = "Magnetostatic problem\n";
+	el.value  = "Magnetostatic problem (deflection)\n";
 	el.value += "\n";
 	el.value += "&reg kprob=0,    ! Poisson or Pandira problem\n";
 	el.value += "xjfact=1.0,      ! Magnetostatic problem (current scaler)\n";
@@ -165,7 +166,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
             if ( (DeflCoilAirGap > 0) && ((iChuck===0) || (iChuck===6)) )   // a case when the core is split in half
             {
                 ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleOuterCore,                 fAngleCur + fAngleChucksD/2.0 - AirGapAngle, true);                
-                ctx._arc(iCx, iCy, fRadiusBig,    fAngleCur + fAngleChucksD/2.0 - AirGapAngle, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, true);                
+                ctx._arc(iCx, iCy, fRadiusBig,  fAngleCur + fAngleChucksD/2.0 - AirGapAngle, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, true);                
                 ctx._arc(iCx, iCy, fDOuterCore, fAngleCur + fAngleChucksD/2.0 + AirGapAngle, fAngleCur + fAngleChucksD - fAngleOuterCore, true);                
             }
             else
@@ -342,50 +343,111 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 /* #endregion */
 
 
-/* #region Beam Guide */
 
-// RIGHT
+var el = document.getElementById("DeflectionEdgeTextArea");
 
-    ctx.beginPath();
-        ctx._moveTo(iOx + 15,      iStart, false);              
-        ctx._lineTo(iOx + 22,      iStart, false);       
-        ctx._lineTo(iOx + 22,      iStart + 9, false); 
-        ctx._lineTo(iOx + 24,      iStart + 9, false); 
-        ctx._lineTo(iOx + 24,      iStart + 125, false); 
-        ctx._lineTo(iOx + 27,      iStart + 136, false); 
-        ctx._lineTo(iOx + 50,      iStart + 136, false); 
-        ctx._lineTo(iOx + 50,      iStart + 125, false); 
-        ctx._lineTo(iOx + 55,      iStart + 125, false); 
-        ctx._lineTo(iOx + 55,      iStart + 145, false); 
-        ctx._lineTo(iOx + 31,      iStart + 145, false); 
-        ctx._lineTo(iOx + 31,      iStart + 149, false); 
-        ctx._lineTo(iOx + 20,      iStart + 149, false); 
-        ctx._lineTo(iOx + 15,      iStart + 130, false); 
-        ctx._lineTo(iOx + 15,      iStart, false); 
-    ctx.stroke();
+/* #region Deflection Edge */
+    el.value  = "Magnetostatic problem (deflection edge)\n";
+    el.value += "\n";
+    el.value += "&reg kprob=0,    ! Poisson or Pandira problem\n";
+    el.value += "xjfact=1.0,      ! Magnetostatic problem (current scaler)\n";
+    el.value += "dx=0.05,         ! Mesh interval\n";
+    el.value += "icylin=0,        ! No cylindrical symmetry\n";
+    el.value += "mode=-1,         ! FIXGAM is the default value of the reluctivity for materials with MAT = 2 and higher\n";
+    el.value += "nbsup=0,         ! Dirichlet boundary condition at upper edge\n";
+    el.value += "nbslo=0,         ! Dirichlet boundary condition at lower edge\n";
+    el.value += "nbsrt=0,         ! Dirichlet boundary condition at right edge\n";
+    el.value += "nbslf=0 &        ! Dirichlet boundary condition at left edge\n";
+    el.value += "\n\n";
 
-// LEFT
 
-    ctx.beginPath();
-        ctx._moveTo(iOx - 15,      iStart, false);              
-        ctx._lineTo(iOx - 22,      iStart, false);       
-        ctx._lineTo(iOx - 22,      iStart + 9, false); 
-        ctx._lineTo(iOx - 24,      iStart + 9, false); 
-        ctx._lineTo(iOx - 24,      iStart + 125, false); 
-        ctx._lineTo(iOx - 27,      iStart + 136, false); 
-        ctx._lineTo(iOx - 50,      iStart + 136, false); 
-        ctx._lineTo(iOx - 50,      iStart + 125, false); 
-        ctx._lineTo(iOx - 55,      iStart + 125, false); 
-        ctx._lineTo(iOx - 55,      iStart + 145, false); 
-        ctx._lineTo(iOx - 31,      iStart + 145, false); 
-        ctx._lineTo(iOx - 31,      iStart + 149, false); 
-        ctx._lineTo(iOx - 20,      iStart + 149, false); 
-        ctx._lineTo(iOx - 15,      iStart + 130, false); 
-        ctx._lineTo(iOx - 15,      iStart, false); 
+    el.value += "&po x=0.000,y=15.00 &\n";
+    el.value += "&po x=15.0,y=15.00 &\n";
+    el.value += "&po x=15.0,y=0.00 &\n";
+    el.value += "&po x=0.000,y=0.00 &\n";
+    el.value += "&po x=0.000,y=15.00 &\n";
+    
+    el.value += "\n&reg mat=1,cur=";
 
-    ctx.stroke();
+    Current = -DeflCoilEdgeCurrent;
+    el.value += Current.toFixed(1);
+    el.value += " &\n";
+    el.value += "&po x=3.7,y=6.50 &\n";
+    el.value += "&po x=3.7,y=6.90 &\n";
+    el.value += "&po x=4.5,y=6.90 &\n";
+    el.value += "&po x=4.5,y=6.50 &\n";
+    el.value += "&po x=3.7,y=6.50 &\n";
+    
+    el.value += "\n&reg mat=1,cur=";
+    Current = DeflCoilEdgeCurrent;
+    el.value += Current.toFixed(1);
+    el.value += " &\n";
+    el.value += "&po x=3.7,y=10.10 &\n";
+    el.value += "&po x=3.7,y=10.50 &\n";
+    el.value += "&po x=4.5,y=10.50 &\n";
+    el.value += "&po x=4.5,y=10.10 &\n";
+    el.value += "&po x=3.7,y=10.10 &\n";
+    
+    el.value += "\n&reg mat=1,cur=";
+    Current = -DeflCoilEdgeCurrent;
+    el.value += Current.toFixed(1);
+    el.value += " &\n";
+    el.value += "&po x=10.5,  y=6.50 &\n";
+    el.value += "&po x=10.5,  y=6.90 &\n";
+    el.value += "&po x=11.3, y=6.90 &\n";
+    el.value += "&po x=11.3, y=6.50 &\n";
+    el.value += "&po x=10.5,  y=6.50 &\n";
+    
+    el.value += "\n&reg mat=1,cur=";
+    Current = DeflCoilEdgeCurrent;
+    el.value += Current.toFixed(1);
+    el.value += " &\n";
+    el.value += "&po x=10.5,  y=10.10 &\n";
+    el.value += "&po x=10.5,  y=10.50 &\n";
+    el.value += "&po x=11.3, y=10.50 &\n";
+    el.value += "&po x=11.3, y=10.10 &\n";
+    el.value += "&po x=10.5,  y=10.10 &\n";
+    
+    el.value += "\n&reg mat=2 &\n";
+    el.value += "&po x=3.1,y=6.0 &\n";
+    el.value += "&po x=3.1,y=7.0 &\n";
+    el.value += "&po x=1.4,y=7.0 &\n";
+    el.value += "&po x=1.4,y=14.5 &\n";
+    el.value += "&po x=13.6,y=14.5 &\n";
+    el.value += "&po x=13.6,y=7 &\n";
+    el.value += "&po x=11.9,y=7 &\n";
+    el.value += "&po x=11.9,y=6.0 &\n";
+    el.value += "&po x=11.4,y=6.0 &\n";
+    el.value += "&po x=11.4,y=7.0 &\n";
+    el.value += "&po x=10.4,y=7.0 &\n";
+    el.value += "&po x=10.4,y=10.0 &\n";
+    el.value += "&po x=11.4,y=10.0 &\n";
+    el.value += "&po x=11.4,y=11.0 &\n";
+    el.value += "&po x=11.9,y=11.0 &\n";
+    el.value += "&po x=11.9,y=10.0 &\n";
+    el.value += "&po x=13.1,y=10.0 &\n";
+    el.value += "&po x=13.1,y=14.0 &\n";
+    el.value += "&po x=1.90,y=14.0 &\n";
+    el.value += "&po x=1.90,y=10.0 &\n";
+    el.value += "&po x=3.10,y=10.0 &\n";
+    el.value += "&po x=3.10,y=11.0 &\n";
+    el.value += "&po x=3.60,y=11.0 &\n";
+    el.value += "&po x=3.60,y=10.0 &\n";
+    el.value += "&po x=4.6,y=10.0 &\n";
+    el.value += "&po x=4.6,y=7.0 &\n";
+    el.value += "&po x=3.6,y=7.0 &\n";
+    el.value += "&po x=3.6,y=6.0 &\n";
+    el.value += "&po x=3.1,y=6.0 &\n";
+    
+    
+    
+    
+
 
 /* #endregion */
+
+
+
 
 }
 
