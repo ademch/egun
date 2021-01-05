@@ -16,7 +16,7 @@ var child_process = require('child_process');
 
 if (process.env.NODE_ENV !== 'production') {
 	require('dotenv').config();
-  }
+}
 
 const SF_PathAutomesh  = "C:\\LANL\\AUTOMESH.EXE";
 const SF_PathPoisson   = 'C:\\LANL\\POISSON.EXE';
@@ -29,9 +29,11 @@ const SF_TitleProp     = '"Bit Image File Output (PCX/BMP/PNG format)"';
 const SF_ES_SourcePath = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.am';
 const SF_MS_SourcePath = 'C:\\LANL\\Examples\\Magnetostatic\\Try\\1.am';
 const SF_DS_SourcePath = 'C:\\LANL\\Examples\\Magnetostatic\\Deflection\\1.am';
+const SF_DS2_SourcePath = 'C:\\LANL\\Examples\\Magnetostatic\\Deflection2\\1.am';
 const SF_ES_t35Path    = 'C:\\LANL\\Examples\\Electrostatic\\Try\\1.T35';
 const SF_MS_t35Path    = 'C:\\LANL\\Examples\\Magnetostatic\\Try\\1.T35';
 const SF_DS_t35Path    = 'C:\\LANL\\Examples\\Magnetostatic\\Deflection\\1.T35';
+const SF_DS2_t35Path   = 'C:\\LANL\\Examples\\Magnetostatic\\Deflection2\\1.T35';
 
 var ResultImagePath;
 
@@ -112,7 +114,6 @@ app.post("/calculate", (req, res) => {
 	// SFBeamHalfAngle;		    	// beam half angle in rad
 	// CathFocusR;			    	// cathode focus radius in cm
 	// AutofishScript;			  	// script file for SuperFish
-	// UsePrecalcFields;		  	// Skip fields calculation
 	// CathDarkSpace;		    	// distance of dark space in cm
 
 	SuperfishParams = req.body.SuperfishParams;
@@ -153,19 +154,32 @@ app.post("/calculate", (req, res) => {
     
     FieldW.Dim.DFy_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
 	FieldW.Dim.DFy_IntervBoundN = FieldW.Dim.DFy_IntervNumber + 1;
-	FieldW.Dim.DFy_IntervLength = 15.0/FieldW.Dim.DFy_IntervNumber;	// mm
+    FieldW.Dim.DFy_IntervLength = 15.0/FieldW.Dim.DFy_IntervNumber;	// mm
+    
+    // ----------------------
+	// Deflection2: 15cm x 15cm zone
+	FieldW.Dim.DF2x_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.Dim.DF2x_IntervBoundN = FieldW.Dim.DF2x_IntervNumber + 1;
+    FieldW.Dim.DF2x_IntervLength = 15.0/FieldW.Dim.DF2x_IntervNumber; // mm
+    
+    FieldW.Dim.DF2y_IntervNumber = parseFloat(SuperfishParams.SFIntGran)*2;
+	FieldW.Dim.DF2y_IntervBoundN = FieldW.Dim.DF2y_IntervNumber + 1;
+	FieldW.Dim.DF2y_IntervLength = 15.0/FieldW.Dim.DF2y_IntervNumber; // mm
 
-	var AutofishES_Source = SuperfishParams.AutofishES.replace(/\n/g, "\r\n");
-	var AutofishMS_Source = SuperfishParams.AutofishMS.replace(/\n/g, "\r\n");
-	var AutofishDS_Source = SuperfishParams.AutofishDS.replace(/\n/g, "\r\n");
+	var AutofishES_Source  = SuperfishParams.AutofishES.replace(/\n/g, "\r\n");
+	var AutofishMS_Source  = SuperfishParams.AutofishMS.replace(/\n/g, "\r\n");
+	var AutofishDS_Source  = SuperfishParams.AutofishDS.replace(/\n/g, "\r\n");
+	var AutofishDS2_Source = SuperfishParams.AutofishDS2.replace(/\n/g, "\r\n");
 
     setImmediate(() => {
-		if (SuperfishParams.CalcESField)	
+		if (SuperfishParams.CalcESField)
 			fs.writeFileSync(SF_ES_SourcePath, AutofishES_Source);
 		if (SuperfishParams.CalcMSField)
 			fs.writeFileSync(SF_MS_SourcePath, AutofishMS_Source);
         if (SuperfishParams.CalcDSField)
 			fs.writeFileSync(SF_DS_SourcePath, AutofishDS_Source);
+        if (SuperfishParams.CalcDS2Field)
+			fs.writeFileSync(SF_DS2_SourcePath, AutofishDS2_Source);
 
 		StartSuperFish();
 	});
@@ -202,6 +216,8 @@ function ReadFieldValues(p_type, path_to_file, aF_values)
 			strMatch = "    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        Index";
         if (p_type == ProblemType.DS)
             strMatch = "    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        (G/cm)";
+        if (p_type == ProblemType.DS2)
+            strMatch = "    (cm)          (cm)             (G)           (G)           (G)         (G-cm)        (G/cm)        (G/cm)        (G/cm)";
         
 		var path = path_to_file.substr(0, path_to_file.lastIndexOf("\\") + 1);
 		var rd = readline.createInterface({
@@ -217,12 +233,13 @@ function ReadFieldValues(p_type, path_to_file, aF_values)
 			}
 
 			var aPoint = line.trim().split(/\s+/);
-			aF_values.push(aPoint.map(parseFloat).slice(2,4)); // get E(or B)x,E(or B)y only
+			aF_values.push(aPoint.map(parseFloat).slice(2,4)); // get E(or B)x, E(or B)y only
 		});
 
 		rd.on('close', () => {
 			console.log("Read " + aF_values.length + " items");
-			ServerState = srv_state.ServerEnum.EFRead;
+            if (p_type == ProblemType.DS2)
+    			ServerState = srv_state.ServerEnum.EFRead;
 			resolve();
 		});
 	});
@@ -258,11 +275,13 @@ function ForceFunc(vPos,     VelPrev,   Particle)
     //Me=3.32e-24;	//H2 molecule
     
     // sample fields in the current point
-	var E  = FieldW.PeekElectrField(vPos);        // V/m
-    var Bm = FieldW.PeekMagnField(vPos);          // T
-    var Bd = FieldW.PeekDeflectionField(vPos);    // T
+	var E   = FieldW.PeekElectrField(vPos);        // V/m
+    var Bm  = FieldW.PeekMagnField(vPos);          // T
+    var Bd  = FieldW.PeekDeflectionField(vPos);    // T
+    var Bd2 = FieldW.PeekDeflectionField2(vPos);   // T
 
     var B = VecMath.VectorAdd(Bm, Bd);
+        B = VecMath.VectorAdd(B, Bd2);
 
 	var VPrevSqr = VecMath.VectorDot(VelPrev, VelPrev);
 	LorentzContraction = Math.pow( 1.0-(VPrevSqr)/Vc_2, 1.5 );
@@ -379,7 +398,7 @@ const fShort = 0.022;	// cm
         var zp =                          (AnodeParams.AnodeNozzleR/10.0 + 0.2)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "DarkTurquoise";
-        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
     }
 
     
@@ -390,7 +409,7 @@ const fShort = 0.022;	// cm
         var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 1.0)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "PaleGreen";
-        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
     }
 
 
@@ -401,7 +420,7 @@ const fShort = 0.022;	// cm
         var zp =                          (AnodeParams.AnodeNozzleR/10.0 - 1.6)*Math.sin(2.0*Math.PI*i/30);
 
         ctx.fillStyle = "OrangeRed";
-        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.H2_ION);
+        TraceParticleTrajectory(xp, yp, zp,  ParticleEnum.AR_ION);
     }
 
 }
@@ -635,6 +654,11 @@ function StartAutomesh(p_type, path_to_file)
         }
         if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
             // exit in case DS field calc was not demanded
+			resolve();
+			return;
+		}
+        if ( (p_type == ProblemType.DS2) && !SuperfishParams.CalcDS2Field) {
+            // exit in case DS2 field calc was not demanded
             ServerState = srv_state.ServerEnum.AUTOMESH;
 			resolve();
 			return;
@@ -676,6 +700,11 @@ function StartPoisson(p_type, path_to_file)
         }
         if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
             // exit in case DS field calc was not demanded
+			resolve();
+			return;
+        }
+        if ( (p_type == ProblemType.DS2) && !SuperfishParams.CalcDS2Field) {
+            // exit in case DS field calc was not demanded
             ServerState = srv_state.ServerEnum.AUTOMESH;
 			resolve();
 			return;
@@ -712,6 +741,11 @@ function StartSF7(p_type, path_to_file)
         }
         if ( (p_type == ProblemType.DS) && !SuperfishParams.CalcDSField) {
             // exit in case DS field calc was not demanded
+			resolve();
+			return;
+		}
+        if ( (p_type == ProblemType.DS2) && !SuperfishParams.CalcDS2Field) {
+            // exit in case DS2 field calc was not demanded
             ServerState = srv_state.ServerEnum.AUTOMESH;
 			resolve();
 			return;
@@ -737,6 +771,13 @@ function StartSF7(p_type, path_to_file)
         var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
             in7 += '0, 0, 15, 15          ! Grid corners for map\r\n';
             in7 += FieldW.Dim.DFx_IntervNumber + ' ' + FieldW.Dim.DFy_IntervNumber;
+            in7 += '               ! Number of radial and longitudinal increments \r\n';
+            in7 += 'end\r\n';
+        }
+        else if (p_type == ProblemType.DS2) {
+        var in7  = 'Grid                  ! Creates input 2-D field map for Parmela\r\n';
+            in7 += '0, 0, 15, 15          ! Grid corners for map\r\n';
+            in7 += FieldW.Dim.DF2x_IntervNumber + ' ' + FieldW.Dim.DF2y_IntervNumber;
             in7 += '               ! Number of radial and longitudinal increments \r\n';
             in7 += 'end\r\n';
         }
@@ -781,6 +822,11 @@ function StartWSFPlot(p_type, path_to_file)
             // exit in case DS field calc was not demanded
 			resolve();
 			return;
+        }
+        if ( (p_type == ProblemType.DS2) && !SuperfishParams.CalcDS2Field) {
+            // exit in case DS field calc was not demanded
+			resolve();
+			return;
 		}
 
 		console.log("Starting WSFPlot");
@@ -818,6 +864,12 @@ function StartWSFPlotSendCommands(p_type, wsf_child)
             // exit in case DS field calc was not demanded
 			resolve();
 			return;
+        }        
+        if ( (p_type == ProblemType.DS2) && !SuperfishParams.CalcDS2Field) {
+            // exit in case DS field calc was not demanded
+            ServerState = srv_state.ServerEnum.WSFPlot;
+			resolve();
+			return;
 		}
 
 		// saves png image with the name according to internal autoincrement rule
@@ -832,7 +884,7 @@ function StartWSFPlotSendCommands(p_type, wsf_child)
 		child.on('exit', (code) => {
 			wsf_child.kill('SIGINT');
 			
-            if (p_type == ProblemType.DS)	// make sure state changes on ES/MS/DS has been processed
+            if (p_type == ProblemType.DS2)	// make sure state changes on ES/MS/DS has been processed
                 ServerState = srv_state.ServerEnum.WSFPlot;
 			console.log("Finishing WSFPlot\n");
 		
@@ -848,46 +900,34 @@ function StartSuperFish()
 		return Promise.reject(err)
 	};
 
-	if (SuperfishParams.UsePrecalcFields)
-	{
-		StartWSFPlot(ProblemType.ES,  SF_ES_t35Path)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.ES, wsf_child); }, chainError)
-		.then( () => { return StartWSFPlot(ProblemType.MS, SF_MS_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.MS, wsf_child); }, chainError)
-		.then( () => { return StartWSFPlot(ProblemType.DS, SF_DS_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.DS, wsf_child); }, chainError)
-		.then( () => {	return ReadFieldValues(ProblemType.ES, SF_ES_SourcePath, FieldW.aEF_values); }, chainError)
-        .then( () => {	return ReadFieldValues(ProblemType.MS, SF_MS_SourcePath, FieldW.aMF_values); }, chainError)
-		.then( () => {	return ReadFieldValues(ProblemType.DS, SF_DS_SourcePath, FieldW.aDF_values); }, chainError)
-		.then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
-        .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
-		.then( (aInd) => {	DrawElectronMap(aInd); }, chainError)
-		.catch( (e) => { console.log(e); ServerState = srv_state.ServerEnum.ONLINE; } );
-	}
-	else
-	{
-		StartAutomesh(ProblemType.ES, SF_ES_SourcePath)
-		.then( () => { return StartAutomesh(ProblemType.MS, SF_MS_SourcePath); }, chainError)
-		.then( () => { return StartAutomesh(ProblemType.DS, SF_DS_SourcePath); }, chainError)
-		.then( () => { return StartPoisson(ProblemType.ES, SF_ES_t35Path); }, chainError)
-		.then( () => { return StartPoisson(ProblemType.MS, SF_MS_t35Path); }, chainError)
-		.then( () => { return StartPoisson(ProblemType.DS, SF_DS_t35Path); }, chainError)
-		.then( () => { return StartSF7(ProblemType.ES, SF_ES_t35Path); }, chainError)
-		.then( () => { return StartSF7(ProblemType.MS, SF_MS_t35Path); }, chainError)
-		.then( () => { return StartSF7(ProblemType.DS, SF_DS_t35Path); }, chainError)
-		.then( () => { return StartWSFPlot(ProblemType.ES,  SF_ES_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.ES, wsf_child); }, chainError)
-		.then( () => { return StartWSFPlot(ProblemType.MS, SF_MS_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.MS, wsf_child); }, chainError)
-		.then( () => { return StartWSFPlot(ProblemType.DS, SF_DS_t35Path); }, chainError)
-		.then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.DS, wsf_child); }, chainError)
-		.then( () => {	return ReadFieldValues(ProblemType.ES, SF_ES_SourcePath, FieldW.aEF_values); }, chainError)
-        .then( () => {	return ReadFieldValues(ProblemType.MS, SF_MS_SourcePath, FieldW.aMF_values); }, chainError)
-		.then( () => {	return ReadFieldValues(ProblemType.DS, SF_DS_SourcePath, FieldW.aDF_values); }, chainError)
-		.then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
-        .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
-		.then( (aInd) => {	DrawElectronMap(aInd); }, chainError)
-		.catch( (e) => { console.log(e); ServerState = srv_state.ServerEnum.ONLINE; } );
-	}
+
+    StartAutomesh(ProblemType.ES, SF_ES_SourcePath)
+    .then( () => { return StartAutomesh(ProblemType.MS, SF_MS_SourcePath); }, chainError)
+    .then( () => { return StartAutomesh(ProblemType.DS, SF_DS_SourcePath); }, chainError)
+    .then( () => { return StartAutomesh(ProblemType.DS2, SF_DS2_SourcePath); }, chainError)
+    .then( () => { return StartPoisson(ProblemType.ES, SF_ES_t35Path); }, chainError)
+    .then( () => { return StartPoisson(ProblemType.MS, SF_MS_t35Path); }, chainError)
+    .then( () => { return StartPoisson(ProblemType.DS, SF_DS_t35Path); }, chainError)
+    .then( () => { return StartPoisson(ProblemType.DS2, SF_DS2_t35Path); }, chainError)
+    .then( () => { return StartSF7(ProblemType.ES, SF_ES_t35Path); }, chainError)
+    .then( () => { return StartSF7(ProblemType.MS, SF_MS_t35Path); }, chainError)
+    .then( () => { return StartSF7(ProblemType.DS, SF_DS_t35Path); }, chainError)
+    .then( () => { return StartSF7(ProblemType.DS2, SF_DS2_t35Path); }, chainError)
+    .then( () => { return StartWSFPlot(ProblemType.ES,  SF_ES_t35Path); }, chainError)
+    .then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.ES, wsf_child); }, chainError)
+    .then( () => { return StartWSFPlot(ProblemType.MS, SF_MS_t35Path); }, chainError)
+    .then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.MS, wsf_child); }, chainError)
+    .then( () => { return StartWSFPlot(ProblemType.DS, SF_DS_t35Path); }, chainError)
+    .then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.DS, wsf_child); }, chainError)
+    .then( () => { return StartWSFPlot(ProblemType.DS2, SF_DS2_t35Path); }, chainError)
+    .then( (wsf_child) => { return StartWSFPlotSendCommands(ProblemType.DS2, wsf_child); }, chainError)
+    .then( () => {	return ReadFieldValues(ProblemType.ES, SF_ES_SourcePath, FieldW.aEF_values); }, chainError)
+    .then( () => {	return ReadFieldValues(ProblemType.MS, SF_MS_SourcePath, FieldW.aMF_values); }, chainError)
+    .then( () => {	return ReadFieldValues(ProblemType.DS, SF_DS_SourcePath, FieldW.aDF_values); }, chainError)
+    .then( () => {	return ReadFieldValues(ProblemType.DS2, SF_DS2_SourcePath, FieldW.aDF2_values); }, chainError)
+    .then( () => {	return DrawFieldValues(true,  SF_ES_SourcePath, []); }, chainError)
+    .then( (aInd) => {	return DrawFieldValues(false, SF_MS_SourcePath, aInd); }, chainError)        
+    .then( (aInd) => {	DrawElectronMap(aInd); }, chainError)
+    .catch( (e) => { console.log(e); ServerState = srv_state.ServerEnum.ONLINE; } );
 	
 }

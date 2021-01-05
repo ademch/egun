@@ -15,7 +15,8 @@ var ServerEnum = {
 var ProblemType = {
     ES : 0, // Electrostatic
     MS : 1, // Magnetostatic
-    DS : 2  // Deflection magnetostatic
+    DS : 2, // Deflection magnetostatic
+    DS2: 3  // Deflection magnetostatic
 }
 
 

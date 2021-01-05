@@ -55,7 +55,8 @@ const egunSchema = new mongoose.Schema({
         DeflCoilDistToGun    : Number,
         DeflCoilHeight       : Number,
         DeflCoilTotCurrent   : Number,
-        DeflCoilAirGap       : Number }
+        DeflCoilAirGap       : Number,
+        DeflCoilEdgeCurrent  : Number }
     }
 );
 
