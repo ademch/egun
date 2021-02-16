@@ -170,6 +170,17 @@ function CatmullRom(aptCP0, aptCP1, aptCP2, aptCP3, t)
     return ptNew;
 }
 
+function BezierCubic(aptCP0, aptCP1, aptCP2, aptCP3, t)
+{
+    var ptNew = VectorMult(                 (1-t)*(1-t)*(1-t), aptCP0);
+        ptNew = VectorAdd(ptNew,VectorMult(   3*t*(1-t)*(1-t), aptCP1));
+        ptNew = VectorAdd(ptNew,VectorMult(   3*t*t*(1-t),     aptCP2));
+        ptNew = VectorAdd(ptNew,VectorMult(   t*t*t,           aptCP3));
+
+    return ptNew;
+}
+
+
 function IntegratePosOutOfThreeVelocities(aVel_1, aVel_0, aVel_Next, fPosX, fPosY, fPosZ, dt)
 {
     dt = dt/10.0;
