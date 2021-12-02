@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb+srv://admin:"+ process.env.MONGODB_PWD + "@caracalcluster-0rexl.mongodb.net/test?retryWrites=true&w=majority",
+mongoose.connect("mongodb+srv://admin:"+ process.env.MONGODB_PWD + "@caracalcluster.0rexl.mongodb.net/test?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true})
 
 mongoose.set('bufferCommands', false);
