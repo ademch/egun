@@ -10,11 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "canvas": "^2.5.0",
+    "canvas": "^2.8.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "image-js": "^0.21.8",
-    "mongoose": "^5.8.11",
+    "mongodb": "^3.4.1",
+    "mongoose": "^5.13.8",
     "sse": "0.0.8"
   }
 }
