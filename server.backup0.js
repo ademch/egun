@@ -105,7 +105,6 @@ app.post("/calculate", (req, res) => {
 	// SFBeamHalfAngle;		    	// beam half angle in rad
 	// CathFocusR;			    	// cathode focus radius in cm
 	// AutofishScript;			  	// script file for SuperFish
-	// UsePrecalcFields;		  	// Skip fields calculation
 	// CathDarkSpace;		    	// distance of dark space in cm
 
 	SuperfishParams = req.body.SuperfishParams;
