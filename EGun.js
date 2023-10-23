@@ -218,8 +218,9 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
 	el.value += " &\n";
 
 	ctx.strokeStyle = "black";
-	ctx.lineWidth = 1;
+    ctx.lineWidth = 1;
 
+    // LEFT
 	ctx.beginPath();
         ctx._moveTo(iOx,iOy);
         ctx._lineTo(iOx + CathR + CathSkirtR, iOy);
@@ -230,10 +231,21 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
         // a*sin/sin/sqrt2, law of sines and rule of isosceles triangle
         var fCoef = fChamferLeg*Math.sin(deg2rad(180-CathButtA))/Math.sin(deg2rad(-45+CathButtA))/Math.sqrt(2);
 
-        ctx._lineTo(iOx + CathR + CathSkirtR,         iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA) )-fChamferLeg);
-        ctx._lineTo(iOx + CathR + CathSkirtR - fCoef, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg + fCoef);
+        if (true)  // controllable skirt angle
+        {
+            ctx._lineTo(iOx + CathR + CathSkirtR,         iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA) )-fChamferLeg);
+            ctx._lineTo(iOx + CathR + CathSkirtR - fCoef, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg + fCoef);
 
-        ctx._lineTo(iOx + CathR + CathSkirtH*Math.tan(deg2rad(90-CathSkirtA)), iOy + CathNettoH + CathSkirtH);
+            ctx._lineTo(iOx + CathR + CathSkirtH*Math.tan(deg2rad(90-CathSkirtA)), iOy + CathNettoH + CathSkirtH);
+        }
+        else
+        {
+            ctx._lineTo(iOx + CathR + CathSkirtR,               iOy + CathNettoH + CathSkirtH -fChamferLeg);
+            ctx._lineTo(iOx + CathR + CathSkirtR - fChamferLeg, iOy + CathNettoH + CathSkirtH);
+            ctx._lineTo(iOx + CathR + fChamferLeg,              iOy + CathNettoH + CathSkirtH);
+            ctx._lineTo(iOx + CathR,                            iOy + CathNettoH + CathSkirtH-fChamferLeg);
+        }
+
 
         // position ourselves directly on the spherical part
         ctx._lineTo(iOx + CathR, iOy + CathNettoH); 
@@ -268,11 +280,22 @@ var fFocusY = iOy + CathNettoH + CathFocusR - gSphSegH;
         // position ourselves directly on the spherical part
         ctx._lineTo(iOx - CathR, iOy + CathNettoH, false);
 
-        ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA)), iOy + CathNettoH + CathSkirtH, false);
+        if (true)  // controllable skirt angle
+        {
+            ctx._lineTo(iOx - CathR - CathSkirtH*Math.tan(deg2rad(90-CathSkirtA)), iOy + CathNettoH + CathSkirtH, false);
+            
+            // chamfering on the left
+            ctx._lineTo(iOx - CathR - CathSkirtR + fCoef, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg + fCoef, false);
+            ctx._lineTo(iOx - CathR - CathSkirtR,         iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg, false);
+        }
+        else
+        {
+            ctx._lineTo(iOx - CathR, iOy + CathNettoH + CathSkirtH - fChamferLeg, false);
 
-        // chamfering on the left
-        ctx._lineTo(iOx - CathR - CathSkirtR + fCoef, iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg + fCoef, false);
-        ctx._lineTo(iOx - CathR - CathSkirtR,         iOy + CathNettoH + CathSkirtH - fButtThickness*Math.tan(deg2rad(90-CathButtA)) -fChamferLeg, false);
+            ctx._lineTo(iOx - CathR - fChamferLeg, iOy + CathNettoH + CathSkirtH, false);
+            ctx._lineTo(iOx - CathR - CathSkirtR + fChamferLeg,  iOy + CathNettoH + CathSkirtH, false);
+            ctx._lineTo(iOx - CathR - CathSkirtR,                iOy + CathNettoH + CathSkirtH - fChamferLeg, false);
+        }
 
         ctx._lineTo(iOx - CathR - CathSkirtR, iOy, false);
         ctx._lineTo(iOx,iOy, false);             
