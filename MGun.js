@@ -226,9 +226,9 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
 
         ctx.stroke();
 
-    /* #endregion */
+/* #endregion */
 
-    /* #region Lens #2 Core*/
+/* #region Lens #2 Core*/
 
         if (Lens2CoreThickness != 0)
         {
@@ -298,7 +298,7 @@ var iStart = iOy+EGUNHeight;	// mm   exact height where egun ends
         ctx._lineTo(iOx + 15,      iStart);
     ctx.stroke();
 
-    el.value += "\n&mt mtid=6 mu=2 &";
+    el.value += "\n&mt mtid=6 mu=1 &";
 
 // LEFT
 
