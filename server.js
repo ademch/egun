@@ -874,7 +874,7 @@ function StartWSFPlotSendCommands(p_type, wsf_child)
 
 		// saves png image with the name according to internal autoincrement rule
 		console.log("Sending WSFPlot commands");
-		if (ES_problem)
+		if (p_type == ProblemType.ES)
 			child_process.exec('cmd /c start "" cmd /c ' + SendKeys + ' ' + SF_Title + ' "%co{TAB}{TAB}850{TAB}1700~c"');
 		else
 			child_process.exec('cmd /c start "" cmd /c ' + SendKeys + ' ' + SF_Title + ' "%co{TAB}{TAB}1700{TAB}6800~c"');
