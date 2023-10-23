@@ -246,8 +246,8 @@ function ReadFieldValues(p_type, path_to_file, aF_values)
 }
 
 // Calculates electron velocity taking field strength and the current speed
-//                 cm cm cm  m/s
-function ForceFunc(vPos,     VelPrev,   Particle)
+//                 cm cm cm  m/s        descriptor
+function dvdtFunc(vPos,     VelPrev,   Particle)
 {
 	Vc_2  = 89875.517e12;	// m/s
     
@@ -288,24 +288,29 @@ function ForceFunc(vPos,     VelPrev,   Particle)
 
 	var VxB = VecMath.VectorCross(VelPrev, B);
 
-    Aspeed = LorentzContraction * Qe/Me*( E[0] + VxB[0] );
-    Bspeed = LorentzContraction * Qe/Me*( E[1] + VxB[1] );
+	Aspeed = LorentzContraction * Qe/Me*( E[0] + VxB[0] );
+	Bspeed = LorentzContraction * Qe/Me*( E[1] + VxB[1] );
 	Cspeed = LorentzContraction * Qe/Me*( E[2] + VxB[2] );
 
 	return [Aspeed, Bspeed, Cspeed];
 }
 
-// Calculates electron velocity taking field strength and the current speed
-//            cm cm cm  m/s        s    // descriptor
-function Vxyz(vPos,     vVelPrev,  dt,  Particle)
+// Calculates electron velocity taking field strength in a current position and the current speed
+//            cm cm cm  m/s    s    descriptor
+function Vxyz(vPos,     vVel,  dt,  Particle)
 {
-    k1 = ForceFunc(vPos, vVelPrev, Particle);
+    // Haines equation for differential equation:
+	// un+1 = un + 0.5(k1 + k2)dt
+	// k1 = f( x(tn),    vel(tn) )  at the current time we are in a point x(tn) moving with vel(tn)
+	// k2 = f( x(tn) + dt*vel(tn), vel(tn) + dt*k1 ) peek next point
+	
+	k1 = dvdtFunc(vPos, vVel, Particle); // acceleration at the current point
 
-    vNew  = VecMath.VectorAdd(vVelPrev, VecMath.VectorMult(dt, k1));
-    vPosN = VecMath.VectorAdd(vPos,  VecMath.VectorMult(dt*100.0*0.5, VecMath.VectorAdd(vVelPrev, vNew)) );
-    k2 = ForceFunc(vPosN, vNew, Particle);
+    vPosNext = VecMath.VectorAdd( vPos, VecMath.VectorMult(dt*100.0, vVel) );
+    vVelNext = VecMath.VectorAdd( vVel, VecMath.VectorMult(dt, k1));
+    k2 = dvdtFunc(vPosNext, vVelNext, Particle);  // acceleration at the next point
 
-    v = VecMath.VectorAdd(vVelPrev, VecMath.VectorMult(dt*0.5, VecMath.VectorAdd(k1, k2)));
+    v = VecMath.VectorAdd(vVel, VecMath.VectorMult(dt*0.5, VecMath.VectorAdd(k1, k2)));
 
     return v;
 }
