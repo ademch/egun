@@ -246,7 +246,8 @@ function ReadFieldValues(p_type, path_to_file, aF_values)
 }
 
 // Calculates electron velocity taking field strength and the current speed
-//                 cm cm cm  m/s        descriptor
+//                cm cm cm  m/s        descriptor
+// returns                  m/s
 function dvdtFunc(vPos,     VelPrev,   Particle)
 {
 	Vc_2  = 89875.517e12;	// m/s
@@ -292,8 +293,14 @@ function dvdtFunc(vPos,     VelPrev,   Particle)
 	Bspeed = LorentzContraction * Qe/Me*( E[1] + VxB[1] );
 	Cspeed = LorentzContraction * Qe/Me*( E[2] + VxB[2] );
 
-	return [Aspeed, Bspeed, Cspeed];
+	return [Aspeed, Bspeed, Cspeed];	// m/s
 }
+
+function drdtFunc(vel)
+{
+	return vel;
+}
+
 
 // Calculates electron velocity taking field strength in a current position and the current speed
 //            cm cm cm  m/s    s    descriptor
@@ -301,18 +308,30 @@ function Vxyz(vPos,     vVel,  dt,  Particle)
 {
     // Haines equation for differential equation:
 	// un+1 = un + 0.5(k1 + k2)dt
-	// k1 = f( x(tn),    vel(tn) )  at the current time we are in a point x(tn) moving with vel(tn)
-	// k2 = f( x(tn) + dt*vel(tn), vel(tn) + dt*k1 ) peek next point
+	// kr1 = f( vel(tn) )         at the current time we are in a point x(tn) moving with vel(tn)
+	// kv1 = f( r(tn), vel(tn) )  at the current time we are in a point x(tn) moving with vel(tn)
+	// kr2 = f( vel(tn) + dt*kv1 )                 peek next point
+	// kv2 = f( r(tn) + dt*kr1, vel(tn) + dt*kv1 ) peek next point
 	
-	k1 = dvdtFunc(vPos, vVel, Particle); // acceleration at the current point
+	kr1 = drdtFunc(vVel);
+	kv1 = dvdtFunc(vPos, vVel, Particle);
 
-    vPosNext = VecMath.VectorAdd( vPos, VecMath.VectorMult(dt*100.0, vVel) );
-    vVelNext = VecMath.VectorAdd( vVel, VecMath.VectorMult(dt, k1));
-    k2 = dvdtFunc(vPosNext, vVelNext, Particle);  // acceleration at the next point
+	// m/s -> cm/s results in *100
+	vPosNext = VecMath.VectorAdd( vPos, VecMath.VectorMult(dt*100.0, kr1) );
+    vVelNext = VecMath.VectorAdd( vVel, VecMath.VectorMult(dt, kv1));
 
-    v = VecMath.VectorAdd(vVel, VecMath.VectorMult(dt*0.5, VecMath.VectorAdd(k1, k2)));
+	kr2 = drdtFunc(vVelNext);
+    kv2 = dvdtFunc(vPosNext, vVelNext, Particle);  // acceleration at the next point
 
-    return v;
+	// m/s -> cm/s results in *100
+    r = VecMath.VectorAdd(vPos, VecMath.VectorMult(dt*0.5*100.0, VecMath.VectorAdd(kr1, kr2)));
+    v = VecMath.VectorAdd(vVel, VecMath.VectorMult(dt*0.5,       VecMath.VectorAdd(kv1, kv2)));
+
+	vPos.length = 0;
+	vPos.push(...r);
+
+	vVel.length = 0;
+	vVel.push(...v);
 }
 
 
@@ -435,7 +454,7 @@ const fShort = 0.022;	// cm
 // x,y,z- cm
 function TraceParticleTrajectory(x,y,z, Particle)
 {
-var vOldVel = [0.0, 0.0, 0.0];
+var vVel = [0.0, 0.0, 0.0];
 var aVelXYZ;
 
 if (Particle === ParticleEnum.ELECTRON)
@@ -447,7 +466,7 @@ if (Particle === ParticleEnum.ELECTRON)
 	const Me    = 9.10938356e-31;	// kg
 
 	vMag = Math.sqrt(2.0*Qe/Me*-PlasmaParams.StartingEnergy);
-	vOldVel = VecMath.VectorMult(vMag, vInitVel);
+	vVel = VecMath.VectorMult(vMag, vInitVel);
 }
 
 var vPos = [x,y,z];     // cm
@@ -469,18 +488,18 @@ const Vc=299.7915942e6;	// m/s
         // draw electron position
 		var pt_x = vPos[0]*100.0 + 100;
 		var pt_y = 1600 - vPos[1]*100.0;
-        ctx.fillRect(pt_x, pt_y, 5,5);
+        ctx.fillRect(pt_x, pt_y, 2,2);
 
         if (vPos[0] === NaN)
             console.log("")
 
 		// calculate new velocity vector
-        aVelXYZ = Vxyz(vPos, vOldVel, dt, Particle);
+        Vxyz(vPos, vVel, dt, Particle);
 
-        var Beta = VecMath.VectorLength(aVelXYZ)/Vc;
-        var ptG_x = Beta*200000.0 + 1100;
-		var ptG_y = 1600 - vPos[1]*100.0;
-        ctx.fillRect(ptG_x, ptG_y, 5,5);
+        // var Beta = VecMath.VectorLength(aVelXYZ)/Vc;
+        // var ptG_x = Beta*200000.0 + 1100;
+		// var ptG_y = 1600 - vPos[1]*100.0;
+        // ctx.fillRect(ptG_x, ptG_y, 50,50);
         
 		// console.log("x: " + fPosX.toPrecision(4) + ", y:" + fPosY.toPrecision(4) + ", z:" + fPosZ.toPrecision(4) + "\n");
 	    // console.log("  Ex: " + aElField[0].toPrecision(8) + ", Ey:" + aElField[1].toPrecision(8) + ", Ez:" + aElField[2].toPrecision(8) + "\n");
@@ -492,11 +511,6 @@ const Vc=299.7915942e6;	// m/s
         // fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "  Ckx: " +aVelXYZ[0].toPrecision(4) + ", Cky:" + aVelXYZ[1].toPrecision(4) + ", Ckz:" + aVelXYZ[2].toPrecision(4) + "\n");
         // fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "  Ck:" + Math.sqrt(aVelXYZ[0]*aVelXYZ[0] + aVelXYZ[1]*aVelXYZ[1] + aVelXYZ[2]*aVelXYZ[2]).toPrecision(4) + "\n");
         // fs.appendFileSync("C:\\LANL\\Examples\\Electrostatic\\Try\\1Log.txt", "  V:" + Math.sqrt(fOldVelX*fOldVelX + fOldVelZ*fOldVelZ) + "\n");
-
-		// m/s -> cm/s results in *100
-        vPos = VecMath.VectorAdd(vPos,  VecMath.VectorMult(dt*100.0*0.5, VecMath.VectorAdd(vOldVel, aVelXYZ)) );
-
-        vOldVel = [...aVelXYZ]; // deep copy
 	}
 }
 
