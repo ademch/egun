@@ -313,19 +313,19 @@ function Vxyz(vPos,     vVel,  dt,  Particle)
 	// kr2 = f( vel(tn) + dt*kv1 )                 peek next point
 	// kv2 = f( r(tn) + dt*kr1, vel(tn) + dt*kv1 ) peek next point
 	
-	kr1 = drdtFunc(vVel);
-	kv1 = dvdtFunc(vPos, vVel, Particle);
+	var kr1 = drdtFunc(vVel);                          // velocity at the current point
+	var kv1 = dvdtFunc(vPos, vVel, Particle);		   // acceleration at the current point
 
 	// m/s -> cm/s results in *100
-	vPosNext = VecMath.VectorAdd( vPos, VecMath.VectorMult(dt*100.0, kr1) );
-    vVelNext = VecMath.VectorAdd( vVel, VecMath.VectorMult(dt, kv1));
+	var vPosNext = VecMath.VectorAdd( vPos, VecMath.VectorMult(dt*100.0, kr1) );
+    var vVelNext = VecMath.VectorAdd( vVel, VecMath.VectorMult(dt, kv1));
 
-	kr2 = drdtFunc(vVelNext);
-    kv2 = dvdtFunc(vPosNext, vVelNext, Particle);  // acceleration at the next point
+	var kr2 = drdtFunc(vVelNext);                      // velocity at the next point
+    var kv2 = dvdtFunc(vPosNext, vVelNext, Particle);  // acceleration at the next point
 
 	// m/s -> cm/s results in *100
-    r = VecMath.VectorAdd(vPos, VecMath.VectorMult(dt*0.5*100.0, VecMath.VectorAdd(kr1, kr2)));
-    v = VecMath.VectorAdd(vVel, VecMath.VectorMult(dt*0.5,       VecMath.VectorAdd(kv1, kv2)));
+    var r = VecMath.VectorAdd(vPos, VecMath.VectorMult(dt*0.5*100.0, VecMath.VectorAdd(kr1, kr2)));
+    var v = VecMath.VectorAdd(vVel, VecMath.VectorMult(dt*0.5,       VecMath.VectorAdd(kv1, kv2)));
 
 	vPos.length = 0;
 	vPos.push(...r);
